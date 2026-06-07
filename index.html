@@ -469,17 +469,17 @@ tr:hover td { background:rgba(0,229,255,0.02); }
         <div class="form-group">
           <label class="form-label">Envoyer le paiement via</label>
           <div class="payment-methods">
-            <div class="pay-method">
+            <div class="pay-method" onclick="payWhatsApp('22670609128','Orange Money')" style="cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#00e5ff'" onmouseout="this.style.borderColor='transparent'">
               <div class="pay-method-icon">🟠</div>
               <div class="pay-method-name">Orange Money</div>
               <div class="pay-method-num">+22670609128</div>
-              <div class="pay-method-note">Mentionner la référence</div>
+              <div class="pay-method-note" style="color:#00ff88;font-weight:600">💬 Payer via WhatsApp</div>
             </div>
-            <div class="pay-method">
+            <div class="pay-method" onclick="payWhatsApp('22676875052','Moov Money')" style="cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#00e5ff'" onmouseout="this.style.borderColor='transparent'">
               <div class="pay-method-icon">🔵</div>
               <div class="pay-method-name">Moov Money</div>
               <div class="pay-method-num">+22676875052</div>
-              <div class="pay-method-note">Mentionner la référence</div>
+              <div class="pay-method-note" style="color:#00ff88;font-weight:600">💬 Payer via WhatsApp</div>
             </div>
           </div>
         </div>
@@ -684,6 +684,14 @@ function submitRegister() {
     showStep(2);
   })
   .catch(function() { showNotif('❌ Serveur indisponible', true); });
+}
+
+function payWhatsApp(phone, method) {
+  var ref = document.getElementById('pay-ref').textContent;
+  var amount = document.getElementById('pay-amount').textContent;
+  var name = document.getElementById('r-name').value || 'Client';
+  var msg = encodeURIComponent('Bonjour Startech BUSINESS,\n\nJe souhaite payer mon abonnement VPN via ' + method + '.\n\nNom: ' + name + '\nMontant: ' + amount + '\nReference: ' + ref + '\n\nMerci.');
+  window.open('https://wa.me/' + phone + '?text=' + msg, '_blank');
 }
 
 function checkPayment() {
@@ -984,6 +992,42 @@ function showNotif(msg, isError) {
 // Init
 document.getElementById('p-1000').classList.add('sel');
 document.getElementById('t-MikroTik').classList.add('sel');
+</script>
+
+<script src="https://cdn.fedapay.com/checkout.js?v=1.1.7"></script>
+<script>
+var FEDAPAY_PUBLIC_KEY = 'pk_live_i1L1doelACNwE25-cZVe4Y_W';
+
+function lancerFedaPay() {
+  var ref = document.getElementById('pay-ref').textContent;
+  var amountText = document.getElementById('pay-amount').textContent;
+  var amount = parseInt(amountText.replace(/[^0-9]/g, ''));
+  var name = document.getElementById('r-name').value || 'Client';
+  var phone = document.getElementById('r-phone').value || '';
+
+  FedaPay.init({
+    public_key: FEDAPAY_PUBLIC_KEY,
+    transaction: {
+      amount: amount,
+      description: 'Abonnement VPN Startech - ' + ref
+    },
+    customer: {
+      firstname: name,
+      phone_number: { number: phone.replace(/\D/g,''), country: 'BF' }
+    },
+    onComplete: function(resp) {
+      if (resp.reason === FedaPay.DIALOG_DISMISSED) {
+        showNotif('Paiement annule', true);
+      } else if (resp.transaction && resp.transaction.status === 'approved') {
+        showNotif('Paiement recu ! Verification en cours...');
+        setTimeout(function() { checkPayment(); }, 2000);
+      } else {
+        showNotif('Verification du paiement...', false);
+        setTimeout(function() { checkPayment(); }, 3000);
+      }
+    }
+  }).open();
+}
 </script>
 </body>
 </html>
