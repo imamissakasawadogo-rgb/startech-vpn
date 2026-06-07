@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startech VPN — Portail</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060b14;
+  --bg2: #0b1623;
+  --bg3: #101f30;
+  --accent: #00e5ff;
+  --accent2: #ff6b00;
+  --green: #00ff88;
+  --red: #ff3d3d;
+  --yellow: #ffd600;
+  --text: #c8d8e8;
+  --text2: #6a8aaa;
+  --border: #1a3050;
+  --card: #0d1a28;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Exo 2',sans-serif; min-height:100vh; }
+
+/* ── PAGES ── */
+.page { display:none; min-height:100vh; }
+.page.active { display:block; }
+
+/* ── LANDING ── */
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.landing::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(0,229,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 70%, rgba(255,107,0,0.05) 0%, transparent 60%);
+  pointer-events:none;
+}
+.grid-bg {
+  position:fixed; inset:0;
+  background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events:none;
+}
+.brand {
+  text-align: center;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+.brand-logo {
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, var(--accent), #0080ff);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 16px;
+  box-shadow: 0 0 40px rgba(0,229,255,0.3);
+}
+.brand-name {
+  font-family:'Rajdhani',sans-serif;
+  font-size: 36px; font-weight:700;
+  color:white; letter-spacing:2px;
+}
+.brand-name span { color:var(--accent); }
+.brand-tagline { color:var(--text2); font-size:15px; margin-top:6px; }
+
+.plans-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+  max-width:800px; width:100%;
+  margin-bottom:40px;
+  position:relative; z-index:1;
+}
+.plan-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px 20px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.2s;
+  position:relative;
+  overflow:hidden;
+}
+.plan-card:hover { border-color:var(--accent); transform:translateY(-4px); }
+.plan-card.featured {
+  border-color:var(--accent);
+  background:linear-gradient(135deg,rgba(0,229,255,0.08),rgba(0,128,255,0.05));
+}
+.plan-badge {
+  position:absolute; top:12px; right:12px;
+  background:var(--accent); color:#000;
+  font-size:10px; font-weight:700;
+  padding:2px 8px; border-radius:10px;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
+.plan-icon { font-size:32px; margin-bottom:12px; }
+.plan-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:white; }
+.plan-price { font-family:'Rajdhani',sans-serif; font-size:32px; font-weight:700; color:var(--accent); margin:8px 0; }
+.plan-price span { font-size:14px; color:var(--text2); }
+.plan-features { font-size:13px; color:var(--text2); line-height:1.8; }
+
+.cta-buttons {
+  display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+  position:relative; z-index:1;
+}
+.btn-cta {
+  padding:14px 32px; border-radius:10px; border:none;
+  font-family:'Exo 2',sans-serif; font-size:15px; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+}
+.btn-cta-primary { background:linear-gradient(135deg,var(--accent),#0080ff); color:#000; }
+.btn-cta-primary:hover { opacity:0.85; transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,229,255,0.3); }
+.btn-cta-outline { background:transparent; border:1px solid var(--border); color:var(--text); }
+.btn-cta-outline:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ── INSCRIPTION ── */
+.auth-page {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  padding:24px; position:relative;
+}
+.auth-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:20px; width:100%; max-width:480px;
+  overflow:hidden;
+}
+.auth-header {
+  background:linear-gradient(135deg,#060b14,#0b1a2e);
+  padding:28px 28px 24px;
+  border-bottom:1px solid var(--border);
+}
+.auth-title { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; color:white; }
+.auth-sub { font-size:13px; color:var(--text2); margin-top:4px; }
+.auth-body { padding:28px; }
+.form-group { margin-bottom:18px; }
+.form-label { display:block; font-size:12px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.form-input, .form-select {
+  width:100%; background:var(--bg3); border:1px solid var(--border);
+  border-radius:8px; padding:12px 14px; color:var(--text);
+  font-family:'Exo 2',sans-serif; font-size:14px; outline:none;
+}
+.form-input:focus, .form-select:focus { border-color:var(--accent); }
+.form-select option { background:var(--bg2); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.plan-selector { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.plan-opt {
+  background:var(--bg3); border:2px solid var(--border);
+  border-radius:8px; padding:12px 8px; text-align:center;
+  cursor:pointer; transition:all 0.15s;
+}
+.plan-opt:hover { border-color:var(--accent); }
+.plan-opt.sel { border-color:var(--accent); background:rgba(0,229,255,0.05); }
+.plan-opt-price { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:var(--accent); }
+.plan-opt-label { font-size:11px; color:var(--text2); margin-top:2px; }
+
+.type-selector { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.type-opt {
+  background:var(--bg3); border:2px solid var(--border);
+  border-radius:8px; padding:12px; text-align:center;
+  cursor:pointer; transition:all 0.15s;
+}
+.type-opt:hover { border-color:var(--accent); }
+.type-opt.sel { border-color:var(--accent); background:rgba(0,229,255,0.05); }
+.type-icon { font-size:24px; }
+.type-name { font-size:12px; color:var(--text); margin-top:4px; font-weight:600; }
+
+.btn-full {
+  width:100%; padding:13px; border-radius:8px; border:none;
+  font-family:'Exo 2',sans-serif; font-size:15px; font-weight:700;
+  cursor:pointer; transition:all 0.2s; margin-top:8px;
+}
+.btn-primary-full { background:linear-gradient(135deg,var(--accent),#0080ff); color:#000; }
+.btn-primary-full:hover { opacity:0.85; }
+.btn-outline-full { background:transparent; border:1px solid var(--border); color:var(--text); }
+.btn-outline-full:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ── PAIEMENT ── */
+.payment-info {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:12px; padding:20px; margin-bottom:20px;
+}
+.payment-ref {
+  font-family:'Share Tech Mono',monospace;
+  font-size:20px; color:var(--accent); text-align:center;
+  letter-spacing:2px; margin:12px 0;
+}
+.payment-methods { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.pay-method {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:10px; padding:16px; text-align:center;
+}
+.pay-method-icon { font-size:28px; margin-bottom:6px; }
+.pay-method-name { font-weight:700; color:white; font-size:14px; }
+.pay-method-num { font-family:'Share Tech Mono',monospace; font-size:13px; color:var(--accent); margin-top:4px; }
+.pay-method-note { font-size:11px; color:var(--text2); margin-top:4px; }
+
+/* ── CONFIG ── */
+.config-section {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:12px; padding:20px; margin-bottom:16px;
+}
+.config-title { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:white; margin-bottom:12px; }
+.script-box {
+  background:var(--bg); border:1px solid var(--border); border-radius:8px;
+  padding:14px; font-family:'Share Tech Mono',monospace; font-size:12px;
+  color:var(--green); line-height:1.7; word-break:break-all; white-space:pre-wrap;
+  max-height:200px; overflow-y:auto;
+}
+.copy-btn {
+  margin-top:8px; padding:8px 16px;
+  background:rgba(0,229,255,0.1); border:1px solid var(--accent);
+  border-radius:6px; color:var(--accent); font-size:13px; cursor:pointer;
+  font-family:'Exo 2',sans-serif; font-weight:600;
+}
+.copy-btn:hover { background:rgba(0,229,255,0.2); }
+.wa-btn {
+  width:100%; padding:12px; border-radius:8px;
+  background:rgba(0,255,136,0.1); border:1px solid var(--green);
+  color:var(--green); font-family:'Exo 2',sans-serif; font-size:14px;
+  font-weight:700; cursor:pointer; margin-top:8px;
+}
+.wa-btn:hover { background:rgba(0,255,136,0.2); }
+
+.info-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:14px; }
+.info-row:last-child { border-bottom:none; }
+.info-key { color:var(--text2); }
+.info-val { color:white; font-weight:600; font-family:'Share Tech Mono',monospace; font-size:13px; }
+
+/* ── ADMIN ── */
+.admin-wrap { max-width:1200px; margin:0 auto; padding:24px; }
+.admin-header {
+  background:var(--bg2); border-bottom:1px solid var(--border);
+  padding:0 24px; height:60px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100;
+}
+.admin-logo { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:white; }
+.admin-logo span { color:var(--accent); }
+
+.stats-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:24px; }
+.stat-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; }
+.stat-label { font-size:11px; color:var(--text2); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.stat-val { font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; color:white; }
+
+.toolbar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+.btn { padding:9px 18px; border-radius:7px; border:none; cursor:pointer; font-family:'Exo 2',sans-serif; font-size:13px; font-weight:600; transition:all 0.15s; display:flex; align-items:center; gap:6px; }
+.btn-sm { padding:6px 12px; font-size:12px; }
+.btn-accent { background:linear-gradient(135deg,var(--accent),#0080ff); color:#000; }
+.btn-accent:hover { opacity:0.85; }
+.btn-outline { background:transparent; border:1px solid var(--border); color:var(--text); }
+.btn-outline:hover { border-color:var(--accent); color:var(--accent); }
+.btn-green { background:rgba(0,255,136,0.1); border:1px solid var(--green); color:var(--green); }
+.btn-green:hover { background:rgba(0,255,136,0.2); }
+.btn-red { background:rgba(255,61,61,0.1); border:1px solid var(--red); color:var(--red); }
+.btn-red:hover { background:rgba(255,61,61,0.2); }
+.btn-yellow { background:rgba(255,214,0,0.1); border:1px solid var(--yellow); color:var(--yellow); }
+.btn-yellow:hover { background:rgba(255,214,0,0.2); }
+.search-box { flex:1; min-width:180px; background:var(--card); border:1px solid var(--border); border-radius:7px; padding:9px 14px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:13px; outline:none; }
+.search-box:focus { border-color:var(--accent); }
+.filter-sel { background:var(--card); border:1px solid var(--border); border-radius:7px; padding:9px 12px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:13px; outline:none; cursor:pointer; }
+
+.table-wrap { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+table { width:100%; border-collapse:collapse; }
+th { padding:10px 16px; text-align:left; font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:1px; background:var(--bg2); border-bottom:1px solid var(--border); }
+td { padding:12px 16px; font-size:13px; border-bottom:1px solid rgba(26,48,80,0.4); }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(0,229,255,0.02); }
+
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-active { background:rgba(0,255,136,0.1); color:var(--green); }
+.badge-pending { background:rgba(255,214,0,0.1); color:var(--yellow); }
+.badge-expired { background:rgba(255,61,61,0.1); color:var(--red); }
+.badge-suspended { background:rgba(106,138,170,0.1); color:var(--text2); }
+.badge-mikrotik { background:rgba(0,229,255,0.1); color:var(--accent); }
+.badge-android { background:rgba(0,255,136,0.1); color:var(--green); }
+.badge-iphone { background:rgba(200,216,232,0.1); color:#aaa; }
+.badge-pc { background:rgba(255,214,0,0.1); color:var(--yellow); }
+
+.ip-tag { font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--accent); background:rgba(0,229,255,0.07); padding:2px 8px; border-radius:4px; }
+.client-id { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--text2); }
+.actions { display:flex; gap:4px; }
+.act-btn { width:28px; height:28px; border-radius:5px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:13px; transition:all 0.15s; color:var(--text2); }
+.act-btn:hover.validate { border-color:var(--green); color:var(--green); background:rgba(0,255,136,0.05); }
+.act-btn:hover.script { border-color:var(--accent); color:var(--accent); background:rgba(0,229,255,0.05); }
+.act-btn:hover.wa { border-color:var(--green); color:var(--green); }
+.act-btn:hover.suspend { border-color:var(--yellow); color:var(--yellow); }
+.act-btn:hover.del { border-color:var(--red); color:var(--red); }
+
+/* ── ADMIN LOGIN ── */
+.admin-login { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+
+/* ── MODAL ── */
+.modal-overlay { position:fixed; inset:0; background:rgba(6,11,20,0.88); backdrop-filter:blur(4px); z-index:200; display:none; align-items:center; justify-content:center; padding:16px; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--bg2); border:1px solid var(--border); border-radius:16px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; }
+.modal-header { padding:18px 22px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.modal-title { font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; color:white; }
+.modal-close { background:none; border:none; color:var(--text2); font-size:18px; cursor:pointer; }
+.modal-close:hover { color:white; }
+.modal-body { padding:20px 22px; }
+
+/* ── STEPS ── */
+.steps { display:flex; gap:0; margin-bottom:28px; }
+.step { flex:1; text-align:center; position:relative; }
+.step::after { content:''; position:absolute; top:14px; left:50%; right:-50%; height:2px; background:var(--border); z-index:0; }
+.step:last-child::after { display:none; }
+.step-circle { width:28px; height:28px; border-radius:50%; background:var(--border); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:12px; font-weight:700; position:relative; z-index:1; transition:all 0.3s; }
+.step.done .step-circle { background:var(--green); border-color:var(--green); color:#000; }
+.step.active .step-circle { background:var(--accent); border-color:var(--accent); color:#000; }
+.step-label { font-size:11px; color:var(--text2); }
+.step.active .step-label { color:var(--accent); }
+.step.done .step-label { color:var(--green); }
+
+.notif { position:fixed; bottom:20px; right:20px; background:var(--bg2); border:1px solid var(--green); border-radius:10px; padding:12px 18px; color:var(--green); font-size:14px; font-weight:600; z-index:500; transform:translateY(60px); opacity:0; transition:all 0.3s; }
+.notif.show { transform:translateY(0); opacity:1; }
+.notif.error { border-color:var(--red); color:var(--red); }
+
+.back-link { color:var(--text2); font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; margin-bottom:20px; }
+.back-link:hover { color:var(--accent); }
+
+.loading { display:inline-block; width:16px; height:16px; border:2px solid rgba(0,229,255,0.3); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; margin-right:8px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.pending-check { text-align:center; padding:20px 0; }
+.pending-icon { font-size:48px; margin-bottom:12px; animation:bounce 1s ease infinite alternate; }
+@keyframes bounce { to { transform:translateY(-8px); } }
+
+@media(max-width:768px) {
+  .plans-grid { grid-template-columns:1fr; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); }
+  .form-row { grid-template-columns:1fr; }
+  table { font-size:12px; }
+  th, td { padding:8px 10px; }
+  .admin-wrap { padding:14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ PAGE: LANDING ═══════════ -->
+<div id="page-landing" class="page active">
+  <div class="grid-bg"></div>
+  <div class="landing">
+    <div class="brand">
+      <div class="brand-logo">🛡️</div>
+      <div class="brand-name">STARTECH <span>VPN</span></div>
+      <div class="brand-tagline">Réseau privé sécurisé — Burkina Faso & Afrique</div>
+    </div>
+
+    <div class="plans-grid">
+      <div class="plan-card" onclick="startRegister('1000')">
+        <div class="plan-icon">📅</div>
+        <div class="plan-name">Mensuel</div>
+        <div class="plan-price">1 000 <span>FCFA/mois</span></div>
+        <div class="plan-features">✓ 1 appareil<br>✓ IP VPN dédiée<br>✓ Support WhatsApp</div>
+      </div>
+      <div class="plan-card featured" onclick="startRegister('2500')">
+        <div class="plan-badge">POPULAIRE</div>
+        <div class="plan-icon">📆</div>
+        <div class="plan-name">Trimestriel</div>
+        <div class="plan-price">2 500 <span>FCFA/3 mois</span></div>
+        <div class="plan-features">✓ 1 appareil<br>✓ IP VPN dédiée<br>✓ Support prioritaire</div>
+      </div>
+      <div class="plan-card" onclick="startRegister('8000')">
+        <div class="plan-icon">🗓️</div>
+        <div class="plan-name">Annuel</div>
+        <div class="plan-price">8 000 <span>FCFA/an</span></div>
+        <div class="plan-features">✓ 1 appareil<br>✓ IP VPN dédiée<br>✓ Support VIP</div>
+      </div>
+    </div>
+
+    <div class="cta-buttons">
+      <button class="btn-cta btn-cta-primary" onclick="showPage('page-register')">🚀 Créer mon compte VPN</button>
+      <button class="btn-cta btn-cta-outline" onclick="showPage('page-myaccount')">🔍 Accéder à mon compte</button>
+      <button class="btn-cta btn-cta-outline" onclick="showPage('page-admin-login')">⚙️ Admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE: INSCRIPTION ═══════════ -->
+<div id="page-register" class="page">
+  <div class="auth-page">
+    <div class="grid-bg"></div>
+    <div class="auth-card" style="position:relative;z-index:1">
+
+      <!-- STEPS -->
+      <div class="auth-header">
+        <div class="auth-title">🚀 Créer mon compte VPN</div>
+        <div class="auth-sub">Startech BUSINESS — Barsalogho</div>
+      </div>
+
+      <!-- STEP 1: Infos -->
+      <div id="step1" class="auth-body">
+        <div class="steps">
+          <div class="step active"><div class="step-circle">1</div><div class="step-label">Infos</div></div>
+          <div class="step"><div class="step-circle">2</div><div class="step-label">Paiement</div></div>
+          <div class="step"><div class="step-circle">3</div><div class="step-label">Config</div></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Votre Nom</label>
+            <input class="form-input" type="text" id="r-name" placeholder="Ex: Kofi Traoré" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Téléphone</label>
+            <input class="form-input" type="text" id="r-phone" placeholder="+226 XX XX XX XX" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type d'appareil</label>
+          <div class="type-selector">
+            <div class="type-opt sel" onclick="selectType(this,'MikroTik')" id="t-MikroTik">
+              <div class="type-icon">🔧</div><div class="type-name">MikroTik</div>
+            </div>
+            <div class="type-opt" onclick="selectType(this,'Android')" id="t-Android">
+              <div class="type-icon">📱</div><div class="type-name">Android</div>
+            </div>
+            <div class="type-opt" onclick="selectType(this,'iPhone')" id="t-iPhone">
+              <div class="type-icon">🍎</div><div class="type-name">iPhone</div>
+            </div>
+            <div class="type-opt" onclick="selectType(this,'PC')" id="t-PC">
+              <div class="type-icon">💻</div><div class="type-name">PC</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Plan</label>
+          <div class="plan-selector">
+            <div class="plan-opt sel" onclick="selectPlan(this,'1000')" id="p-1000">
+              <div class="plan-opt-price">1 000</div><div class="plan-opt-label">FCFA / mois</div>
+            </div>
+            <div class="plan-opt" onclick="selectPlan(this,'2500')" id="p-2500">
+              <div class="plan-opt-price">2 500</div><div class="plan-opt-label">FCFA / 3 mois</div>
+            </div>
+            <div class="plan-opt" onclick="selectPlan(this,'8000')" id="p-8000">
+              <div class="plan-opt-price">8 000</div><div class="plan-opt-label">FCFA / an</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-full btn-primary-full" onclick="submitRegister()">Continuer →</button>
+        <button class="btn-full btn-outline-full" style="margin-top:8px" onclick="showPage('page-landing')">← Retour</button>
+      </div>
+
+      <!-- STEP 2: PAIEMENT -->
+      <div id="step2" class="auth-body" style="display:none">
+        <div class="steps">
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">Infos</div></div>
+          <div class="step active"><div class="step-circle">2</div><div class="step-label">Paiement</div></div>
+          <div class="step"><div class="step-circle">3</div><div class="step-label">Config</div></div>
+        </div>
+        <div class="payment-info">
+          <div style="text-align:center;font-size:14px;color:var(--text2)">Montant à payer</div>
+          <div class="payment-ref" id="pay-amount">— FCFA</div>
+          <div style="text-align:center;font-size:13px;color:var(--text2)">Référence de paiement :</div>
+          <div class="payment-ref" id="pay-ref" style="font-size:16px">—</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Envoyer le paiement via</label>
+          <div class="payment-methods">
+            <div class="pay-method">
+              <div class="pay-method-icon">🟠</div>
+              <div class="pay-method-name">Orange Money</div>
+              <div class="pay-method-num">+22670609128</div>
+              <div class="pay-method-note">Mentionner la référence</div>
+            </div>
+            <div class="pay-method">
+              <div class="pay-method-icon">🔵</div>
+              <div class="pay-method-name">Moov Money</div>
+              <div class="pay-method-num">+22676875052</div>
+              <div class="pay-method-note">Mentionner la référence</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(255,214,0,0.05);border:1px solid rgba(255,214,0,0.2);border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;color:var(--yellow)">
+          ⏱️ Après votre paiement, votre compte sera activé dans les <strong>30 minutes</strong>. Vous recevrez un message WhatsApp de confirmation.
+        </div>
+        <button class="btn-full btn-primary-full" onclick="checkPayment()">✅ J'ai payé — Vérifier mon compte</button>
+        <button class="btn-full btn-outline-full" style="margin-top:8px" onclick="showStep(1)">← Retour</button>
+      </div>
+
+      <!-- STEP 3: CONFIG -->
+      <div id="step3" class="auth-body" style="display:none">
+        <div class="steps">
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">Infos</div></div>
+          <div class="step done"><div class="step-circle">✓</div><div class="step-label">Paiement</div></div>
+          <div class="step active"><div class="step-circle">3</div><div class="step-label">Config</div></div>
+        </div>
+        <div class="config-section">
+          <div class="config-title">✅ Compte activé !</div>
+          <div id="config-infos"></div>
+        </div>
+        <div class="config-section">
+          <div class="config-title">📋 <span id="script-label">Configuration VPN</span></div>
+          <div class="script-box" id="config-script"></div>
+          <button class="copy-btn" onclick="copyConfig()">📋 Copier la configuration</button>
+        </div>
+        <button class="wa-btn" onclick="sendConfigWA()">💬 Recevoir sur WhatsApp</button>
+        <button class="btn-full btn-outline-full" style="margin-top:12px" onclick="showPage('page-landing')">🏠 Retour à l'accueil</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE: MON COMPTE ═══════════ -->
+<div id="page-myaccount" class="page">
+  <div class="auth-page">
+    <div class="grid-bg"></div>
+    <div class="auth-card" style="position:relative;z-index:1">
+      <div class="auth-header">
+        <div class="auth-title">🔍 Mon Compte VPN</div>
+        <div class="auth-sub">Entrez votre ID de client</div>
+      </div>
+      <div class="auth-body" id="myaccount-body">
+        <div class="form-group">
+          <label class="form-label">ID Client (reçu par WhatsApp)</label>
+          <input class="form-input" type="text" id="my-id" placeholder="Ex: STK1A2B3C4D" style="text-transform:uppercase;font-family:'Share Tech Mono',monospace" />
+        </div>
+        <button class="btn-full btn-primary-full" onclick="loadMyAccount()">🔍 Accéder à mon compte</button>
+        <button class="btn-full btn-outline-full" style="margin-top:8px" onclick="showPage('page-landing')">← Retour</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE: ADMIN LOGIN ═══════════ -->
+<div id="page-admin-login" class="page">
+  <div class="admin-login">
+    <div class="grid-bg"></div>
+    <div class="auth-card" style="position:relative;z-index:1;max-width:380px">
+      <div class="auth-header">
+        <div class="auth-title">⚙️ Administration</div>
+        <div class="auth-sub">Startech VPN Manager</div>
+      </div>
+      <div class="auth-body">
+        <div class="form-group">
+          <label class="form-label">Clé Admin</label>
+          <input class="form-input" type="password" id="admin-key" placeholder="••••••••••••" />
+        </div>
+        <button class="btn-full btn-primary-full" onclick="adminLogin()">🔓 Connexion Admin</button>
+        <button class="btn-full btn-outline-full" style="margin-top:8px" onclick="showPage('page-landing')">← Retour</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PAGE: ADMIN DASHBOARD ═══════════ -->
+<div id="page-admin" class="page">
+  <div class="admin-header">
+    <div class="admin-logo">🛡️ STARTECH <span>VPN</span> — Admin</div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline btn-sm" onclick="refreshAdmin()">🔄 Actualiser</button>
+      <button class="btn btn-outline btn-sm" onclick="adminLogout()">🚪 Déconnexion</button>
+    </div>
+  </div>
+  <div class="admin-wrap">
+    <div class="stats-grid" id="admin-stats">
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-val" id="as-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Actifs</div><div class="stat-val" id="as-active" style="color:var(--green)">—</div></div>
+      <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val" id="as-pending" style="color:var(--yellow)">—</div></div>
+      <div class="stat-card"><div class="stat-label">Expirés</div><div class="stat-val" id="as-expired" style="color:var(--red)">—</div></div>
+      <div class="stat-card"><div class="stat-label">Revenus/mois</div><div class="stat-val" id="as-revenue" style="color:var(--accent)">—</div></div>
+    </div>
+    <div class="toolbar">
+      <input class="search-box" type="text" placeholder="🔍 Rechercher..." oninput="adminFilter(this.value)" />
+      <select class="filter-sel" onchange="adminFilterStatus(this.value)">
+        <option value="all">Tous</option>
+        <option value="pending_payment">En attente</option>
+        <option value="active">Actifs</option>
+        <option value="expired">Expirés</option>
+        <option value="suspended">Suspendus</option>
+      </select>
+      <button class="btn btn-outline" onclick="exportCSV()">📤 CSV</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Type</th>
+            <th>IP VPN</th>
+            <th>Plan</th>
+            <th>Statut</th>
+            <th>Expiration</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="admin-table"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SCRIPT ADMIN -->
+<div class="modal-overlay" id="modal-script">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="ms-title">📋 Script</div>
+      <button class="modal-close" onclick="closeModal('modal-script')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="script-box" id="ms-content"></div>
+      <button class="copy-btn" onclick="copyModalScript()">📋 Copier</button>
+      <button class="wa-btn" onclick="sendModalWA()" style="margin-top:10px">💬 Envoyer WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+var API = 'https://api.startech-pro.com/vpn';
+var ADMIN_KEY_VAL = '';
+var currentClientId = '';
+var currentClientPhone = '';
+var currentScriptContent = '';
+var selectedType = 'MikroTik';
+var selectedPlan = '1000';
+var adminClients = [];
+var adminFilter_search = '';
+var adminFilter_status = 'all';
+
+// ── NAVIGATION ──────────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startRegister(plan) {
+  selectPlan(document.getElementById('p-' + plan), plan);
+  showPage('page-register');
+}
+
+// ── FORM HELPERS ────────────────────────────────────────────────────────────
+function selectType(el, type) {
+  document.querySelectorAll('.type-opt').forEach(function(e) { e.classList.remove('sel'); });
+  el.classList.add('sel');
+  selectedType = type;
+}
+
+function selectPlan(el, plan) {
+  document.querySelectorAll('.plan-opt').forEach(function(e) { e.classList.remove('sel'); });
+  el.classList.add('sel');
+  selectedPlan = plan;
+}
+
+function showStep(n) {
+  document.getElementById('step1').style.display = n === 1 ? 'block' : 'none';
+  document.getElementById('step2').style.display = n === 2 ? 'block' : 'none';
+  document.getElementById('step3').style.display = n === 3 ? 'block' : 'none';
+}
+
+// ── INSCRIPTION ─────────────────────────────────────────────────────────────
+function submitRegister() {
+  var name  = document.getElementById('r-name').value.trim();
+  var phone = document.getElementById('r-phone').value.trim();
+  if (!name || !phone) { showNotif('⚠️ Nom et téléphone requis', true); return; }
+
+  fetch(API + '/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, phone: phone, type: selectedType, plan: selectedPlan })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) { showNotif('❌ ' + data.error, true); return; }
+    currentClientId = data.clientId;
+    currentClientPhone = phone;
+    document.getElementById('pay-amount').textContent = data.paymentInfo.montant;
+    document.getElementById('pay-ref').textContent = data.clientId;
+    showStep(2);
+  })
+  .catch(function() { showNotif('❌ Serveur indisponible', true); });
+}
+
+function checkPayment() {
+  if (!currentClientId) { showNotif('⚠️ Inscrivez-vous d\'abord', true); return; }
+  fetch(API + '/api/config/' + currentClientId)
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.status === 'pending_payment') {
+      showNotif('⏳ Paiement pas encore validé. Patientez 30 min.', true);
+      return;
+    }
+    if (data.status === 'active') {
+      showConfig(data);
+      showStep(3);
+    }
+  })
+  .catch(function() { showNotif('❌ Erreur réseau', true); });
+}
+
+function showConfig(data) {
+  currentScriptContent = data.script;
+  var label = data.type === 'MikroTik' ? 'Script Winbox Terminal' : 'Fichier de configuration WireGuard';
+  document.getElementById('script-label').textContent = label;
+  document.getElementById('config-script').textContent = data.script;
+  document.getElementById('config-infos').innerHTML =
+    '<div class="info-row"><span class="info-key">ID Client</span><span class="info-val">' + data.clientId + '</span></div>' +
+    '<div class="info-row"><span class="info-key">Type</span><span class="info-val">' + data.type + '</span></div>' +
+    '<div class="info-row"><span class="info-key">IP VPN</span><span class="info-val">' + data.ipVpn + '</span></div>' +
+    '<div class="info-row"><span class="info-key">Expiration</span><span class="info-val">' + data.expiry + '</span></div>';
+}
+
+function copyConfig() {
+  navigator.clipboard.writeText(currentScriptContent).then(function() { showNotif('✅ Copié !'); });
+}
+
+function sendConfigWA() {
+  var phone = currentClientPhone.replace(/\D/g, '');
+  var msg = encodeURIComponent('Bonjour ! Voici votre configuration VPN Startech :\n\nID: ' + currentClientId + '\n\n' + currentScriptContent + '\n\nAssistance: +22670609128');
+  window.open('https://wa.me/' + phone + '?text=' + msg, '_blank');
+}
+
+// ── MON COMPTE ───────────────────────────────────────────────────────────────
+function loadMyAccount() {
+  var id = document.getElementById('my-id').value.trim().toUpperCase();
+  if (!id) { showNotif('⚠️ Entrez votre ID', true); return; }
+  fetch(API + '/api/config/' + id)
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var html = '';
+    if (data.status === 'pending_payment') {
+      html = '<div style="text-align:center;padding:20px"><div style="font-size:40px">⏳</div><div style="color:var(--yellow);font-size:15px;margin-top:12px">Paiement en attente de validation</div><div style="color:var(--text2);font-size:13px;margin-top:8px">Votre compte sera activé sous 30 minutes après réception du paiement.</div></div>';
+    } else if (data.status === 'expired') {
+      html = '<div style="text-align:center;padding:20px"><div style="font-size:40px">⚠️</div><div style="color:var(--red);font-size:15px;margin-top:12px">Abonnement expiré le ' + data.expiry + '</div><div style="color:var(--text2);font-size:13px;margin-top:8px">Contactez Startech pour renouveler.</div><a href="https://wa.me/22670609128" target="_blank"><button class="btn-full btn-primary-full" style="margin-top:16px">💬 Renouveler via WhatsApp</button></a></div>';
+    } else if (data.status === 'active') {
+      currentScriptContent = data.script;
+      currentClientPhone = '';
+      html = '<div class="config-section"><div class="config-title">✅ Compte actif</div>' +
+        '<div class="info-row"><span class="info-key">ID</span><span class="info-val">' + data.clientId + '</span></div>' +
+        '<div class="info-row"><span class="info-key">Type</span><span class="info-val">' + data.type + '</span></div>' +
+        '<div class="info-row"><span class="info-key">IP VPN</span><span class="info-val">' + data.ipVpn + '</span></div>' +
+        '<div class="info-row"><span class="info-key">Expiration</span><span class="info-val">' + data.expiry + '</span></div></div>' +
+        '<div class="config-section"><div class="config-title">📋 Configuration</div><div class="script-box">' + data.script + '</div><button class="copy-btn" onclick="navigator.clipboard.writeText(currentScriptContent).then(function(){showNotif(\'✅ Copié !\')})">📋 Copier</button></div>';
+    } else {
+      html = '<div style="text-align:center;padding:20px;color:var(--red)">❌ ' + (data.message || 'Compte suspendu') + '</div>';
+    }
+    html += '<button class="btn-full btn-outline-full" style="margin-top:12px" onclick="showPage(\'page-landing\')">← Retour</button>';
+    document.getElementById('myaccount-body').innerHTML = html;
+  })
+  .catch(function() { showNotif('❌ ID introuvable', true); });
+}
+
+// ── ADMIN ────────────────────────────────────────────────────────────────────
+function adminLogin() {
+  var key = document.getElementById('admin-key').value;
+  if (!key) { showNotif('⚠️ Entrez la clé admin', true); return; }
+  ADMIN_KEY_VAL = key;
+  fetch(API + '/api/admin/stats', { headers: { 'x-admin-key': key } })
+  .then(function(r) {
+    if (r.status === 401) { showNotif('❌ Clé incorrecte', true); return null; }
+    return r.json();
+  })
+  .then(function(data) {
+    if (!data) return;
+    showPage('page-admin');
+    renderAdminStats(data);
+    loadAdminClients();
+  })
+  .catch(function() { showNotif('❌ Serveur indisponible', true); });
+}
+
+function adminLogout() {
+  ADMIN_KEY_VAL = '';
+  showPage('page-landing');
+}
+
+function refreshAdmin() {
+  fetch(API + '/api/admin/stats', { headers: { 'x-admin-key': ADMIN_KEY_VAL } })
+  .then(function(r) { return r.json(); })
+  .then(function(data) { renderAdminStats(data); });
+  loadAdminClients();
+}
+
+function renderAdminStats(d) {
+  document.getElementById('as-total').textContent   = d.total;
+  document.getElementById('as-active').textContent  = d.active;
+  document.getElementById('as-pending').textContent = d.pending;
+  document.getElementById('as-expired').textContent = d.expired;
+  document.getElementById('as-revenue').textContent = (d.revenue || 0).toLocaleString('fr-FR') + ' F';
+}
+
+function loadAdminClients() {
+  fetch(API + '/api/admin/clients', { headers: { 'x-admin-key': ADMIN_KEY_VAL } })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    adminClients = data.clients || [];
+    renderAdminTable();
+  });
+}
+
+function getStatusBadge(c) {
+  if (c.status === 'pending_payment') return '<span class="badge badge-pending">⏳ En attente</span>';
+  if (c.status === 'suspended') return '<span class="badge badge-suspended">⏸ Suspendu</span>';
+  if (c.status === 'active' && c.expiry && new Date(c.expiry) < new Date()) return '<span class="badge badge-expired">⚠️ Expiré</span>';
+  if (c.status === 'active') return '<span class="badge badge-active">✓ Actif</span>';
+  return c.status;
+}
+
+function getTypeBadge(type) {
+  var map = {
+    'MikroTik': 'badge-mikrotik',
+    'Android': 'badge-android',
+    'iPhone': 'badge-iphone',
+    'PC': 'badge-pc'
+  };
+  return '<span class="badge ' + (map[type] || '') + '">' + type + '</span>';
+}
+
+function daysLeft(exp) {
+  if (!exp) return '—';
+  var d = Math.ceil((new Date(exp) - new Date()) / 86400000);
+  if (d < 0) return '<span style="color:var(--red)">Expiré</span>';
+  if (d <= 7) return '<span style="color:var(--yellow)">' + d + 'j</span>';
+  return '<span style="color:var(--text2)">' + d + 'j</span>';
+}
+
+function renderAdminTable() {
+  var filtered = adminClients.filter(function(c) {
+    var matchSearch = adminFilter_search === '' ||
+      c.name.toLowerCase().indexOf(adminFilter_search.toLowerCase()) !== -1 ||
+      c.phone.indexOf(adminFilter_search) !== -1 ||
+      c.id.toLowerCase().indexOf(adminFilter_search.toLowerCase()) !== -1;
+    var effectiveStatus = c.status === 'active' && c.expiry && new Date(c.expiry) < new Date() ? 'expired' : c.status;
+    var matchStatus = adminFilter_status === 'all' || effectiveStatus === adminFilter_status;
+    return matchSearch && matchStatus;
+  });
+
+  var tbody = document.getElementById('admin-table');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text2)">Aucun client</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(function(c) {
+    var idx = adminClients.indexOf(c);
+    var isPending = c.status === 'pending_payment';
+    return '<tr>' +
+      '<td><div style="font-weight:600;color:white">' + c.name + '</div><div class="client-id">' + c.id + '</div><div style="font-size:11px;color:var(--text2)">' + c.phone + '</div></td>' +
+      '<td>' + getTypeBadge(c.type) + '</td>' +
+      '<td><span class="ip-tag">10.8.0.' + c.ipNum + '</span></td>' +
+      '<td style="font-size:12px">' + c.plan + ' F</td>' +
+      '<td>' + getStatusBadge(c) + '</td>' +
+      '<td>' + (c.expiry ? c.expiry.substring(0,10) : '—') + '<br>' + daysLeft(c.expiry) + '</td>' +
+      '<td><div class="actions">' +
+        (isPending ? '<button class="act-btn validate" title="Valider paiement" onclick="validateClient(\'' + c.id + '\')">✅</button>' : '') +
+        '<button class="act-btn script" title="Voir script" onclick="showAdminScript(' + idx + ')">📋</button>' +
+        '<button class="act-btn wa" title="WhatsApp" onclick="adminWA(' + idx + ')">💬</button>' +
+        '<button class="act-btn" title="Renouveler" onclick="renewClient(\'' + c.id + '\')">🔄</button>' +
+        (c.status !== 'suspended' ? '<button class="act-btn suspend" title="Suspendre" onclick="suspendClient(\'' + c.id + '\')">⏸</button>' : '<button class="act-btn validate" title="Réactiver" onclick="renewClient(\'' + c.id + '\')">▶</button>') +
+        '<button class="act-btn del" title="Supprimer" onclick="deleteClient(\'' + c.id + '\')">🗑</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function adminFilter(val) { adminFilter_search = val; renderAdminTable(); }
+function adminFilterStatus(val) { adminFilter_status = val; renderAdminTable(); }
+
+function validateClient(id) {
+  if (!confirm('Valider le paiement et activer ce client ?')) return;
+  fetch(API + '/api/admin/validate/' + id, { method: 'POST', headers: { 'x-admin-key': ADMIN_KEY_VAL } })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) {
+      showNotif('✅ Client activé !');
+      // Proposer d'envoyer le script par WA
+      var c = adminClients.find(function(cl) { return cl.id === id; });
+      if (c && c.phone) {
+        var msg = encodeURIComponent('Bonjour ' + c.name + ' ! Votre VPN Startech est activé.\n\nID: ' + id + '\n\n' + data.script + '\n\nExpiration: ' + data.client.expiry + '\nAssistance: +22670609128');
+        window.open('https://wa.me/' + c.phone.replace(/\D/g,'') + '?text=' + msg, '_blank');
+      }
+      refreshAdmin();
+    } else { showNotif('❌ ' + data.error, true); }
+  });
+}
+
+function renewClient(id) {
+  fetch(API + '/api/admin/renew/' + id, { method: 'POST', headers: { 'x-admin-key': ADMIN_KEY_VAL, 'Content-Type': 'application/json' }, body: '{}' })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) { showNotif('🔄 Renouvelé jusqu\'au ' + data.expiry); refreshAdmin(); }
+    else { showNotif('❌ ' + data.error, true); }
+  });
+}
+
+function suspendClient(id) {
+  if (!confirm('Suspendre ce client ?')) return;
+  fetch(API + '/api/admin/suspend/' + id, { method: 'POST', headers: { 'x-admin-key': ADMIN_KEY_VAL } })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) { showNotif('⏸ Client suspendu'); refreshAdmin(); }
+  });
+}
+
+function deleteClient(id) {
+  if (!confirm('Supprimer définitivement ce client ?')) return;
+  fetch(API + '/api/admin/client/' + id, { method: 'DELETE', headers: { 'x-admin-key': ADMIN_KEY_VAL } })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) { showNotif('🗑️ Supprimé'); refreshAdmin(); }
+  });
+}
+
+var modalScriptPhone = '';
+var modalScriptText = '';
+
+function showAdminScript(idx) {
+  var c = adminClients[idx];
+  document.getElementById('ms-title').textContent = '📋 ' + c.name + ' — ' + c.type;
+  // Récupérer la config complète
+  fetch(API + '/api/admin/clients', { headers: { 'x-admin-key': ADMIN_KEY_VAL } })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var full = (data.clients || []).find(function(cl) { return cl.id === c.id; });
+    // Le script est affiché depuis l'API config
+    fetch(API + '/api/config/' + c.id)
+    .then(function(r) { return r.json(); })
+    .then(function(cfg) {
+      var script = cfg.script || 'Config non disponible (paiement en attente)';
+      document.getElementById('ms-content').textContent = script;
+      modalScriptText  = script;
+      modalScriptPhone = c.phone;
+      document.getElementById('modal-script').classList.add('open');
+    });
+  });
+}
+
+function adminWA(idx) {
+  var c = adminClients[idx];
+  fetch(API + '/api/config/' + c.id)
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var script = data.script || '';
+    var msg = encodeURIComponent('Bonjour ' + c.name + ' ! Voici votre configuration VPN Startech :\n\nID: ' + c.id + '\n\n' + script + '\n\nExpiration: ' + (c.expiry || 'N/A') + '\nAssistance: +22670609128');
+    window.open('https://wa.me/' + c.phone.replace(/\D/g,'') + '?text=' + msg, '_blank');
+  });
+}
+
+function copyModalScript() {
+  navigator.clipboard.writeText(modalScriptText).then(function() { showNotif('✅ Copié !'); });
+}
+
+function sendModalWA() {
+  var msg = encodeURIComponent('Bonjour ! Voici votre configuration VPN Startech :\n\n' + modalScriptText + '\n\nAssistance: +22670609128');
+  window.open('https://wa.me/' + modalScriptPhone.replace(/\D/g,'') + '?text=' + msg, '_blank');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function exportCSV() {
+  var csv = 'ID,Nom,Téléphone,Type,Plan,IP VPN,Statut,Expiration\n';
+  adminClients.forEach(function(c) {
+    csv += c.id + ',' + c.name + ',' + c.phone + ',' + c.type + ',' + c.plan + ',10.8.0.' + c.ipNum + ',' + c.status + ',' + (c.expiry || '') + '\n';
+  });
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'startech-clients.csv';
+  a.click();
+}
+
+function showNotif(msg, isError) {
+  var el = document.getElementById('notif');
+  el.textContent = msg;
+  el.className = 'notif show' + (isError ? ' error' : '');
+  setTimeout(function() { el.classList.remove('show'); }, 3500);
+}
+
+// Init
+document.getElementById('p-1000').classList.add('sel');
+document.getElementById('t-MikroTik').classList.add('sel');
+</script>
+</body>
+</html>
