@@ -38,6 +38,15 @@ function assignClientIP(d){
   return null;
 }
 
+// GÉNÉRER TOKEN D'INSTALLATION
+function genInstallToken(){
+  var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  var token='';
+  var bytes=nacl.randomBytes(32);
+  for(var i=0;i<32;i++){token+=chars[bytes[i]%chars.length];}
+  return token;
+}
+
 // GÉNÉRER SCRIPT ROUTEROS WIREGUARD
 function genRouterOSScript(clientName,clientPrivKey,clientIP,serverPubKey,serverIP,serverPort){
   var iface='startech-vpn';
@@ -119,7 +128,8 @@ app.post('/api/services/buy',auth,function(req,res){
   u.credits-=cost;
   var expiry=new Date();expiry.setMonth(expiry.getMonth()+months);
   if(!d.services)d.services=[];
-  var svc={id:'svc'+Date.now(),userId:u.id,planId:plan.id,planName:plan.name,months:months,cost:cost,status:'active',expiry:expiry.toISOString(),createdAt:new Date().toISOString(),details:{}};
+  var installToken=genInstallToken();
+  var svc={id:'svc'+Date.now(),userId:u.id,planId:plan.id,planName:plan.name,months:months,cost:cost,status:'active',expiry:expiry.toISOString(),createdAt:new Date().toISOString(),installToken:installToken,details:{}};
   // Générer script selon le plan
   if(plan.id==='wg'){
     var keys=genWGKeys();
@@ -171,13 +181,36 @@ app.get('/api/services',auth,admin,function(req,res){
   var d=db();res.json(d.services||[]);
 });
 
-// SCRIPT D'UN SERVICE
+// SCRIPT D'UN SERVICE (API authentifiée)
 app.get('/api/services/:id/script',auth,function(req,res){
   var d=db();
   var svc=d.services?d.services.find(function(s){return s.id===req.params.id&&s.userId===req.user.id;}):null;
   if(!svc)return res.status(404).json({error:'Service introuvable'});
   if(!svc.details||!svc.details.script)return res.status(400).json({error:'Pas de script pour ce service'});
-  res.json({script:svc.details.script,clientIP:svc.details.clientIP,serverIP:svc.details.serverIP,serverPort:svc.details.serverPort});
+  res.json({
+    script:svc.details.script,
+    clientIP:svc.details.clientIP,
+    serverIP:svc.details.serverIP,
+    serverPort:svc.details.serverPort,
+    installToken:svc.installToken,
+    installCmd:'/tool fetch url="https://api.startech-pro.com/install/'+svc.installToken+'" mode=https dst-path=mkrt;/import mkrt;'
+  });
+});
+
+// ROUTE PUBLIQUE - Routeur MikroTik télécharge le script via token
+app.get('/install/:token',function(req,res){
+  var d=db();
+  if(!d.services)return res.status(404).send('# Token invalide');
+  var svc=d.services.find(function(s){return s.installToken===req.params.token;});
+  if(!svc)return res.status(404).send('# Token invalide ou expire');
+  var exp=new Date(svc.expiry);
+  if(exp<new Date())return res.status(403).send('# Service expire le '+exp.toLocaleDateString('fr-FR'));
+  if(!svc.details||!svc.details.script)return res.status(404).send('# Pas de script disponible');
+  // Enregistrer la date de dernière installation
+  svc.lastInstall=new Date().toISOString();
+  save(d);
+  res.setHeader('Content-Type','text/plain');
+  res.send(svc.details.script);
 });
 
 // CRÉDITS
