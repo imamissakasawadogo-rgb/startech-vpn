@@ -297,9 +297,14 @@ app.get('/api/services',auth,admin,function(req,res){
 // SCRIPT D'UN SERVICE (API authentifiée)
 app.get('/api/services/:id/script',auth,function(req,res){
   var d=db();
-  var svc=d.services?d.services.find(function(s){return s.id===req.params.id&&s.userId===req.user.id;}):null;
+  var svc=d.services?d.services.find(function(s){return s.id===req.params.id&&(s.userId===req.user.id||req.user.role==='admin')}):null;
   if(!svc)return res.status(404).json({error:'Service introuvable'});
   if(!svc.details||!svc.details.script)return res.status(400).json({error:'Pas de script pour ce service'});
+  // Générer token si absent
+  if(!svc.installToken){
+    svc.installToken=genInstallToken();
+    save(d);
+  }
   res.json({
     script:svc.details.script,
     clientIP:svc.details.clientIP,
