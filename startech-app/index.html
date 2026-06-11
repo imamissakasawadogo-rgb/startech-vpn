@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startech APP</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0c10;
+  --surface:#12161e;
+  --surface2:#1a1f2b;
+  --border:#1e2535;
+  --gold:#d4a017;
+  --gold2:#f0c040;
+  --green:#05d890;
+  --blue:#3d8bff;
+  --red:#ff4d6d;
+  --orange:#ff8c00;
+  --text:#e8eaf0;
+  --text2:#8892a4;
+  --text3:#4a5568;
+  --radius:10px;
+}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:none;outline:none;font-family:inherit}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 30% 20%, #1a1200 0%, var(--bg) 60%)}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:100%;max-width:400px}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-logo .star{font-size:40px;margin-bottom:8px}
+.login-logo h1{font-size:22px;font-weight:700;letter-spacing:2px;color:var(--gold)}
+.login-logo p{font-size:12px;color:var(--text2);margin-top:4px;letter-spacing:1px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase}
+.form-group input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:14px;font-family:inherit;transition:border-color .2s}
+.form-group input:focus{outline:none;border-color:var(--gold)}
+.btn-login{width:100%;background:var(--gold);color:#000;font-weight:700;font-size:14px;padding:14px;border-radius:8px;margin-top:8px;letter-spacing:0.5px;transition:background .2s}
+.btn-login:hover{background:var(--gold2)}
+.login-error{color:var(--red);font-size:13px;text-align:center;margin-top:12px;display:none}
+
+/* APP LAYOUT */
+#app{display:none;height:100vh;overflow:hidden}
+.layout{display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:transform .3s}
+.sidebar-header{padding:20px 16px 16px;border-bottom:1px solid var(--border)}
+.sidebar-brand{display:flex;align-items:center;gap:10px}
+.sidebar-brand .brand-icon{width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#000}
+.sidebar-brand .brand-name{font-size:15px;font-weight:700;letter-spacing:1px;color:var(--gold)}
+.sidebar-brand .brand-sub{font-size:10px;color:var(--text2)}
+.sidebar-credits{padding:12px 16px;background:var(--surface2);margin:12px;border-radius:8px;display:flex;gap:12px}
+.credit-badge{flex:1;text-align:center}
+.credit-badge .val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:var(--gold)}
+.credit-badge .lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
+.nav-section{padding:8px 16px 4px;font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:var(--surface2)}
+.nav-item.active{background:rgba(212,160,23,0.08);border-left-color:var(--gold);color:var(--gold)}
+.nav-item .nav-icon{font-size:16px;width:20px;text-align:center}
+.nav-item .nav-label{font-size:13px;font-weight:500}
+.nav-item .nav-badge{margin-left:auto;background:var(--gold);color:#000;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border)}
+.user-info{display:flex;align-items:center;gap:10px}
+.user-avatar{width:32px;height:32px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000}
+.user-name{font-size:13px;font-weight:600}
+.user-role{font-size:10px;color:var(--text2)}
+.btn-logout{margin-left:auto;background:transparent;color:var(--text2);font-size:18px;padding:4px}
+.btn-logout:hover{color:var(--red)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px}
+.topbar-toggle{background:transparent;color:var(--text2);font-size:20px;display:none}
+.topbar-title{font-size:16px;font-weight:700}
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn-primary{background:var(--gold);color:#000;font-weight:700;font-size:12px;padding:8px 16px;border-radius:7px;transition:background .2s;letter-spacing:0.3px}
+.btn-primary:hover{background:var(--gold2)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);font-size:12px;padding:8px 14px;border-radius:7px;transition:all .2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{background:var(--red);color:#fff;font-size:12px;padding:6px 12px;border-radius:6px}
+.btn-success{background:var(--green);color:#000;font-weight:700;font-size:12px;padding:6px 12px;border-radius:6px}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:5px}
+
+.content{flex:1;overflow-y:auto;padding:24px}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* DASHBOARD */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.gold::before{background:var(--gold)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.blue::before{background:var(--blue)}
+.stat-card.orange::before{background:var(--orange)}
+.stat-card.red::before{background:var(--red)}
+.stat-card.purple::before{background:#a855f7}
+.stat-icon{font-size:24px;margin-bottom:8px}
+.stat-val{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700}
+.stat-lbl{font-size:11px;color:var(--text2);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px}
+.section-title{font-size:14px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--surface2)}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}
+td{padding:10px 14px;font-size:13px;border-top:1px solid var(--border)}
+tr:hover td{background:var(--surface2)}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.badge-green{background:rgba(5,216,144,0.15);color:var(--green)}
+.badge-red{background:rgba(255,77,109,0.15);color:var(--red)}
+.badge-gold{background:rgba(212,160,23,0.15);color:var(--gold)}
+.badge-blue{background:rgba(61,139,255,0.15);color:var(--blue)}
+.badge-orange{background:rgba(255,140,0,0.15);color:var(--orange)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;display:none}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;width:90%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700}
+.modal-close{background:transparent;color:var(--text2);font-size:20px}
+.modal-close:hover{color:var(--red)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+
+/* FORM */
+.input-field{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit;transition:border-color .2s}
+.input-field:focus{outline:none;border-color:var(--gold)}
+select.input-field option{background:var(--surface2)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:5px}
+.form-item{margin-bottom:14px}
+textarea.input-field{resize:vertical;min-height:80px}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 24px;color:var(--text2)}
+.empty-state .empty-icon{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:13px}
+
+/* ALERT */
+.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+.alert-success{background:rgba(5,216,144,0.1);border:1px solid rgba(5,216,144,0.3);color:var(--green)}
+.alert-error{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);color:var(--red)}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .topbar-toggle{display:block}
+  .form-row{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .content{padding:16px}
+}
+.overlay-bg{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199;display:none}
+.overlay-bg.open{display:block}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="star">⚡</div>
+      <h1>STARTECH APP</h1>
+      <p>Plateforme de gestion MikroTik</p>
+    </div>
+    <div class="form-group">
+      <label>Nom d'utilisateur</label>
+      <input type="text" id="login-user" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" onclick="doLogin()">Connexion</button>
+    <p class="login-error" id="login-error">Identifiants incorrects</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="overlay-bg" id="overlay-bg" onclick="closeSidebar()"></div>
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-icon">S</div>
+          <div>
+            <div class="brand-name">STARTECH</div>
+            <div class="brand-sub">APP v1.0</div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-credits">
+        <div class="credit-badge">
+          <div class="val" id="sb-crt">0</div>
+          <div class="lbl">CRT</div>
+        </div>
+        <div class="credit-badge">
+          <div class="val" id="sb-gnx">0</div>
+          <div class="lbl">GNX</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">Principal</div>
+        <div class="nav-item active" onclick="showPage('dashboard')">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Tableau de bord</span>
+        </div>
+        <div class="nav-section">Applications</div>
+        <div class="nav-item" onclick="showPage('mikhmon')">
+          <span class="nav-icon">📡</span>
+          <span class="nav-label">Mikhmon Online</span>
+        </div>
+        <div class="nav-item" onclick="showPage('wireguard')">
+          <span class="nav-icon">🔒</span>
+          <span class="nav-label">WireGuard VPN</span>
+        </div>
+        <div class="nav-item" onclick="showPage('vpn-accounts')">
+          <span class="nav-icon">👤</span>
+          <span class="nav-label">Comptes VPN</span>
+        </div>
+        <div class="nav-item" onclick="showPage('scripts')">
+          <span class="nav-icon">&lt;/&gt;</span>
+          <span class="nav-label">Scripts MikroTik</span>
+        </div>
+        <div class="nav-item" onclick="showPage('transactions')">
+          <span class="nav-icon">💳</span>
+          <span class="nav-label">Transactions</span>
+        </div>
+        <div class="nav-section" id="nav-admin-section">Admin</div>
+        <div class="nav-item" id="nav-users" onclick="showPage('users')">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Utilisateurs</span>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="sb-avatar">A</div>
+          <div>
+            <div class="user-name" id="sb-username">admin</div>
+            <div class="user-role" id="sb-role">admin</div>
+          </div>
+          <button class="btn-logout" onclick="doLogout()" title="Déconnexion">⏻</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <button class="topbar-toggle" onclick="toggleSidebar()">☰</button>
+        <span class="topbar-title" id="topbar-title">Tableau de bord</span>
+        <div class="topbar-actions" id="topbar-actions"></div>
+      </div>
+
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <div class="page active" id="page-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card gold">
+              <div class="stat-icon">📡</div>
+              <div class="stat-val" id="stat-routers">0</div>
+              <div class="stat-lbl">Routeurs</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon">🔒</div>
+              <div class="stat-val" id="stat-wg">0</div>
+              <div class="stat-lbl">Réseaux WG</div>
+            </div>
+            <div class="stat-card blue">
+              <div class="stat-icon">👤</div>
+              <div class="stat-val" id="stat-vpn">0</div>
+              <div class="stat-lbl">Comptes VPN</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="stat-icon">&lt;/&gt;</div>
+              <div class="stat-val" id="stat-scripts">0</div>
+              <div class="stat-lbl">Scripts</div>
+            </div>
+            <div class="stat-card purple">
+              <div class="stat-icon">👥</div>
+              <div class="stat-val" id="stat-users">0</div>
+              <div class="stat-lbl">Utilisateurs</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-icon">💳</div>
+              <div class="stat-val" id="stat-tx">0</div>
+              <div class="stat-lbl">Transactions</div>
+            </div>
+          </div>
+          <div class="section-title">Mon compte</div>
+          <div class="stats-grid" style="max-width:340px">
+            <div class="stat-card gold">
+              <div class="stat-icon">🪙</div>
+              <div class="stat-val" id="my-credits">0</div>
+              <div class="stat-lbl">Crédits (CRT)</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon">💎</div>
+              <div class="stat-val" id="my-gnx">0</div>
+              <div class="stat-lbl">Gains (GNX)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MIKHMON -->
+        <div class="page" id="page-mikhmon">
+          <div class="alert alert-success" id="mikhmon-alert"></div>
+          <div class="table-wrap" id="routers-table-wrap">
+            <div class="empty-state"><div class="empty-icon">📡</div><p>Aucun routeur. Ajoutez-en un.</p></div>
+          </div>
+        </div>
+
+        <!-- WIREGUARD -->
+        <div class="page" id="page-wireguard">
+          <div class="alert alert-success" id="wg-alert"></div>
+          <div id="wg-networks-list"></div>
+        </div>
+
+        <!-- VPN ACCOUNTS -->
+        <div class="page" id="page-vpn-accounts">
+          <div class="alert alert-success" id="vpn-alert"></div>
+          <div class="table-wrap" id="vpn-table-wrap">
+            <div class="empty-state"><div class="empty-icon">👤</div><p>Aucun compte VPN.</p></div>
+          </div>
+        </div>
+
+        <!-- SCRIPTS -->
+        <div class="page" id="page-scripts">
+          <div class="alert alert-success" id="scripts-alert"></div>
+          <div id="scripts-list"></div>
+        </div>
+
+        <!-- TRANSACTIONS -->
+        <div class="page" id="page-transactions">
+          <div class="table-wrap" id="tx-table-wrap">
+            <div class="empty-state"><div class="empty-icon">💳</div><p>Aucune transaction.</p></div>
+          </div>
+        </div>
+
+        <!-- USERS (admin) -->
+        <div class="page" id="page-users">
+          <div class="alert alert-success" id="users-alert"></div>
+          <div class="table-wrap" id="users-table-wrap">
+            <div class="empty-state"><div class="empty-icon">👥</div><p>Aucun utilisateur.</p></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-router">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Ajouter un routeur</span>
+      <button class="modal-close" onclick="closeModal('modal-router')">✕</button>
+    </div>
+    <div class="form-item"><label class="form-label">Nom du routeur</label><input class="input-field" id="r-name" placeholder="Ex: BAOBAB 99"></div>
+    <div class="form-row">
+      <div class="form-item"><label class="form-label">Adresse IP</label><input class="input-field" id="r-ip" placeholder="192.168.1.1"></div>
+      <div class="form-item"><label class="form-label">Port API</label><input class="input-field" id="r-port" placeholder="8728" type="number"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-item"><label class="form-label">Utilisateur</label><input class="input-field" id="r-user" placeholder="admin"></div>
+      <div class="form-item"><label class="form-label">Mot de passe</label><input class="input-field" id="r-pass" type="password"></div>
+    </div>
+    <div class="form-item"><label class="form-label">Expiration</label><input class="input-field" id="r-expiry" type="date"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-router')">Annuler</button>
+      <button class="btn-primary" onclick="saveRouter()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-wg">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Ajouter un réseau WireGuard</span>
+      <button class="modal-close" onclick="closeModal('modal-wg')">✕</button>
+    </div>
+    <div class="form-item"><label class="form-label">Nom du réseau</label><input class="input-field" id="wg-name" placeholder="Ex: Startech"></div>
+    <div class="form-row">
+      <div class="form-item"><label class="form-label">Sous-réseau</label><input class="input-field" id="wg-subnet" placeholder="10.8.0.0/24"></div>
+      <div class="form-item"><label class="form-label">Port</label><input class="input-field" id="wg-port" placeholder="51820" type="number"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-wg')">Annuler</button>
+      <button class="btn-primary" onclick="saveWgNetwork()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-vpn">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Créer un compte VPN</span>
+      <button class="modal-close" onclick="closeModal('modal-vpn')">✕</button>
+    </div>
+    <div class="form-item"><label class="form-label">Nom / client</label><input class="input-field" id="vpn-username" placeholder="Ex: Jean Dupont"></div>
+    <div class="form-row">
+      <div class="form-item">
+        <label class="form-label">Forfait</label>
+        <select class="input-field" id="vpn-plan">
+          <option value="1mois">1 mois - 1000 FCFA</option>
+          <option value="3mois">3 mois - 2500 FCFA</option>
+          <option value="1an">1 an - 8000 FCFA</option>
+        </select>
+      </div>
+      <div class="form-item"><label class="form-label">Expiration</label><input class="input-field" id="vpn-expiry" type="date"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-vpn')">Annuler</button>
+      <button class="btn-primary" onclick="saveVpnAccount()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-script">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Ajouter un script</span>
+      <button class="modal-close" onclick="closeModal('modal-script')">✕</button>
+    </div>
+    <div class="form-item"><label class="form-label">Nom</label><input class="input-field" id="sc-name" placeholder="Ex: Firewall de base"></div>
+    <div class="form-item"><label class="form-label">Description</label><input class="input-field" id="sc-desc" placeholder="Description courte"></div>
+    <div class="form-row">
+      <div class="form-item">
+        <label class="form-label">Catégorie</label>
+        <select class="input-field" id="sc-cat">
+          <option value="hotspot">Hotspot</option>
+          <option value="firewall">Firewall</option>
+          <option value="vpn">VPN</option>
+          <option value="pppoe">PPPoE</option>
+          <option value="general">Général</option>
+        </select>
+      </div>
+      <div class="form-item"><label class="form-label">Coût (CRT)</label><input class="input-field" id="sc-cost" type="number" placeholder="0"></div>
+    </div>
+    <div class="form-item"><label class="form-label">Code RouterOS</label><textarea class="input-field" id="sc-code" placeholder="/ip firewall filter add..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-script')">Annuler</button>
+      <button class="btn-primary" onclick="saveScript()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-user">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Ajouter un utilisateur</span>
+      <button class="modal-close" onclick="closeModal('modal-user')">✕</button>
+    </div>
+    <div class="form-item"><label class="form-label">Nom d'utilisateur</label><input class="input-field" id="u-name" placeholder="revendeur1"></div>
+    <div class="form-row">
+      <div class="form-item"><label class="form-label">Mot de passe</label><input class="input-field" id="u-pass" type="password"></div>
+      <div class="form-item">
+        <label class="form-label">Rôle</label>
+        <select class="input-field" id="u-role">
+          <option value="revendeur">Revendeur</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-user')">Annuler</button>
+      <button class="btn-primary" onclick="saveUser()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-credits">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Recharger crédits</span>
+      <button class="modal-close" onclick="closeModal('modal-credits')">✕</button>
+    </div>
+    <input type="hidden" id="credit-uid">
+    <div class="form-item"><label class="form-label">Montant (CRT)</label><input class="input-field" id="credit-amount" type="number" placeholder="10"></div>
+    <div class="form-item"><label class="form-label">Note</label><input class="input-field" id="credit-note" placeholder="Recharge manuelle"></div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal('modal-credits')">Annuler</button>
+      <button class="btn-primary" onclick="saveCredits()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var API = '';
+var token = '';
+var currentUser = null;
+
+function getHeaders() {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+}
+
+async function api(method, path, body) {
+  var opts = { method: method, headers: getHeaders() };
+  if (body) opts.body = JSON.stringify(body);
+  var r = await fetch(API + path, opts);
+  return r.json();
+}
+
+// AUTH
+async function doLogin() {
+  var u = document.getElementById('login-user').value.trim();
+  var p = document.getElementById('login-pass').value;
+  if (!u || !p) return;
+  try {
+    var data = await api('POST', '/api/auth/login', { username: u, password: p });
+    if (data.error) { showLoginError(data.error); return; }
+    token = data.token;
+    currentUser = data.user;
+    localStorage.setItem('st_token', token);
+    startApp();
+  } catch(e) { showLoginError('Erreur de connexion'); }
+}
+
+document.getElementById('login-pass').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+function showLoginError(msg) {
+  var el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function doLogout() {
+  token = '';
+  currentUser = null;
+  localStorage.removeItem('st_token');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+async function tryAutoLogin() {
+  var saved = localStorage.getItem('st_token');
+  if (!saved) return;
+  token = saved;
+  try {
+    var data = await api('GET', '/api/dashboard');
+    if (data.error) { localStorage.removeItem('st_token'); return; }
+    var payload = JSON.parse(atob(token.split('.')[1]));
+    currentUser = { id: payload.id, username: payload.username, role: payload.role, credits: data.user.credits, gnx: data.user.gnx };
+    startApp();
+  } catch(e) { localStorage.removeItem('st_token'); }
+}
+
+function startApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('sb-username').textContent = currentUser.username;
+  document.getElementById('sb-role').textContent = currentUser.role;
+  document.getElementById('sb-avatar').textContent = currentUser.username[0].toUpperCase();
+  if (currentUser.role !== 'admin') {
+    document.getElementById('nav-users').style.display = 'none';
+    document.getElementById('nav-admin-section').style.display = 'none';
+  }
+  loadDashboard();
+}
+
+// NAVIGATION
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+  document.getElementById('page-' + name).classList.add('active');
+  var titles = { dashboard: 'Tableau de bord', mikhmon: 'Mikhmon Online', wireguard: 'WireGuard VPN', 'vpn-accounts': 'Comptes VPN', scripts: 'Scripts MikroTik', transactions: 'Transactions', users: 'Utilisateurs' };
+  document.getElementById('topbar-title').textContent = titles[name] || name;
+  var actions = document.getElementById('topbar-actions');
+  actions.innerHTML = '';
+  if (name === 'mikhmon') {
+    actions.innerHTML = '<button class="btn-primary" onclick="openModal(\'modal-router\')">+ Ajouter routeur</button>';
+    loadRouters();
+  } else if (name === 'wireguard') {
+    actions.innerHTML = '<button class="btn-primary" onclick="openModal(\'modal-wg\')">+ Ajouter réseau</button>';
+    loadWgNetworks();
+  } else if (name === 'vpn-accounts') {
+    actions.innerHTML = '<button class="btn-primary" onclick="openModal(\'modal-vpn\')">+ Créer compte</button>';
+    loadVpnAccounts();
+  } else if (name === 'scripts') {
+    if (currentUser.role === 'admin') actions.innerHTML = '<button class="btn-primary" onclick="openModal(\'modal-script\')">+ Ajouter script</button>';
+    loadScripts();
+  } else if (name === 'transactions') {
+    loadTransactions();
+  } else if (name === 'users') {
+    actions.innerHTML = '<button class="btn-primary" onclick="openModal(\'modal-user\')">+ Ajouter</button>';
+    loadUsers();
+  }
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay-bg').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay-bg').classList.remove('open');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// DASHBOARD
+async function loadDashboard() {
+  var data = await api('GET', '/api/dashboard');
+  if (data.error) return;
+  document.getElementById('stat-routers').textContent = data.stats.routers;
+  document.getElementById('stat-wg').textContent = data.stats.vpn_networks;
+  document.getElementById('stat-vpn').textContent = data.stats.vpn_accounts;
+  document.getElementById('stat-scripts').textContent = data.stats.scripts;
+  document.getElementById('stat-users').textContent = data.stats.users;
+  document.getElementById('stat-tx').textContent = data.stats.transactions;
+  document.getElementById('my-credits').textContent = data.user.credits;
+  document.getElementById('my-gnx').textContent = data.user.gnx;
+  document.getElementById('sb-crt').textContent = data.user.credits;
+  document.getElementById('sb-gnx').textContent = data.user.gnx;
+}
+
+// ROUTERS
+async function loadRouters() {
+  var data = await api('GET', '/api/routers');
+  var wrap = document.getElementById('routers-table-wrap');
+  if (!data.length) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">📡</div><p>Aucun routeur. Ajoutez-en un.</p></div>'; return; }
+  var rows = data.map(function(r) {
+    var exp = r.expiry ? new Date(r.expiry) : null;
+    var now = new Date();
+    var expired = exp && exp < now;
+    var badge = expired ? '<span class="badge badge-red">Expiré</span>' : '<span class="badge badge-green">Actif</span>';
+    var expStr = exp ? exp.toLocaleDateString('fr-FR') : '-';
+    return '<tr><td><strong>' + r.name + '</strong></td><td style="font-family:monospace;font-size:12px">' + r.ip + ':' + r.port + '</td><td>' + badge + '</td><td>' + expStr + '</td><td><button class="btn-danger btn-sm" onclick="deleteRouter(\'' + r.id + '\')">Supprimer</button></td></tr>';
+  }).join('');
+  wrap.innerHTML = '<table><thead><tr><th>Nom</th><th>IP:Port</th><th>Statut</th><th>Expiration</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+async function saveRouter() {
+  var body = { name: document.getElementById('r-name').value, ip: document.getElementById('r-ip').value, port: document.getElementById('r-port').value || 8728, username: document.getElementById('r-user').value || 'admin', password: document.getElementById('r-pass').value, expiry: document.getElementById('r-expiry').value };
+  if (!body.name || !body.ip) return;
+  await api('POST', '/api/routers', body);
+  closeModal('modal-router');
+  loadRouters();
+  loadDashboard();
+}
+
+async function deleteRouter(id) {
+  if (!confirm('Supprimer ce routeur ?')) return;
+  await api('DELETE', '/api/routers/' + id);
+  loadRouters();
+  loadDashboard();
+}
+
+// WIREGUARD
+async function loadWgNetworks() {
+  var data = await api('GET', '/api/wg/networks');
+  var list = document.getElementById('wg-networks-list');
+  if (!data.length) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔒</div><p>Aucun réseau WireGuard.</p></div>'; return; }
+  list.innerHTML = data.map(function(n) {
+    return '<div class="table-wrap" style="margin-bottom:16px"><div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--surface2)"><div><strong>' + n.name + '</strong> <span class="badge badge-blue" style="margin-left:8px">' + n.subnet + '</span> <span style="color:var(--text2);font-size:12px;margin-left:8px">Port ' + n.port + '</span></div><span class="badge badge-gold">' + (n.devices ? n.devices.length : 0) + '/22 équipements</span></div></div>';
+  }).join('');
+}
+
+async function saveWgNetwork() {
+  var body = { name: document.getElementById('wg-name').value, subnet: document.getElementById('wg-subnet').value || '10.8.0.0/24', port: document.getElementById('wg-port').value || 51820 };
+  if (!body.name) return;
+  await api('POST', '/api/wg/networks', body);
+  closeModal('modal-wg');
+  loadWgNetworks();
+  loadDashboard();
+}
+
+// VPN ACCOUNTS
+async function loadVpnAccounts() {
+  var data = await api('GET', '/api/vpn/accounts');
+  var wrap = document.getElementById('vpn-table-wrap');
+  if (!data.length) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">👤</div><p>Aucun compte VPN.</p></div>'; return; }
+  var planLabels = { '1mois': '1 mois', '3mois': '3 mois', '1an': '1 an' };
+  var rows = data.map(function(a) {
+    var exp = a.expiry ? new Date(a.expiry) : null;
+    var expired = exp && exp < new Date();
+    var badge = expired ? '<span class="badge badge-red">Expiré</span>' : '<span class="badge badge-green">Actif</span>';
+    return '<tr><td><strong>' + a.username + '</strong></td><td><span class="badge badge-blue">' + (planLabels[a.plan] || a.plan) + '</span></td><td>' + badge + '</td><td>' + (exp ? exp.toLocaleDateString('fr-FR') : '-') + '</td></tr>';
+  }).join('');
+  wrap.innerHTML = '<table><thead><tr><th>Client</th><th>Forfait</th><th>Statut</th><th>Expiration</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+async function saveVpnAccount() {
+  var planPrices = { '1mois': 1000, '3mois': 2500, '1an': 8000 };
+  var plan = document.getElementById('vpn-plan').value;
+  var body = { username: document.getElementById('vpn-username').value, plan: plan, price: planPrices[plan], expiry: document.getElementById('vpn-expiry').value };
+  if (!body.username) return;
+  await api('POST', '/api/vpn/accounts', body);
+  closeModal('modal-vpn');
+  loadVpnAccounts();
+  loadDashboard();
+}
+
+// SCRIPTS
+async function loadScripts() {
+  var data = await api('GET', '/api/scripts');
+  var list = document.getElementById('scripts-list');
+  if (!data.length) { list.innerHTML = '<div class="empty-state"><div class="empty-icon">&lt;/&gt;</div><p>Aucun script disponible.</p></div>'; return; }
+  var catColors = { hotspot: 'badge-gold', firewall: 'badge-red', vpn: 'badge-green', pppoe: 'badge-blue', general: 'badge-orange' };
+  list.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Nom</th><th>Catégorie</th><th>Description</th><th>Coût</th></tr></thead><tbody>' +
+    data.map(function(s) {
+      return '<tr><td><strong>' + s.name + '</strong></td><td><span class="badge ' + (catColors[s.category] || 'badge-blue') + '">' + s.category + '</span></td><td style="color:var(--text2)">' + s.description + '</td><td><span class="badge badge-gold">' + s.cost + ' CRT</span></td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+async function saveScript() {
+  var body = { name: document.getElementById('sc-name').value, description: document.getElementById('sc-desc').value, category: document.getElementById('sc-cat').value, cost: parseInt(document.getElementById('sc-cost').value) || 0, code: document.getElementById('sc-code').value };
+  if (!body.name) return;
+  await api('POST', '/api/scripts', body);
+  closeModal('modal-script');
+  loadScripts();
+  loadDashboard();
+}
+
+// TRANSACTIONS
+async function loadTransactions() {
+  var data = await api('GET', '/api/transactions');
+  var wrap = document.getElementById('tx-table-wrap');
+  if (!data.length) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">💳</div><p>Aucune transaction.</p></div>'; return; }
+  var rows = data.slice().reverse().map(function(t) {
+    return '<tr><td style="font-size:11px;color:var(--text2)">' + new Date(t.date).toLocaleString('fr-FR') + '</td><td><span class="badge badge-blue">' + t.type + '</span></td><td><strong>' + (t.amount > 0 ? '+' : '') + t.amount + ' CRT</strong></td><td style="color:var(--text2)">' + (t.note || '-') + '</td></tr>';
+  }).join('');
+  wrap.innerHTML = '<table><thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Note</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+// USERS
+async function loadUsers() {
+  var data = await api('GET', '/api/users');
+  var wrap = document.getElementById('users-table-wrap');
+  if (!data.length) { wrap.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>Aucun utilisateur.</p></div>'; return; }
+  var rows = data.map(function(u) {
+    var roleBadge = u.role === 'admin' ? 'badge-red' : 'badge-blue';
+    return '<tr><td><strong>' + u.username + '</strong></td><td><span class="badge ' + roleBadge + '">' + u.role + '</span></td><td><span class="badge badge-gold">' + u.credits + ' CRT</span></td><td>' + new Date(u.createdAt).toLocaleDateString('fr-FR') + '</td><td><button class="btn-primary btn-sm" onclick="openCreditModal(\'' + u.id + '\')">+ Crédits</button></td></tr>';
+  }).join('');
+  wrap.innerHTML = '<table><thead><tr><th>Utilisateur</th><th>Rôle</th><th>Crédits</th><th>Créé le</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+async function saveUser() {
+  var body = { username: document.getElementById('u-name').value, password: document.getElementById('u-pass').value, role: document.getElementById('u-role').value };
+  if (!body.username || !body.password) return;
+  var r = await api('POST', '/api/auth/register', body);
+  if (r.error) { alert(r.error); return; }
+  closeModal('modal-user');
+  loadUsers();
+}
+
+function openCreditModal(uid) {
+  document.getElementById('credit-uid').value = uid;
+  document.getElementById('credit-amount').value = '';
+  document.getElementById('credit-note').value = '';
+  openModal('modal-credits');
+}
+
+async function saveCredits() {
+  var uid = document.getElementById('credit-uid').value;
+  var amount = document.getElementById('credit-amount').value;
+  var note = document.getElementById('credit-note').value;
+  await api('POST', '/api/users/' + uid + '/credits', { amount: amount, note: note });
+  closeModal('modal-credits');
+  loadUsers();
+}
+
+// INIT
+tryAutoLogin();
+</script>
+</body>
+</html>
