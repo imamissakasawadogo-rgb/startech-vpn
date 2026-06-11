@@ -1117,6 +1117,12 @@ async function changePwd(){
   setTimeout(function(){ok.style.display='none';},3000);
 }
 
+function doProlong(svcId){
+  var sel=document.getElementById('renew-sel-'+svcId);
+  var months=sel?parseInt(sel.value):1;
+  renewService(svcId,months);
+}
+
 // RENOUVELER SERVICE
 async function renewService(svcId,months){
   if(!confirm('Renouveler pour '+months+' mois ('+(months*10)+' CRT) ?'))return;
@@ -1217,7 +1223,7 @@ async function loadVPN(){
         '<div class="device-actions-row">'+
           '<button class="btn-settings">⚙️</button>'+
           '<button class="btn-addport">+ Ajouter un port</button>'+
-          '<button class="btn-prolong" onclick="om(\'mod-prolong-'+s.id+'\')">Prolonger</button>'+
+          '<button class="btn-prolong" onclick="doProlong(\''+s.id+'\')">Prolonger</button>'+
           '<select class="renew-select" id="renew-sel-'+s.id+'"><option value="1">1 mois (10 CRT)</option><option value="3">3 mois (30 CRT)</option><option value="6">6 mois (60 CRT)</option></select>'+
           '<div class="renew-toggle"><div class="toggle-sw off"></div><span>Renouveler</span></div>'+
         '</div>'+
@@ -1269,7 +1275,7 @@ async function loadMikhmon(){
       '</div>'+
       (expired?'':
       '<div class="mikhmon-body">'+
-        '<button class="btn-prolong">Prolonger</button>'+
+        '<button class="btn-prolong" onclick="doProlong(\''+s.id+'\')">Prolonger</button>'+
         '<select class="renew-select"><option>1 mois (10 CRT)</option></select>'+
         '<div class="renew-toggle"><div class="toggle-sw off"></div><span>Renouveler</span></div>'+
         '<div class="mikhmon-field"><label>username</label><input class="mikhmon-input" value="'+user+'" readonly></div>'+
