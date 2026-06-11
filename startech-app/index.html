@@ -462,19 +462,28 @@ textarea.fi{resize:vertical;min-height:70px}
 
 <script>
 // GOOGLE AUTH
-var GOOGLE_CLIENT_ID=''; // À remplir avec ton Client ID Google
+var GOOGLE_CLIENT_ID='996722318188-tktv13clq0euaf3cp13403k6vpb6degc.apps.googleusercontent.com';
 
 function signInWithGoogle(){
-  if(!GOOGLE_CLIENT_ID){
-    // Mode demo sans Google Client ID configuré
-    alert('Connexion Google non configurée.\nPour activer : créez un projet Google Cloud Console et ajoutez le Client ID.');
+  if(typeof google==='undefined'){
+    alert('Chargement Google en cours, réessayez dans quelques secondes.');
     return;
   }
   google.accounts.id.initialize({
     client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleResponse
+    callback: handleGoogleResponse,
+    auto_select: false,
+    cancel_on_tap_outside: true
   });
-  google.accounts.id.prompt();
+  google.accounts.id.prompt(function(notification){
+    if(notification.isNotDisplayed()||notification.isSkippedMoment()){
+      // Fallback : ouvrir popup
+      google.accounts.id.renderButton(
+        document.createElement('div'),
+        {theme:'outline',size:'large'}
+      );
+    }
+  });
 }
 
 async function handleGoogleResponse(response){
@@ -893,4 +902,15 @@ async function loadTX(){
 }
 
 tryAuto();
+
+// Init Google Sign-In au chargement
+window.addEventListener('load', function(){
+  if(typeof google !== 'undefined' && GOOGLE_CLIENT_ID){
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleResponse,
+      auto_select: false
+    });
+  }
+});
 </script></body></html>
