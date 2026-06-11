@@ -59,7 +59,8 @@ button{cursor:pointer;border:none;outline:none;font-family:inherit}
 .page{display:none}.page.on{display:block}
 /* STATS */
 .sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:11px;margin-bottom:20px}
-.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:14px;position:relative;overflow:hidden}
+.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:14px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s}
+.sc:hover{border-color:var(--gold);transform:translateY(-2px)}
 .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .sc.g::before{background:var(--gold)}.sc.gr::before{background:var(--green)}.sc.bl::before{background:var(--blue)}.sc.or::before{background:var(--orange)}.sc.re::before{background:var(--red)}.sc.pu::before{background:#a855f7}
 .si{font-size:22px;margin-bottom:6px}.sv{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700}.sl{font-size:10px;color:var(--t2);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
@@ -514,15 +515,17 @@ async function loadDB(){
   document.getElementById('sb-fcfa').textContent=(d.user.credits*50).toLocaleString();
   var statsHtml='';
   if(cu.role==='admin'){
-    statsHtml='<div class="sc g"><div class="si">📡</div><div class="sv">'+d.stats.routers+'</div><div class="sl">Routeurs</div></div>'+
-    '<div class="sc gr"><div class="si">🔒</div><div class="sv">'+d.stats.vpn_networks+'</div><div class="sl">Réseaux WG</div></div>'+
-    '<div class="sc bl"><div class="si">👥</div><div class="sv">'+d.stats.users+'</div><div class="sl">Utilisateurs</div></div>'+
-    '<div class="sc or"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Services</div></div>'+
-    '<div class="sc pu"><div class="si">💳</div><div class="sv">'+d.stats.transactions+'</div><div class="sl">Transactions</div></div>';
+    statsHtml='<div class="sc g" style="cursor:pointer" onclick="gp(\'mikhmon\')"><div class="si">📡</div><div class="sv">'+d.stats.routers+'</div><div class="sl">Routeurs</div></div>'+
+    '<div class="sc gr" style="cursor:pointer" onclick="gp(\'wireguard\')"><div class="si">🔒</div><div class="sv">'+d.stats.vpn_networks+'</div><div class="sl">Réseaux WG</div></div>'+
+    '<div class="sc bl" style="cursor:pointer" onclick="gp(\'users\')"><div class="si">👥</div><div class="sv">'+d.stats.users+'</div><div class="sl">Utilisateurs</div></div>'+
+    '<div class="sc or" style="cursor:pointer" onclick="gp(\'services\')"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Services</div></div>'+
+    '<div class="sc pu" style="cursor:pointer" onclick="gp(\'payments\')"><div class="si">💳</div><div class="sv">'+d.stats.transactions+'</div><div class="sl">Transactions</div></div>'+
+    '<div class="sc re" style="cursor:pointer" onclick="gp(\'vpnaccounts\')"><div class="si">👤</div><div class="sv">'+d.stats.vpn_accounts+'</div><div class="sl">Comptes VPN</div></div>';
   } else {
-    statsHtml='<div class="sc g"><div class="si">🪙</div><div class="sv">'+d.user.credits+'</div><div class="sl">Crédits CRT</div></div>'+
-    '<div class="sc gr"><div class="si">💵</div><div class="sv">'+(d.user.credits*50).toLocaleString()+'</div><div class="sl">FCFA</div></div>'+
-    '<div class="sc bl"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Mes services</div></div>';
+    statsHtml='<div class="sc g" style="cursor:pointer" onclick="gp(\'credits\')"><div class="si">🪙</div><div class="sv">'+d.user.credits+'</div><div class="sl">Crédits CRT</div></div>'+
+    '<div class="sc gr" style="cursor:pointer" onclick="gp(\'credits\')"><div class="si">💵</div><div class="sv">'+(d.user.credits*50).toLocaleString()+'</div><div class="sl">FCFA</div></div>'+
+    '<div class="sc bl" style="cursor:pointer" onclick="gp(\'services\')"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Mes services</div></div>'+
+    '<div class="sc or" style="cursor:pointer" onclick="gp(\'boutique\')"><div class="si">🛒</div><div class="sv">3</div><div class="sl">Services dispo</div></div>';
   }
   document.getElementById('dash-stats').innerHTML=statsHtml;
   // Services actifs
