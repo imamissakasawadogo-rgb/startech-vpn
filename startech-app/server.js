@@ -248,6 +248,57 @@ app.post('/api/payment/confirm/:id',auth,admin,function(req,res){
 
 app.get('/api/payments',auth,admin,function(req,res){var d=db();res.json(d.payments||[]);});
 
+// PORTS - assigner ports tunnelisés à un service
+var PORT_BASE=9000; // ports clients commencent à 9000
+function assignPorts(d,svcId){
+  // Chaque client a 3 ports: winbox, webfig, api
+  var usedBases=[];
+  if(d.services){
+    d.services.forEach(function(s){
+      if(s.ports&&s.ports.base)usedBases.push(s.ports.base);
+    });
+  }
+  var base=PORT_BASE;
+  while(usedBases.indexOf(base)!==-1)base+=3;
+  return{
+    base:base,
+    winbox:{port:base,service:'Winbox',proto:'TCP',local:8291},
+    webfig:{port:base+1,service:'WebFig',proto:'TCP',local:80},
+    api:{port:base+2,service:'API-Mikhmon',proto:'TCP',local:8728}
+  };
+}
+
+// OBTENIR PORTS D'UN SERVICE
+app.get('/api/services/:id/ports',auth,function(req,res){
+  var d=db();
+  var svc=d.services?d.services.find(function(s){
+    return s.id===req.params.id&&(s.userId===req.user.id||req.user.role==='admin');
+  }):null;
+  if(!svc)return res.status(404).json({error:'Service introuvable'});
+  if(!svc.ports){
+    // Assigner les ports si pas encore fait
+    svc.ports=assignPorts(d,svc.id);
+    save(d);
+  }
+  var host='api.startech-pro.com';
+  res.json({
+    ports:svc.ports,
+    host:host,
+    clientIP:svc.details?svc.details.clientIP:'N/A',
+    addresses:[
+      {label:'Winbox',address:host+':'+svc.ports.winbox.port,icon:'🖥️',copy:host+':'+svc.ports.winbox.port},
+      {label:'WebFig',address:host+':'+svc.ports.webfig.port,icon:'🌐',copy:'http://'+host+':'+svc.ports.webfig.port},
+      {label:'API-Mikhmon',address:host+':'+svc.ports.api.port,icon:'📡',copy:host+':'+svc.ports.api.port}
+    ],
+    iptablesScript:
+      '# Redirection ports pour client IP '+( svc.details?svc.details.clientIP:'X.X.X.X')+'\n'+
+      'iptables -t nat -A PREROUTING -p tcp --dport '+svc.ports.winbox.port+' -j DNAT --to-destination '+(svc.details?svc.details.clientIP:'X.X.X.X')+':8291\n'+
+      'iptables -t nat -A PREROUTING -p tcp --dport '+svc.ports.webfig.port+' -j DNAT --to-destination '+(svc.details?svc.details.clientIP:'X.X.X.X')+':80\n'+
+      'iptables -t nat -A PREROUTING -p tcp --dport '+svc.ports.api.port+' -j DNAT --to-destination '+(svc.details?svc.details.clientIP:'X.X.X.X')+':8728\n'+
+      'iptables -t nat -A POSTROUTING -j MASQUERADE'
+  });
+});
+
 // USERS
 app.get('/api/users',auth,admin,function(req,res){
   var d=db();
