@@ -649,16 +649,32 @@ textarea.fi{resize:vertical;min-height:80px}
 <!-- MODALS -->
 <div class="ov" id="mod-buy-vpn">
   <div class="mod">
-    <div class="mod-header"><span class="mod-title">🖥️ Acheter Compte VPN</span><button class="mod-close" onclick="cm('mod-buy-vpn')">✕</button></div>
-    <div style="background:#f5f3ff;border-radius:8px;padding:14px;margin-bottom:14px;text-align:center">
-      <div style="font-size:32px;font-weight:800;color:var(--blue)">10 CRT</div>
-      <div style="font-size:13px;color:var(--t2)">= 500 FCFA par mois</div>
-    </div>
-    <label class="fl">Durée</label>
-    <select class="fi" id="vpn-months"><option value="1">1 mois — 10 CRT (500 FCFA)</option><option value="2">2 mois — 20 CRT (1000 FCFA)</option><option value="3">3 mois — 30 CRT (1500 FCFA)</option><option value="6">6 mois — 60 CRT (3000 FCFA)</option><option value="12">12 mois — 120 CRT (6000 FCFA)</option></select>
+    <div class="mod-header"><span class="mod-title">Ajouter un routeur</span><button class="mod-close" onclick="cm('mod-buy-vpn')">✕</button></div>
+    <label class="fl">NOM *</label>
+    <input class="fi" id="vpn-name" placeholder="Entrer le nom">
+    <label class="fl">SERVEUR *</label>
+    <select class="fi" id="vpn-server">
+      <option value="">Choisir...</option>
+      <option value="api.startech-pro.com">api.startech-pro.com (Burkina Faso)</option>
+    </select>
+    <label class="fl">INTERFACE *</label>
+    <select class="fi" id="vpn-interface">
+      <option value="SSTP">SSTP</option>
+      <option value="L2TP">L2TP</option>
+      <option value="OVPN">OVPN</option>
+      <option value="WireGuard">WireGuard</option>
+    </select>
+    <label class="fl">PLAN *</label>
+    <select class="fi" id="vpn-months">
+      <option value="1">1 mois — 10 CRT (500 FCFA)</option>
+      <option value="2">2 mois — 20 CRT (1000 FCFA)</option>
+      <option value="3">3 mois — 30 CRT (1500 FCFA)</option>
+      <option value="6">6 mois — 60 CRT (3000 FCFA)</option>
+      <option value="12">12 mois — 120 CRT (6000 FCFA)</option>
+    </select>
     <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Solde : <span id="vpn-bal" style="color:var(--blue);font-weight:700"></span> CRT</div>
     <div class="alert-mod alert-e" id="vpn-err"></div>
-    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-buy-vpn')">Annuler</button><button class="btn-save" onclick="buyService('vpn')">Confirmer</button></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-buy-vpn')">Fermer</button><button class="btn-save" onclick="buyService('vpn')">Souscrire</button></div>
   </div>
 </div>
 
