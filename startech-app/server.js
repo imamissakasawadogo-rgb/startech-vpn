@@ -1,16 +1,19 @@
 'use strict';
 
-var express=require('express'),jwt=require('jsonwebtoken'),bcrypt=require('bcryptjs'),cors=require('cors'),path=require('path'),fs=require('fs');
+var express=require('express'),jwt=require('jsonwebtoken'),bcrypt=require('bcryptjs'),cors=require('cors'),path=require('path'),fs=require('fs'),nacl=require('tweetnacl');
 var app=express(),PORT=3002,SECRET='STARTECH_APP_2026',DATA=path.join(__dirname,'data','db.json');
 app.use(cors());app.use(express.json());app.use(express.static(path.join(__dirname,'public')));
 
-// 1 CRT = 50 FCFA
+// CONFIG SERVEUR WG
+var WG_SERVER_IP='194.163.174.142';
+var WG_SERVER_PORT=51820;
+var WG_SERVER_PUBKEY='TGuhgHXe/ty2QjNfbP1vyp6NFoEgqhGU/x3WYTVfCSQ=';
+var WG_SUBNET='10.8.0';
 var CRT_PRICE=50;
-var SERVICE_COST=10; // CRT par mois
 var PLANS=[
-  {id:'wg',name:'WireGuard VPN',desc:'Acces VPN WireGuard securise',cost:10,icon:'🔒'},
-  {id:'mikhmon',name:'Mikhmon Online',desc:'Gestion hotspot MikroTik',cost:10,icon:'📡'},
-  {id:'vpn',name:'Compte VPN',desc:'Compte VPN dedie',cost:10,icon:'👤'}
+  {id:'wg',name:'WireGuard VPN',desc:'Tunnel WireGuard pour routeur MikroTik',cost:10,icon:'🔒'},
+  {id:'mikhmon',name:'Mikhmon Online',desc:'Gestion hotspot MikroTik en ligne',cost:10,icon:'📡'},
+  {id:'vpn',name:'Compte VPN',desc:'Acces VPN dedie Startech',cost:10,icon:'👤'}
 ];
 var PACKS=[
   {id:'p20',crt:20,fcfa:1000},
@@ -19,25 +22,51 @@ var PACKS=[
   {id:'p200',crt:200,fcfa:10000}
 ];
 
+// GÉNÉRATION CLÉS WIREGUARD
+function genWGKeys(){
+  var priv=nacl.randomBytes(32);
+  priv[0]&=248;priv[31]&=127;priv[31]|=64;
+  var pub=nacl.scalarMult.base(priv);
+  return{privateKey:Buffer.from(priv).toString('base64'),publicKey:Buffer.from(pub).toString('base64')};
+}
+
+// ATTRIBUER IP CLIENT
+function assignClientIP(d){
+  var used=[];
+  if(d.services){d.services.forEach(function(s){if(s.wgIP)used.push(parseInt(s.wgIP.split('.')[3]));});}
+  for(var i=2;i<=254;i++){if(used.indexOf(i)===-1)return WG_SUBNET+'.'+i;}
+  return null;
+}
+
+// GÉNÉRER SCRIPT ROUTEROS WIREGUARD
+function genRouterOSScript(clientName,clientPrivKey,clientIP,serverPubKey,serverIP,serverPort){
+  var iface='startech-vpn';
+  return '/interface wireguard\n'+
+    'add listen-port=13231 mtu=1420 name='+iface+' private-key="'+clientPrivKey+'"\n\n'+
+    '/interface wireguard peers\n'+
+    'add allowed-address=0.0.0.0/0 endpoint-address='+serverIP+' endpoint-port='+serverPort+' \\\n'+
+    '    interface='+iface+' name=startech-peer \\\n'+
+    '    public-key="'+serverPubKey+'"\n\n'+
+    '/ip address\n'+
+    'add address='+clientIP+'/24 interface='+iface+' network='+WG_SUBNET+'.0\n\n'+
+    '/ip route\n'+
+    'add dst-address='+WG_SUBNET+'.0/24 gateway='+iface+'\n\n'+
+    '# Startech BUSINESS - VPN WireGuard\n'+
+    '# Client: '+clientName+'\n'+
+    '# IP: '+clientIP+'\n'+
+    '# Serveur: '+serverIP+':'+serverPort;
+}
+
 function db(){
   if(!fs.existsSync(DATA)){
     fs.mkdirSync(path.dirname(DATA),{recursive:true});
-    var d={
-      users:[{id:'u1',username:'admin',email:'admin@startech.com',password:bcrypt.hashSync('STARTECH2026',10),role:'admin',credits:100,gnx:50,createdAt:new Date().toISOString()}],
-      routers:[],vpn_networks:[],vpn_accounts:[],scripts:[],transactions:[],services:[],payments:[]
-    };
-    fs.writeFileSync(DATA,JSON.stringify(d,null,2));
-    return d;
+    var d={users:[{id:'u1',username:'admin',email:'admin@startech.com',password:bcrypt.hashSync('STARTECH2026',10),role:'admin',credits:100,gnx:50,createdAt:new Date().toISOString()}],routers:[],vpn_networks:[],vpn_accounts:[],scripts:[],transactions:[],services:[],payments:[]};
+    fs.writeFileSync(DATA,JSON.stringify(d,null,2));return d;
   }
   return JSON.parse(fs.readFileSync(DATA,'utf8'));
 }
 function save(d){fs.writeFileSync(DATA,JSON.stringify(d,null,2));}
-function auth(req,res,next){
-  var h=req.headers['authorization'];
-  if(!h)return res.status(401).json({error:'Token manquant'});
-  try{req.user=jwt.verify(h.split(' ')[1],SECRET);next();}
-  catch(e){res.status(401).json({error:'Token invalide'});}
-}
+function auth(req,res,next){var h=req.headers['authorization'];if(!h)return res.status(401).json({error:'Token manquant'});try{req.user=jwt.verify(h.split(' ')[1],SECRET);next();}catch(e){res.status(401).json({error:'Token invalide'});}}
 function admin(req,res,next){if(req.user.role!=='admin')return res.status(403).json({error:'Acces refuse'});next();}
 
 // AUTH
@@ -54,8 +83,7 @@ app.post('/api/auth/register',function(req,res){
   if(d.users.find(function(x){return x.username===req.body.username;}))return res.status(400).json({error:'Nom utilisateur deja pris'});
   if(d.users.find(function(x){return x.email===req.body.email;}))return res.status(400).json({error:'Email deja utilise'});
   var u={id:'u'+Date.now(),username:req.body.username,email:req.body.email,password:bcrypt.hashSync(req.body.password,10),role:'client',credits:0,gnx:0,createdAt:new Date().toISOString()};
-  d.users.push(u);
-  save(d);
+  d.users.push(u);save(d);
   var t=jwt.sign({id:u.id,username:u.username,role:u.role},SECRET,{expiresIn:'24h'});
   res.json({token:t,user:{id:u.id,username:u.username,email:u.email,role:u.role,credits:0,gnx:0}});
 });
@@ -71,19 +99,14 @@ app.post('/api/auth/register-admin',auth,admin,function(req,res){
 // DASHBOARD
 app.get('/api/dashboard',auth,function(req,res){
   var d=db(),u=d.users.find(function(x){return x.id===req.user.id;});
-  var myServices=d.services.filter(function(s){return s.userId===req.user.id;});
-  res.json({
-    stats:{routers:d.routers.length,vpn_networks:d.vpn_networks.length,vpn_accounts:d.vpn_accounts.length,scripts:d.scripts.length,users:d.users.length,transactions:d.transactions.length,services:d.services.length},
-    user:{credits:u?u.credits:0,gnx:u?u.gnx:0},
-    myServices:myServices
-  });
+  var myServices=d.services?d.services.filter(function(s){return s.userId===req.user.id;}):[]; 
+  res.json({stats:{routers:d.routers.length,vpn_networks:d.vpn_networks.length,vpn_accounts:d.vpn_accounts.length,scripts:d.scripts.length,users:d.users.length,transactions:d.transactions.length,services:d.services?d.services.length:0},user:{credits:u?u.credits:0,gnx:u?u.gnx:0},myServices:myServices});
 });
 
-// PLANS & PACKS
 app.get('/api/plans',function(req,res){res.json(PLANS);});
 app.get('/api/packs',function(req,res){res.json(PACKS);});
 
-// ACHETER SERVICE
+// ACHETER SERVICE + GÉNÉRATION SCRIPT
 app.post('/api/services/buy',auth,function(req,res){
   var d=db();
   var u=d.users.find(function(x){return x.id===req.user.id;});
@@ -94,40 +117,70 @@ app.post('/api/services/buy',auth,function(req,res){
   var cost=plan.cost*months;
   if(u.credits<cost)return res.status(400).json({error:'Credits insuffisants. Vous avez '+u.credits+' CRT, il faut '+cost+' CRT'});
   u.credits-=cost;
-  var expiry=new Date();
-  expiry.setMonth(expiry.getMonth()+months);
-  var svc={
-    id:'svc'+Date.now(),
-    userId:u.id,
-    planId:plan.id,
-    planName:plan.name,
-    months:months,
-    cost:cost,
-    status:'active',
-    expiry:expiry.toISOString(),
-    createdAt:new Date().toISOString(),
-    details:{}
-  };
+  var expiry=new Date();expiry.setMonth(expiry.getMonth()+months);
   if(!d.services)d.services=[];
+  var svc={id:'svc'+Date.now(),userId:u.id,planId:plan.id,planName:plan.name,months:months,cost:cost,status:'active',expiry:expiry.toISOString(),createdAt:new Date().toISOString(),details:{}};
+  // Générer script selon le plan
+  if(plan.id==='wg'){
+    var keys=genWGKeys();
+    var clientIP=assignClientIP(d);
+    svc.wgIP=clientIP;
+    svc.details={
+      privateKey:keys.privateKey,
+      publicKey:keys.publicKey,
+      clientIP:clientIP,
+      serverPubKey:WG_SERVER_PUBKEY,
+      serverIP:WG_SERVER_IP,
+      serverPort:WG_SERVER_PORT,
+      script:genRouterOSScript(u.username,keys.privateKey,clientIP,WG_SERVER_PUBKEY,WG_SERVER_IP,WG_SERVER_PORT)
+    };
+  } else if(plan.id==='mikhmon'){
+    svc.details={
+      mikhmonURL:'https://baobab.mikhmonv1.com',
+      username:u.username,
+      password:'STB'+Math.random().toString(36).substr(2,8).toUpperCase(),
+      note:'Accedez a votre tableau Mikhmon avec ces identifiants'
+    };
+  } else if(plan.id==='vpn'){
+    var vkeys=genWGKeys();
+    var vIP=assignClientIP(d);
+    svc.wgIP=vIP;
+    svc.details={
+      type:'WireGuard',
+      privateKey:vkeys.privateKey,
+      publicKey:vkeys.publicKey,
+      clientIP:vIP,
+      serverPubKey:WG_SERVER_PUBKEY,
+      serverIP:WG_SERVER_IP,
+      serverPort:WG_SERVER_PORT,
+      script:genRouterOSScript(u.username,vkeys.privateKey,vIP,WG_SERVER_PUBKEY,WG_SERVER_IP,WG_SERVER_PORT)
+    };
+  }
   d.services.push(svc);
   d.transactions.push({id:'t'+Date.now(),userId:u.id,type:'achat_service',amount:-cost,note:plan.name+' x'+months+'mois',date:new Date().toISOString()});
   save(d);
   res.json({success:true,service:svc,creditsLeft:u.credits});
 });
 
-// MES SERVICES
 app.get('/api/services/mine',auth,function(req,res){
   var d=db();
-  var svcs=d.services?d.services.filter(function(s){return s.userId===req.user.id;}):[]; 
-  res.json(svcs);
+  res.json(d.services?d.services.filter(function(s){return s.userId===req.user.id;}):[]);
 });
 
 app.get('/api/services',auth,admin,function(req,res){
-  var d=db();
-  res.json(d.services||[]);
+  var d=db();res.json(d.services||[]);
 });
 
-// RECHARGE CREDITS (admin manuel)
+// SCRIPT D'UN SERVICE
+app.get('/api/services/:id/script',auth,function(req,res){
+  var d=db();
+  var svc=d.services?d.services.find(function(s){return s.id===req.params.id&&s.userId===req.user.id;}):null;
+  if(!svc)return res.status(404).json({error:'Service introuvable'});
+  if(!svc.details||!svc.details.script)return res.status(400).json({error:'Pas de script pour ce service'});
+  res.json({script:svc.details.script,clientIP:svc.details.clientIP,serverIP:svc.details.serverIP,serverPort:svc.details.serverPort});
+});
+
+// CRÉDITS
 app.post('/api/users/:id/credits',auth,admin,function(req,res){
   var d=db(),u=d.users.find(function(x){return x.id===req.params.id;});
   if(!u)return res.status(404).json({error:'Introuvable'});
@@ -136,39 +189,31 @@ app.post('/api/users/:id/credits',auth,admin,function(req,res){
   save(d);res.json({success:true,credits:u.credits});
 });
 
-// PAIEMENT FEDAPAY (initier)
+// PAIEMENT
 app.post('/api/payment/init',auth,function(req,res){
   var pack=PACKS.find(function(p){return p.id===req.body.packId;});
   if(!pack)return res.status(400).json({error:'Pack introuvable'});
   var d=db(),u=d.users.find(function(x){return x.id===req.user.id;});
-  // Simuler paiement en attente
-  var payment={id:'pay'+Date.now(),userId:u.id,packId:pack.id,crt:pack.crt,fcfa:pack.fcfa,status:'pending',createdAt:new Date().toISOString()};
+  var payment={id:'pay'+Date.now(),userId:u.id,username:u.username,packId:pack.id,crt:pack.crt,fcfa:pack.fcfa,status:'pending',createdAt:new Date().toISOString()};
   if(!d.payments)d.payments=[];
-  d.payments.push(payment);
-  save(d);
-  res.json({paymentId:payment.id,amount:pack.fcfa,crt:pack.crt,fedapayUrl:'https://sandbox.fedapay.com/checkout/'+payment.id});
+  d.payments.push(payment);save(d);
+  res.json({paymentId:payment.id,amount:pack.fcfa,crt:pack.crt});
 });
 
-// CONFIRMER PAIEMENT (webhook ou manuel admin)
 app.post('/api/payment/confirm/:id',auth,admin,function(req,res){
   var d=db();
   if(!d.payments)return res.status(404).json({error:'Aucun paiement'});
   var pay=d.payments.find(function(p){return p.id===req.params.id;});
-  if(!pay)return res.status(404).json({error:'Paiement introuvable'});
+  if(!pay)return res.status(404).json({error:'Introuvable'});
   if(pay.status==='confirmed')return res.status(400).json({error:'Deja confirme'});
   var u=d.users.find(function(x){return x.id===pay.userId;});
   if(!u)return res.status(404).json({error:'Utilisateur introuvable'});
-  pay.status='confirmed';
-  u.credits+=pay.crt;
+  pay.status='confirmed';u.credits+=pay.crt;
   d.transactions.push({id:'t'+Date.now(),userId:u.id,type:'recharge',amount:pay.crt,note:'Paiement '+pay.fcfa+' FCFA',date:new Date().toISOString()});
-  save(d);
-  res.json({success:true,credits:u.credits});
+  save(d);res.json({success:true,credits:u.credits});
 });
 
-// PAIEMENTS LISTE (admin)
-app.get('/api/payments',auth,admin,function(req,res){
-  var d=db();res.json(d.payments||[]);
-});
+app.get('/api/payments',auth,admin,function(req,res){var d=db();res.json(d.payments||[]);});
 
 // USERS
 app.get('/api/users',auth,admin,function(req,res){
@@ -192,7 +237,7 @@ app.delete('/api/routers/:id',auth,function(req,res){
   var d=db();d.routers=d.routers.filter(function(r){return r.id!==req.params.id;});save(d);res.json({success:true});
 });
 
-// WG
+// WG NETWORKS
 app.get('/api/wg/networks',auth,function(req,res){res.json(db().vpn_networks);});
 app.post('/api/wg/networks',auth,function(req,res){
   var d=db(),n={id:'wg'+Date.now(),name:req.body.name,subnet:req.body.subnet||'10.8.0.0/24',port:req.body.port||51820,ownerId:req.user.id,devices:[],createdAt:new Date().toISOString()};
@@ -217,4 +262,4 @@ app.post('/api/scripts',auth,admin,function(req,res){
 });
 
 app.get('/{*path}',function(req,res){res.sendFile(path.join(__dirname,'public','index.html'));});
-app.listen(PORT,function(){console.log('Startech App port '+PORT);});
+app.listen(PORT,function(){console.log('Startech App v3 port '+PORT);});
