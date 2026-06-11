@@ -78,6 +78,38 @@ function save(d){fs.writeFileSync(DATA,JSON.stringify(d,null,2));}
 function auth(req,res,next){var h=req.headers['authorization'];if(!h)return res.status(401).json({error:'Token manquant'});try{req.user=jwt.verify(h.split(' ')[1],SECRET);next();}catch(e){res.status(401).json({error:'Token invalide'});}}
 function admin(req,res,next){if(req.user.role!=='admin')return res.status(403).json({error:'Acces refuse'});next();}
 
+// MOT DE PASSE OUBLIÉ (sans email pour l'instant - version simple)
+app.post('/api/auth/forgot',function(req,res){
+  var email=req.body.email;
+  if(!email)return res.status(400).json({error:'Email requis'});
+  var d=db();
+  var u=d.users.find(function(x){return x.email===email;});
+  // Ne pas révéler si l'email existe ou non (sécurité)
+  if(!u)return res.json({message:'Si cet email existe, un lien de réinitialisation a été envoyé'});
+  // Générer token reset
+  var token=require('crypto').randomBytes(32).toString('hex');
+  u.resetToken=token;
+  u.resetExpiry=new Date(Date.now()+3600000).toISOString(); // 1h
+  save(d);
+  // TODO: Envoyer email avec le lien
+  var resetLink='https://app.startech-pro.com/reset?token='+token;
+  console.log('Reset link for '+email+': '+resetLink);
+  res.json({message:'Lien de réinitialisation envoyé à '+email+'\n(Vérifiez WhatsApp ou contactez le support)'});
+});
+
+app.post('/api/auth/reset',function(req,res){
+  var token=req.body.token,password=req.body.password;
+  if(!token||!password)return res.status(400).json({error:'Token et mot de passe requis'});
+  var d=db();
+  var u=d.users.find(function(x){return x.resetToken===token;});
+  if(!u)return res.status(400).json({error:'Token invalide ou expiré'});
+  if(new Date(u.resetExpiry)<new Date())return res.status(400).json({error:'Token expiré'});
+  u.password=require('bcryptjs').hashSync(password,10);
+  u.resetToken=null;u.resetExpiry=null;
+  save(d);
+  res.json({success:true,message:'Mot de passe réinitialisé avec succès'});
+});
+
 // GOOGLE AUTH
 app.post('/api/auth/google',function(req,res){
   var credential=req.body.credential;
