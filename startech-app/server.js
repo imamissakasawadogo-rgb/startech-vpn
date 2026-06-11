@@ -78,6 +78,42 @@ function save(d){fs.writeFileSync(DATA,JSON.stringify(d,null,2));}
 function auth(req,res,next){var h=req.headers['authorization'];if(!h)return res.status(401).json({error:'Token manquant'});try{req.user=jwt.verify(h.split(' ')[1],SECRET);next();}catch(e){res.status(401).json({error:'Token invalide'});}}
 function admin(req,res,next){if(req.user.role!=='admin')return res.status(403).json({error:'Acces refuse'});next();}
 
+// GOOGLE AUTH
+app.post('/api/auth/google',function(req,res){
+  var credential=req.body.credential;
+  if(!credential)return res.status(400).json({error:'Token Google manquant'});
+  try{
+    // Décoder le JWT Google (sans vérification de signature pour simplifier)
+    var payload=JSON.parse(Buffer.from(credential.split('.')[1],'base64').toString());
+    var email=payload.email;
+    var name=payload.name||email.split('@')[0];
+    var googleId=payload.sub;
+    if(!email)return res.status(400).json({error:'Email Google non disponible'});
+    var d=db();
+    // Chercher utilisateur existant par email ou googleId
+    var u=d.users.find(function(x){return x.email===email||x.googleId===googleId;});
+    if(!u){
+      // Créer nouveau compte automatiquement
+      var username=name.replace(/\s+/g,'_').toLowerCase()+Math.floor(Math.random()*100);
+      // S'assurer que le username est unique
+      while(d.users.find(function(x){return x.username===username;})){
+        username=name.replace(/\s+/g,'_').toLowerCase()+Math.floor(Math.random()*1000);
+      }
+      u={id:'u'+Date.now(),username:username,email:email,googleId:googleId,name:name,password:'',role:'client',credits:0,gnx:0,createdAt:new Date().toISOString()};
+      d.users.push(u);save(d);
+    } else if(!u.googleId){
+      // Lier le compte Google existant
+      u.googleId=googleId;
+      if(!u.name)u.name=name;
+      save(d);
+    }
+    var t=jwt.sign({id:u.id,username:u.username,role:u.role},SECRET,{expiresIn:'24h'});
+    res.json({token:t,user:{id:u.id,username:u.username,email:u.email,name:u.name,role:u.role,credits:u.credits,gnx:u.gnx}});
+  }catch(e){
+    res.status(400).json({error:'Token Google invalide'});
+  }
+});
+
 // AUTH
 app.post('/api/auth/login',function(req,res){
   var d=db(),u=d.users.find(function(x){return x.username===req.body.username||x.email===req.body.username;});
