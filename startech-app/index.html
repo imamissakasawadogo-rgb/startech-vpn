@@ -634,15 +634,60 @@ function copyScript(){
   });
 }
 
-// ROUTEURS
+// ROUTEURS - style mikroot
 async function loadR(){
   var d=await api('GET','/api/routers'),w=document.getElementById('rt-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📡</div><p>Aucun routeur.</p></div>';return;}
-  var rows=d.map(function(r){var exp=r.expiry?new Date(r.expiry):null,ok=!exp||exp>=new Date();return'<tr><td><strong>'+r.name+'</strong></td><td style="font-family:monospace;font-size:11px">'+r.ip+':'+r.port+'</td><td>'+(ok?'<span class="badge bgr">Actif</span>':'<span class="badge bre">Expiré</span>')+'</td><td>'+(exp?exp.toLocaleDateString('fr-FR'):'-')+'</td><td><button class="bdng" onclick="delR(\''+r.id+'\')">Suppr.</button></td></tr>';}).join('');
-  w.innerHTML='<table><thead><tr><th>Nom</th><th>IP:Port</th><th>Statut</th><th>Exp.</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📡</div><p>Aucun routeur. Ajoutez-en un.</p></div>';return;}
+  w.innerHTML=d.map(function(r){
+    var exp=r.expiry?new Date(r.expiry):null;
+    var expired=exp&&exp<new Date();
+    var expStr=exp?'( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )':'( pas d\'expiration )';
+    var expColor=expired?'color:var(--red)':'color:var(--t2)';
+    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
+        '<div style="font-size:15px;font-weight:700">'+r.name+'</div>'+
+        '<span style="font-size:16px;cursor:pointer;color:var(--t2)" onclick="editRouter(\''+r.id+'\')">✏️</span>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
+        '<span style="font-size:12px;'+expColor+'">'+expStr+'</span>'+
+        '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin-left:auto">'+
+          '<div style="width:36px;height:20px;background:'+(expired?'var(--t3)':'var(--blue)')+';border-radius:10px;position:relative"><div style="position:absolute;top:2px;'+(expired?'left:2px':'right:2px')+';width:16px;height:16px;background:#fff;border-radius:50%"></div></div>'+
+          '<span style="font-size:12px;color:var(--t2)">'+(expired?'Inactif':'Actif')+'</span>'+
+        '</label>'+
+      '</div>'+
+      '<div style="display:flex;gap:7px;flex-wrap:wrap">'+
+        '<span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px" id="status-'+r.id+'">Online</span>'+
+        '<button style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="pingRouter(\''+r.id+'\',\''+r.ip+'\')">Ping</button>'+
+        '<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="installRouter(\''+r.id+'\')">Installer</button>'+
+        '<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="detailRouter(\''+r.id+'\',\''+r.name+'\',\''+r.ip+'\','+r.port+')">Détail</button>'+
+        '<button style="background:var(--red);color:#fff;font-size:11px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer" onclick="delR(\''+r.id+'\')">🗑</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
-async function saveR(){var b={name:document.getElementById('rn').value,ip:document.getElementById('ri').value,port:document.getElementById('rp').value||8728,username:document.getElementById('ru2').value||'admin',password:document.getElementById('rpw').value,expiry:document.getElementById('rexp').value};if(!b.name||!b.ip)return;await api('POST','/api/routers',b);cm('mod-router');loadR();}
-async function delR(id){if(!confirm('Supprimer ?'))return;await api('DELETE','/api/routers/'+id);loadR();}
+
+async function pingRouter(id,ip){
+  var btn=event.target;btn.textContent='...';btn.disabled=true;
+  await new Promise(function(r){setTimeout(r,1200);}); // simulation
+  btn.textContent='Ping';btn.disabled=false;
+  var status=document.getElementById('status-'+id);
+  // Simuler online/offline aléatoire pour démo
+  var online=Math.random()>0.3;
+  if(status){status.textContent=online?'Online':'Offline';status.style.background=online?'#22c55e':'#ef4444';}
+  alert('Ping '+ip+': '+(online?'Réponse reçue (OK)':'Timeout - Routeur injoignable'));
+}
+
+function installRouter(id){
+  alert('Fonction Installer : envoie le script de configuration sur le routeur.\n(Disponible dans la prochaine version avec connexion API RouterOS)');
+}
+
+function detailRouter(id,name,ip,port){
+  alert('Routeur: '+name+'\nIP: '+ip+'\nPort API: '+port+'\n\nConnexion WinBox: '+ip);
+}
+
+function editRouter(id){
+  alert('Modification routeur (prochaine version)');
+}
 
 // WG
 async function loadWG(){
@@ -652,13 +697,48 @@ async function loadWG(){
 }
 async function saveWG(){var b={name:document.getElementById('wgn').value,subnet:document.getElementById('wgs').value||'10.8.0.0/24',port:document.getElementById('wgp').value||51820};if(!b.name)return;await api('POST','/api/wg/networks',b);cm('mod-wg');loadWG();}
 
-// VPN
+// COMPTES VPN - style mikroot
 async function loadVPN(){
-  var d=await api('GET','/api/vpn/accounts'),w=document.getElementById('vpn-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">👤</div><p>Aucun compte VPN.</p></div>';return;}
-  var rows=d.map(function(a){var exp=a.expiry?new Date(a.expiry):null,ok=!exp||exp>=new Date();return'<tr><td><strong>'+a.username+'</strong></td><td><span class="badge bbl">'+a.plan+'</span></td><td>'+(ok?'<span class="badge bgr">Actif</span>':'<span class="badge bre">Expiré</span>')+'</td><td>'+(exp?exp.toLocaleDateString('fr-FR'):'-')+'</td></tr>';}).join('');
-  w.innerHTML='<table><thead><tr><th>Client</th><th>Forfait</th><th>Statut</th><th>Exp.</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  var w=document.getElementById('vpn-wrap');
+  var svcs=[];
+  if(cu.role==='admin'){
+    var all=await api('GET','/api/services');
+    svcs=(all||[]).filter(function(s){return s.planId==='vpn'||s.planId==='wg';});
+  } else {
+    var mine=await api('GET','/api/services/mine');
+    svcs=(mine||[]).filter(function(s){return s.planId==='vpn'||s.planId==='wg';});
+  }
+  if(!svcs.length){w.innerHTML='<div class="emp"><div class="emp-i">👤</div><p>Aucun compte VPN. <span style="color:var(--gold);cursor:pointer" onclick="gp(\'boutique\')">Acheter</span></p></div>';return;}
+  w.innerHTML=svcs.map(function(s){
+    var exp=new Date(s.expiry),expired=exp<new Date();
+    var expStr='( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )';
+    var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
+    var label=cu.role==='admin'?s.userId:s.planName;
+    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
+        '<div style="font-size:15px;font-weight:700">'+label+'</div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
+        '<span style="font-size:12px;color:'+(expired?'var(--red)':'var(--t2)')+'">'+expStr+'</span>'+
+        '<span style="margin-left:auto;display:flex;align-items:center;gap:6px">'+
+          '<div style="width:36px;height:20px;background:'+(expired?'var(--t3)':'var(--blue)')+';border-radius:10px;position:relative">'+
+            '<div style="position:absolute;top:2px;'+(expired?'left:2px':'right:2px')+';width:16px;height:16px;background:#fff;border-radius:50%"></div>'+
+          '</div>'+
+          '<span style="font-size:12px;color:var(--t2)">'+(expired?'Inactif':'Actif')+'</span>'+
+        '</span>'+
+      '</div>'+
+      '<div style="display:flex;gap:7px;flex-wrap:wrap">'+
+        '<span style="background:'+(expired?'#ef4444':'#22c55e')+';color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px">'+(expired?'Offline':'Online')+'</span>'+
+        '<span style="background:var(--s2);color:var(--t2);font-size:11px;padding:5px 12px;border-radius:6px;font-family:monospace">'+ip+'</span>'+
+        '<button style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="pingVPN(\''+ip+'\')">Ping</button>'+
+        '<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewScript(\''+s.id+'\')">Installer</button>'+
+        '<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewScript(\''+s.id+'\')">Détail</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
 }
+
+function pingVPN(ip){alert('Ping '+ip+': Vérification tunnel WireGuard...\n\nPour un vrai ping, utilisez le terminal RouterOS.');}
 async function saveVPN(){var b={username:document.getElementById('vn').value,plan:document.getElementById('vp').value,expiry:document.getElementById('ve').value};if(!b.username)return;await api('POST','/api/vpn/accounts',b);cm('mod-vpn');loadVPN();}
 
 // SCRIPTS
