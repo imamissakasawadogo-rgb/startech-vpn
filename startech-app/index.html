@@ -840,34 +840,77 @@ textarea.fi{resize:vertical;min-height:80px}
 </div>
 
 <div class="ov" id="mod-script-view">
-  <div class="mod" style="max-width:560px">
-    <div class="mod-header"><span class="mod-title">📋 Script d'installation VPN</span><button class="mod-close" onclick="cm('mod-script-view')">✕</button></div>
-    <div id="install-cmd-wrap" style="display:none">
-      <div style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:6px">⚡ Commande rapide — Coller dans New Terminal (WinBox)</div>
-      <div class="install-cmd">
-        <input id="install-cmd-txt" readonly>
-        <button onclick="copyInstall()" style="background:var(--blue);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:none;cursor:pointer">📋 Copier</button>
+  <div class="mod" style="max-width:600px">
+    <div class="mod-header">
+      <span class="mod-title" id="script-modal-title">Installation</span>
+      <button class="mod-close" onclick="cm('mod-script-view')">✕</button>
+    </div>
+    <div style="display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--bd)">
+      <button onclick="scriptTab('installer')" id="stab-installer" style="padding:9px 14px;font-size:12px;font-weight:600;background:transparent;border:none;border-bottom:2px solid var(--blue);color:var(--blue);cursor:pointer;margin-bottom:-2px">Installer</button>
+      <button onclick="scriptTab('distance')" id="stab-distance" style="padding:9px 14px;font-size:12px;font-weight:500;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--t2);cursor:pointer;margin-bottom:-2px">Connectez-vous à distance</button>
+      <button onclick="scriptTab('ports')" id="stab-ports" style="padding:9px 14px;font-size:12px;font-weight:500;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--t2);cursor:pointer;margin-bottom:-2px">Redirection de ports</button>
+      <button onclick="scriptTab('problemes')" id="stab-problemes" style="padding:9px 14px;font-size:12px;font-weight:500;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--t2);cursor:pointer;margin-bottom:-2px">Problèmes ?</button>
+    </div>
+    <div id="stab-content-installer">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Script d'installation du VPN sur Mikrotik</div>
+      <div id="install-cmd-wrap" style="display:none;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid var(--bd);border-radius:8px;padding:8px 12px">
+          <input id="install-cmd-txt" readonly style="flex:1;background:transparent;border:none;outline:none;font-family:monospace;font-size:11px;color:var(--text)">
+          <button onclick="copyInstall()" style="background:var(--blue);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:none;cursor:pointer">📋</button>
+          <button style="background:var(--white);border:1px solid var(--bd);padding:5px 8px;border-radius:5px;cursor:pointer">🗑</button>
+          <button style="background:#fee2e2;border:1px solid #fecaca;padding:5px 8px;border-radius:5px;cursor:pointer;color:var(--red)">✕</button>
+        </div>
+      </div>
+      <div style="background:#eef2ff;border-radius:10px;padding:14px;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px">ℹ️ Instructions</div>
+        <ul style="font-size:12px;color:var(--t2);padding-left:16px;line-height:2.2">
+          <li>Connectez-vous à votre routeur Mikrotik via Winbox ou l'interface Web. 🖥️</li>
+          <li>Ouvrez la fenêtre du terminal. ▶️</li>
+          <li>Collez le code fourni. 📋</li>
+          <li>Appuyez sur Entrée. ↵</li>
+        </ul>
+      </div>
+      <textarea class="script-box" id="script-txt" readonly style="height:100px"></textarea>
+      <button class="btn-save" style="width:100%;margin-top:8px" onclick="copyScript()">📋 Copier le script</button>
+    </div>
+    <div id="stab-content-distance" style="display:none">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Connexion à distance</div>
+      <div id="detail-addrs"></div>
+    </div>
+    <div id="stab-content-ports" style="display:none">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Redirection de ports</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:10px">Commandes iptables à exécuter sur le VPS :</div>
+      <textarea id="detail-ipt" readonly style="width:100%;background:#0f172a;border:none;border-radius:8px;padding:12px;color:#22c55e;font-family:monospace;font-size:11px;min-height:100px;resize:none"></textarea>
+      <button onclick="copyText(document.getElementById('detail-ipt').value,this)" class="btn-cancel" style="margin-top:8px">📋 Copier</button>
+    </div>
+    <div id="stab-content-problemes" style="display:none">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Problèmes de connexion ?</div>
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:600;color:#92400e;margin-bottom:8px">⚠️ Vérifications</div>
+        <ul style="font-size:12px;color:#92400e;padding-left:16px;line-height:2">
+          <li>Routeur sous RouterOS 7.1 ou plus</li>
+          <li>Script exécuté sans erreur</li>
+          <li>Port WireGuard 51820 accessible</li>
+          <li>Attendez 30 secondes après exécution</li>
+        </ul>
+      </div>
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:14px">
+        <div style="font-size:13px;font-weight:600;color:#0369a1;margin-bottom:10px">💬 Contacter le support</div>
+        <button onclick="openWhatsApp()" style="background:#25d366;color:#fff;font-size:12px;font-weight:600;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;margin-right:8px">💬 WhatsApp</button>
+        <button onclick="openTelegram()" style="background:#0088cc;color:#fff;font-size:12px;font-weight:600;padding:9px 18px;border-radius:8px;border:none;cursor:pointer">✈️ Telegram</button>
       </div>
     </div>
-    <div style="background:#f8f9fc;border-radius:8px;padding:12px;margin-bottom:10px;font-size:12px;color:var(--t2)">
-      Instructions : WinBox → New Terminal → Coller → Entrée
-    </div>
-    <textarea class="script-box" id="script-txt" readonly></textarea>
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="btn-save" style="flex:1" onclick="copyScript()">📋 Copier le script</button>
-      <button class="btn-cancel" onclick="cm('mod-script-view')">Fermer</button>
-    </div>
-    <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">IP : <span id="s-ip" style="color:var(--blue);font-family:monospace"></span> — Serveur : <span id="s-srv" style="color:var(--blue);font-family:monospace"></span></div>
+    <div style="font-size:11px;color:var(--t3);margin-top:12px;text-align:center">IP : <span id="s-ip" style="color:var(--blue);font-family:monospace"></span> — Serveur : <span id="s-srv" style="color:var(--blue);font-family:monospace"></span></div>
   </div>
 </div>
 
-<div class="ov" id="mod-detail">
+<div class="ov" id="mod-detail" style="display:none">
   <div class="mod" style="max-width:520px">
     <div class="mod-header"><span class="mod-title">🔌 Connexion à distance</span><button class="mod-close" onclick="cm('mod-detail')">✕</button></div>
-    <div id="detail-addrs"></div>
+    <div id="detail-addrs-old"></div>
     <div style="margin-top:12px">
       <div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:6px">Commandes iptables (admin VPS) :</div>
-      <textarea id="detail-ipt" readonly style="width:100%;background:#0f172a;border:none;border-radius:7px;padding:10px;color:#22c55e;font-family:monospace;font-size:10px;min-height:80px;resize:none"></textarea>
+      <textarea id="detail-ipt-old" readonly style="width:100%;background:#0f172a;border:none;border-radius:7px;padding:10px;color:#22c55e;font-family:monospace;font-size:10px;min-height:80px;resize:none"></textarea>
     </div>
     <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-detail')">Fermer</button></div>
   </div>
@@ -1354,14 +1397,31 @@ async function buyService(planId){
   loadDashboard();
 }
 
+function scriptTab(tab){
+  ['installer','distance','ports','problemes'].forEach(function(t){
+    var btn=document.getElementById('stab-'+t);
+    var cnt=document.getElementById('stab-content-'+t);
+    if(t===tab){btn.style.borderBottomColor='var(--blue)';btn.style.color='var(--blue)';btn.style.fontWeight='600';if(cnt)cnt.style.display='block';}
+    else{btn.style.borderBottomColor='transparent';btn.style.color='var(--t2)';btn.style.fontWeight='500';if(cnt)cnt.style.display='none';}
+  });
+}
+
 async function viewScript(svcId){
   var d=await api('GET','/api/services/'+svcId+'/script');
   if(d.error){alert(d.error);return;}
   document.getElementById('script-txt').value=d.script;
-  document.getElementById('s-ip').textContent=d.clientIP;
-  document.getElementById('s-srv').textContent=d.serverIP+':'+d.serverPort;
+  document.getElementById('s-ip').textContent=d.clientIP||'';
+  document.getElementById('s-srv').textContent=(d.serverIP||'')+':'+(d.serverPort||'');
   var box=document.getElementById('install-cmd-wrap');
   if(d.installCmd){document.getElementById('install-cmd-txt').value=d.installCmd;box.style.display='block';}
+  var dp=await api('GET','/api/services/'+svcId+'/ports');
+  if(!dp.error){
+    document.getElementById('detail-addrs').innerHTML=dp.addresses.map(function(a){
+      return '<div style="background:var(--s1);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:13px;font-weight:600">'+a.icon+' '+a.label+'</div><div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px"><input readonly value="'+a.address+'" style="flex:1;background:var(--white);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--blue);font-family:monospace;font-size:12px;outline:none"><button onclick="copyText(''+a.copy+'',this)" style="background:var(--white);border:1px solid var(--bd);padding:6px 10px;border-radius:5px;cursor:pointer">📋</button></div><span style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;margin-left:8px">Ouvert</span></div>';
+    }).join('');
+    document.getElementById('detail-ipt').value=dp.iptablesScript;
+  }
+  scriptTab('installer');
   om('mod-script-view');
 }
 
