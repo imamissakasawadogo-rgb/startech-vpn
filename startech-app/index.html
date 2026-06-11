@@ -1369,17 +1369,32 @@ async function viewDetail(svcId){
   var d=await api('GET','/api/services/'+svcId+'/ports');
   if(d.error){alert(d.error);return;}
   document.getElementById('detail-addrs').innerHTML=d.addresses.map(function(a){
-    return '<div style="background:var(--s1);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600">'+a.icon+' '+a.label+'</div></div><div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px"><input readonly value="'+a.address+'" style="flex:1;background:var(--white);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--blue);font-family:monospace;font-size:12px;outline:none"><button onclick="navigator.clipboard.writeText(\''+a.copy+'\')" style="background:var(--white);border:1px solid var(--bd);padding:6px 10px;border-radius:5px;cursor:pointer">📋</button></div><span style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;margin-left:8px">Ouvert</span></div>';
+    return '<div style="background:var(--s1);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600">'+a.icon+' '+a.label+'</div></div><div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px"><input readonly value="'+a.address+'" style="flex:1;background:var(--white);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--blue);font-family:monospace;font-size:12px;outline:none"><button onclick="copyText(\''+a.copy+'\',this)" style="background:var(--white);border:1px solid var(--bd);padding:6px 10px;border-radius:5px;cursor:pointer">📋</button></div><span style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;margin-left:8px">Ouvert</span></div>';
   }).join('');
   document.getElementById('detail-ipt').value=d.iptablesScript;
   om('mod-detail');
 }
 
 function showMikhmonDetail(id){viewScript(id);}
-function copyInstall(){var t=document.getElementById('install-cmd-txt').value;navigator.clipboard.writeText(t);}
-function copyScript(){var t=document.getElementById('script-txt').value;navigator.clipboard.writeText(t);}
-function copyAffCode(){navigator.clipboard.writeText(AFFCODE);}
-function copyAffLink(){navigator.clipboard.writeText(document.getElementById('aff-link').textContent);}
+function copyText(txt,btn){
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(txt).then(function(){
+      if(btn){var t=btn.textContent;btn.textContent='✅ Copié !';setTimeout(function(){btn.textContent=t;},2000);}
+    });
+  } else {
+    // Fallback pour HTTP ou mobile
+    var ta=document.createElement('textarea');
+    ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.focus();ta.select();
+    try{document.execCommand('copy');if(btn){var t=btn.textContent;btn.textContent='✅ Copié !';setTimeout(function(){btn.textContent=t;},2000);}}
+    catch(e){alert('Copier manuellement :\n'+txt);}
+    document.body.removeChild(ta);
+  }
+}
+function copyInstall(){copyText(document.getElementById('install-cmd-txt').value,event.target);}
+function copyScript(){copyText(document.getElementById('script-txt').value,event.target);}
+function copyAffCode(){copyText(AFFCODE,event.target);}
+function copyAffLink(){copyText(document.getElementById('aff-link').textContent,event.target);}
 
 // ===== ADMIN =====
 async function loadAdminDash(){
