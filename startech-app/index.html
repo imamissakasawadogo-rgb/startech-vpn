@@ -6,14 +6,12 @@
 :root{--bg:#0a0c10;--s1:#12161e;--s2:#1a1f2b;--bd:#1e2535;--gold:#d4a017;--gold2:#f0c040;--green:#05d890;--blue:#3d8bff;--red:#ff4d6d;--orange:#ff8c00;--text:#e8eaf0;--t2:#8892a4;--t3:#4a5568;--r:10px}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 button{cursor:pointer;border:none;outline:none;font-family:inherit}
-/* AUTH SCREENS */
 .auth-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 30% 20%,#1a1200,var(--bg) 60%)}
 .auth-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:36px 32px;width:100%;max-width:400px}
-.auth-logo{text-align:center;margin-bottom:28px}
-.auth-logo .ico{font-size:40px}
+.auth-logo{text-align:center;margin-bottom:24px}
 .auth-logo h1{color:var(--gold);font-size:20px;letter-spacing:2px;margin-top:6px}
 .auth-logo p{color:var(--t2);font-size:11px;margin-top:3px}
-.auth-tabs{display:flex;background:var(--s2);border-radius:8px;padding:3px;margin-bottom:20px}
+.auth-tabs{display:flex;background:var(--s2);border-radius:8px;padding:3px;margin-bottom:16px}
 .auth-tab{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600;border-radius:6px;color:var(--t2);cursor:pointer;transition:all .2s}
 .auth-tab.on{background:var(--gold);color:#000}
 .fl{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
@@ -21,19 +19,21 @@ button{cursor:pointer;border:none;outline:none;font-family:inherit}
 .inp:focus{outline:none;border-color:var(--gold)}
 .btn-gold{width:100%;background:var(--gold);color:#000;font-weight:700;font-size:14px;padding:13px;border-radius:7px;margin-top:4px;transition:background .2s}
 .btn-gold:hover{background:var(--gold2)}
+.btn-google{width:100%;background:#fff;color:#333;font-weight:600;font-size:13px;padding:11px;border-radius:7px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;cursor:pointer}
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.divider div{flex:1;height:1px;background:var(--bd)}
+.divider span{font-size:11px;color:var(--t2)}
 .auth-err{color:var(--red);font-size:12px;text-align:center;margin-top:10px;display:none}
-.auth-switch{text-align:center;margin-top:14px;font-size:12px;color:var(--t2)}
-.auth-switch span{color:var(--gold);cursor:pointer}
-/* APP */
-#app{display:none;height:100vh;overflow:hidden}
+/* LAYOUT */
+#app-client,#app-admin{display:none;height:100vh;overflow:hidden}
 .layout{display:flex;height:100vh}
-/* SIDEBAR */
 .sidebar{width:230px;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;transition:transform .3s}
 .sb-head{padding:18px 14px 14px;border-bottom:1px solid var(--bd)}
 .brand{display:flex;align-items:center;gap:9px}
 .brand-ic{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;font-size:14px}
 .brand-n{color:var(--gold);font-size:14px;font-weight:700;letter-spacing:1px}
-.sb-bal{padding:10px 12px;background:var(--s2);margin:10px;border-radius:8px;display:flex;gap:10px}
+.sb-bal{padding:10px 12px;background:var(--s2);margin:10px;border-radius:8px}
+.bal-row{display:flex;gap:10px}
 .bal-b{flex:1;text-align:center}
 .bal-v{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold)}
 .bal-l{font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
@@ -47,25 +47,20 @@ button{cursor:pointer;border:none;outline:none;font-family:inherit}
 .uav{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000}
 .unm{font-size:12px;font-weight:600}
 .url{font-size:10px;color:var(--t2)}
-.blo{margin-left:auto;background:transparent;color:var(--t2);font-size:17px}
-.blo:hover{color:var(--red)}
-/* MAIN */
+.btn-logout{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:6px 12px;border-radius:6px}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .topbar{background:var(--s1);border-bottom:1px solid var(--bd);padding:13px 20px;display:flex;align-items:center;gap:10px}
 .tbtog{background:transparent;border:none;color:var(--t2);font-size:20px;cursor:pointer;display:none}
 .tbtit{font-size:15px;font-weight:700}
 .tbact{margin-left:auto;display:flex;gap:8px}
 .content{flex:1;overflow-y:auto;padding:20px}
-/* PAGES */
 .page{display:none}.page.on{display:block}
-/* STATS */
 .sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:11px;margin-bottom:20px}
-.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:14px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s}
+.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:14px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s;cursor:pointer}
 .sc:hover{border-color:var(--gold);transform:translateY(-2px)}
 .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .sc.g::before{background:var(--gold)}.sc.gr::before{background:var(--green)}.sc.bl::before{background:var(--blue)}.sc.or::before{background:var(--orange)}.sc.re::before{background:var(--red)}.sc.pu::before{background:#a855f7}
 .si{font-size:22px;margin-bottom:6px}.sv{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700}.sl{font-size:10px;color:var(--t2);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
-/* BOUTIQUE */
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px}
 .shop-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;text-align:center;transition:border-color .2s}
 .shop-card:hover{border-color:var(--gold)}
@@ -75,23 +70,15 @@ button{cursor:pointer;border:none;outline:none;font-family:inherit}
 .shop-price{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px}
 .price-crt{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--gold)}
 .price-fcfa{font-size:11px;color:var(--t2)}
-.btn-buy{background:var(--gold);color:#000;font-weight:700;font-size:12px;padding:9px 20px;border-radius:7px;width:100%;transition:background .2s}
+.btn-buy{background:var(--gold);color:#000;font-weight:700;font-size:12px;padding:9px 20px;border-radius:7px;width:100%}
 .btn-buy:hover{background:var(--gold2)}
-.btn-buy:disabled{background:var(--t3);cursor:not-allowed}
-/* PACKS */
 .packs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px}
 .pack-card{background:var(--s1);border:2px solid var(--bd);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
 .pack-card:hover,.pack-card.sel{border-color:var(--gold);background:rgba(212,160,23,.05)}
 .pack-crt{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--gold)}
 .pack-lbl{font-size:10px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.pack-fcfa{font-size:14px;font-weight:600;color:var(--text)}
-/* SERVICES ACTIFS */
-.svc-card{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
-.svc-icon{font-size:28px}
-.svc-info{flex:1}
-.svc-name{font-size:14px;font-weight:700}
-.svc-exp{font-size:11px;color:var(--t2);margin-top:2px}
-/* TABLE */
+.pack-fcfa{font-size:14px;font-weight:600}
+.svc-card{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px}
 .tw{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
 table{width:100%;border-collapse:collapse}
 thead{background:var(--s2)}
@@ -107,7 +94,6 @@ tr:hover td{background:var(--s2)}
 .bol:hover{border-color:var(--gold);color:var(--gold)}
 .emp{text-align:center;padding:40px;color:var(--t2)}
 .emp-i{font-size:36px;margin-bottom:10px}.emp p{font-size:12px}
-/* MODAL */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:100}
 .ov.op{display:flex}
 .mod{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:26px;width:90%;max-width:460px;max-height:90vh;overflow-y:auto}
@@ -127,6 +113,9 @@ textarea.fi{resize:vertical;min-height:70px}
 .alert-e{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:var(--red)}
 .ovbg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none}
 .ovbg.op{display:block}
+/* ADMIN SPECIFIC */
+.admin-header{background:linear-gradient(135deg,#1a0a00,var(--s1));border-bottom:2px solid var(--gold);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.admin-badge{background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;letter-spacing:1px}
 @media(max-width:700px){
   .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%)}
   .sidebar.op{transform:translateX(0)}
@@ -139,25 +128,19 @@ textarea.fi{resize:vertical;min-height:70px}
 }
 </style></head><body>
 
-<!-- LOGIN -->
+<!-- AUTH -->
 <div class="auth-wrap" id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo"><div class="ico">⚡</div><h1>STARTECH APP</h1><p>Plateforme MikroTik</p></div>
+    <div class="auth-logo"><div style="font-size:40px">⚡</div><h1>STARTECH APP</h1><p>Plateforme MikroTik</p></div>
     <div class="auth-tabs">
       <div class="auth-tab on" id="tab-login" onclick="switchTab('login')">Connexion</div>
       <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Créer un compte</div>
     </div>
-    <!-- GOOGLE BUTTON -->
-    <button id="btn-google" onclick="signInWithGoogle()" style="width:100%;background:#fff;color:#333;font-weight:600;font-size:13px;padding:11px;border-radius:7px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;cursor:pointer;transition:background .2s">
+    <button class="btn-google" onclick="signInWithGoogle()">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
       Continuer avec Google
     </button>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <div style="flex:1;height:1px;background:var(--bd)"></div>
-      <span style="font-size:11px;color:var(--t2)">ou</span>
-      <div style="flex:1;height:1px;background:var(--bd)"></div>
-    </div>
-    <!-- LOGIN FORM -->
+    <div class="divider"><div></div><span>ou</span><div></div></div>
     <div id="form-login">
       <label class="fl">Identifiant ou email</label>
       <input class="inp" type="text" id="lu" placeholder="admin ou email@...">
@@ -166,7 +149,6 @@ textarea.fi{resize:vertical;min-height:70px}
       <button class="btn-gold" onclick="doLogin()">Connexion</button>
       <p class="auth-err" id="lerr"></p>
     </div>
-    <!-- REGISTER FORM -->
     <div id="form-register" style="display:none">
       <label class="fl">Nom d'utilisateur</label>
       <input class="inp" type="text" id="ru" placeholder="monpseudo">
@@ -180,184 +162,141 @@ textarea.fi{resize:vertical;min-height:70px}
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <div class="ovbg" id="ovbg" onclick="cSide()"></div>
+<!-- ==================== APP CLIENT ==================== -->
+<div id="app-client">
+  <div class="ovbg" id="ovbg-c" onclick="cSide('c')"></div>
   <div class="layout">
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar" id="sidebar-c">
       <div class="sb-head">
         <div class="brand">
           <div class="brand-ic">S</div>
-          <div><div class="brand-n">STARTECH</div><div style="font-size:9px;color:var(--t2)">APP v2.0</div></div>
+          <div><div class="brand-n">STARTECH</div><div style="font-size:9px;color:var(--t2)">Espace client</div></div>
         </div>
       </div>
       <div class="sb-bal">
-        <div class="bal-b"><div class="bal-v" id="sb-crt">0</div><div class="bal-l">CRT</div></div>
-        <div class="bal-b"><div class="bal-v" id="sb-fcfa">0</div><div class="bal-l">FCFA</div></div>
+        <div class="bal-row">
+          <div class="bal-b"><div class="bal-v" id="c-crt">0</div><div class="bal-l">CRT</div></div>
+          <div class="bal-b"><div class="bal-v" id="c-fcfa">0</div><div class="bal-l">FCFA</div></div>
+        </div>
       </div>
       <nav class="nav">
-        <div class="nsec">Principal</div>
-        <div class="ni on" onclick="gp('dashboard')"><span>🏠</span> Tableau de bord</div>
-        <div class="ni" id="ni-boutique" onclick="gp('boutique')"><span>🛒</span> Boutique</div>
-        <div class="ni" id="ni-credits" onclick="gp('credits')"><span>🪙</span> Acheter crédits</div>
-        <div class="ni" id="ni-services" onclick="gp('services')"><span>⚡</span> Mes services</div>
-        <div class="nsec">MikroTik</div>
-        <div class="ni" id="ni-mikhmon" onclick="gp('mikhmon')"><span>📡</span> Mikhmon Online</div>
-        <div class="ni" id="ni-wireguard" onclick="gp('wireguard')"><span>🔒</span> WireGuard VPN</div>
-        <div class="ni" id="ni-vpnaccounts" onclick="gp('vpnaccounts')"><span>👤</span> Comptes VPN</div>
-        <div class="nsec" id="nadm">Admin</div>
-        <div class="ni" id="ni-scripts" onclick="gp('scripts')"><span>&lt;/&gt;</span> Scripts</div>
-        <div class="ni" id="ni-users" onclick="gp('users')"><span>👥</span> Utilisateurs</div>
-        <div class="ni" id="ni-payments" onclick="gp('payments')"><span>💳</span> Paiements</div>
-        <div class="ni" onclick="gp('transactions')"><span>📊</span> Transactions</div>
+        <div class="nsec">Mon espace</div>
+        <div class="ni on" onclick="cp('dashboard')"><span>🏠</span> Tableau de bord</div>
+        <div class="ni" onclick="cp('boutique')"><span>🛒</span> Boutique</div>
+        <div class="ni" onclick="cp('credits')"><span>🪙</span> Acheter crédits</div>
+        <div class="ni" onclick="cp('services')"><span>⚡</span> Mes services</div>
+        <div class="ni" onclick="cp('vpn')"><span>🔒</span> Mes VPN</div>
+        <div class="ni" onclick="cp('transactions')"><span>📊</span> Mes transactions</div>
       </nav>
       <div class="sb-foot">
         <div class="uinfo">
-          <div class="uav" id="sb-av">A</div>
-          <div><div class="unm" id="sb-nm">admin</div><div class="url" id="sb-rl">admin</div></div>
-          <button class="blo" onclick="doLogout()">⏻</button>
+          <div class="uav" id="c-av">C</div>
+          <div><div class="unm" id="c-nm">client</div><div class="url">Client</div></div>
+          <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
         </div>
       </div>
     </div>
-
-    <!-- MAIN -->
     <div class="main">
       <div class="topbar">
-        <button class="tbtog" onclick="tSide()">☰</button>
-        <span class="tbtit" id="tbtit">Tableau de bord</span>
-        <div class="tbact" id="tbact"></div>
+        <button class="tbtog" onclick="tSide('c')">☰</button>
+        <span class="tbtit" id="c-title">Tableau de bord</span>
+        <div class="tbact" id="c-act"></div>
       </div>
       <div class="content">
-
-        <!-- DASHBOARD -->
-        <div class="page on" id="pg-dashboard">
-          <div class="sg" id="dash-stats"></div>
+        <div class="page on" id="cp-dashboard">
+          <div class="sg" id="c-stats"></div>
           <div class="sec-title">Mes services actifs</div>
-          <div id="dash-services"><div class="emp"><div class="emp-i">⚡</div><p>Aucun service actif. <span style="color:var(--gold);cursor:pointer" onclick="gp('boutique')">Visiter la boutique</span></p></div></div>
+          <div id="c-services-dash"></div>
         </div>
-
-        <!-- BOUTIQUE -->
-        <div class="page" id="pg-boutique">
-          <div class="sec-title">Services disponibles</div>
+        <div class="page" id="cp-boutique">
           <div class="alert alert-e" id="buy-err"></div>
           <div class="alert alert-s" id="buy-ok"></div>
           <div class="shop-grid" id="shop-list"></div>
         </div>
-
-        <!-- CREDITS -->
-        <div class="page" id="pg-credits">
-          <div class="sec-title">Recharger mes crédits</div>
+        <div class="page" id="cp-credits">
           <p style="font-size:12px;color:var(--t2);margin-bottom:16px">1 CRT = 50 FCFA — Paiement via Orange Money / Moov Money</p>
           <div class="packs-grid" id="packs-list"></div>
           <div id="pack-selected" style="display:none">
-            <div class="sec-title">Confirmer l'achat</div>
             <div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:16px">
               <div style="font-size:18px;font-weight:700;margin-bottom:6px" id="pack-confirm-txt"></div>
-              <div style="font-size:12px;color:var(--t2)">Paiement sécurisé via FedaPay</div>
+              <div style="font-size:12px;color:var(--t2)">Paiement sécurisé via FedaPay (Orange Money / Moov Money)</div>
             </div>
             <button class="btn-gold" style="max-width:300px" onclick="initPayment()">Payer maintenant</button>
           </div>
         </div>
-
-        <!-- MES SERVICES -->
-        <div class="page" id="pg-services">
-          <div id="svc-list"></div>
-        </div>
-
-        <!-- MIKHMON -->
-        <div class="page" id="pg-mikhmon">
-          <div class="tw" id="rt-wrap"><div class="emp"><div class="emp-i">📡</div><p>Aucun routeur.</p></div></div>
-        </div>
-
-        <!-- WIREGUARD -->
-        <div class="page" id="pg-wireguard">
-          <div id="wg-list"><div class="emp"><div class="emp-i">🔒</div><p>Aucun réseau WireGuard.</p></div></div>
-        </div>
-
-        <!-- VPN ACCOUNTS -->
-        <div class="page" id="pg-vpnaccounts">
-          <div class="tw" id="vpn-wrap"><div class="emp"><div class="emp-i">👤</div><p>Aucun compte VPN.</p></div></div>
-        </div>
-
-        <!-- SCRIPTS -->
-        <div class="page" id="pg-scripts">
-          <div id="sc-list"><div class="emp"><div class="emp-i">&lt;/&gt;</div><p>Aucun script.</p></div></div>
-        </div>
-
-        <!-- USERS -->
-        <div class="page" id="pg-users">
-          <div class="tw" id="us-wrap"><div class="emp"><div class="emp-i">👥</div><p>Aucun utilisateur.</p></div></div>
-        </div>
-
-        <!-- PAYMENTS -->
-        <div class="page" id="pg-payments">
-          <div class="tw" id="pay-wrap"><div class="emp"><div class="emp-i">💳</div><p>Aucun paiement.</p></div></div>
-        </div>
-
-        <!-- TRANSACTIONS -->
-        <div class="page" id="pg-transactions">
-          <div class="tw" id="tx-wrap"><div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div></div>
-        </div>
-
+        <div class="page" id="cp-services"><div id="svc-list"></div></div>
+        <div class="page" id="cp-vpn"><div id="c-vpn-wrap"><div class="emp"><div class="emp-i">🔒</div><p>Aucun VPN. <span style="color:var(--gold);cursor:pointer" onclick="cp('boutique')">Acheter</span></p></div></div></div>
+        <div class="page" id="cp-transactions"><div class="tw" id="c-tx-wrap"><div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div></div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODALS -->
-<div class="ov" id="mod-detail">
-  <div class="mod" style="max-width:520px">
-    <div class="mh"><span class="mt">🔌 Détail connexion</span><button class="mc" onclick="cm('mod-detail')">✕</button></div>
-    <div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:11px;color:var(--t2)">
-      Utilisez ces adresses pour vous connecter à distance à votre routeur via le tunnel VPN Startech.
-    </div>
-    <div id="detail-addresses"></div>
-    <div style="margin-top:14px">
-      <div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:8px">Activer la redirection (admin VPS) :</div>
-      <textarea id="detail-iptables" readonly style="width:100%;background:#0a0c10;border:1px solid var(--bd);border-radius:7px;padding:10px;color:var(--green);font-family:monospace;font-size:10px;min-height:80px;resize:none"></textarea>
-      <button onclick="copyIptables()" style="background:var(--s2);border:1px solid var(--bd);color:var(--t2);font-size:11px;padding:6px 12px;border-radius:5px;border:none;cursor:pointer;margin-top:6px">📋 Copier commandes iptables</button>
-    </div>
-    <div class="ma"><button class="bol" onclick="cm('mod-detail')">Fermer</button></div>
-  </div>
-</div>
-
-<div class="ov" id="mod-script-view">
-  <div class="mod" style="max-width:560px">
-    <div class="mh"><span class="mt">📋 Script RouterOS</span><button class="mc" onclick="cm('mod-script-view')">✕</button></div>
-    <!-- COMMANDE COURTE -->
-    <div id="install-cmd-box" style="display:none;margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">⚡ Commande d'installation (coller dans New Terminal)</div>
-      <div style="background:#0a0c10;border:1px solid var(--gold);border-radius:7px;padding:10px;display:flex;align-items:center;gap:8px">
-        <input id="install-cmd" readonly style="flex:1;background:transparent;border:none;color:var(--green);font-family:monospace;font-size:11px;outline:none">
-        <button onclick="copyInstallCmd()" style="background:var(--gold);color:#000;font-weight:700;font-size:11px;padding:5px 10px;border-radius:5px;border:none;cursor:pointer;white-space:nowrap">📋 Copier</button>
+<!-- ==================== APP ADMIN ==================== -->
+<div id="app-admin">
+  <div class="ovbg" id="ovbg-a" onclick="cSide('a')"></div>
+  <div class="layout">
+    <div class="sidebar" id="sidebar-a" style="border-right:2px solid var(--gold)">
+      <div class="sb-head" style="background:linear-gradient(135deg,#1a0a00,var(--s1))">
+        <div class="brand">
+          <div class="brand-ic" style="background:var(--gold)">S</div>
+          <div>
+            <div class="brand-n">STARTECH</div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:2px"><span style="background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px">ADMIN</span></div>
+          </div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="nsec">Tableau de bord</div>
+        <div class="ni on" onclick="ap('dashboard')"><span>🏠</span> Vue globale</div>
+        <div class="nsec">Gestion clients</div>
+        <div class="ni" onclick="ap('users')"><span>👥</span> Utilisateurs</div>
+        <div class="ni" onclick="ap('payments')"><span>💳</span> Paiements</div>
+        <div class="ni" onclick="ap('all-services')"><span>⚡</span> Services clients</div>
+        <div class="ni" onclick="ap('transactions')"><span>📊</span> Transactions</div>
+        <div class="nsec">Infrastructure</div>
+        <div class="ni" onclick="ap('mikhmon')"><span>📡</span> Mikhmon Online</div>
+        <div class="ni" onclick="ap('wireguard')"><span>🔒</span> WireGuard</div>
+        <div class="ni" onclick="ap('scripts')"><span>&lt;/&gt;</span> Scripts</div>
+      </nav>
+      <div class="sb-foot">
+        <div class="uinfo">
+          <div class="uav" id="a-av" style="background:var(--gold)">A</div>
+          <div><div class="unm" id="a-nm">admin</div><div class="url" style="color:var(--gold)">Administrateur</div></div>
+          <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+        </div>
       </div>
     </div>
-    <div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:14px">
-      <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:6px">Instructions :</div>
-      <div style="font-size:11px;color:var(--t2);margin-bottom:4px">1. Connectez-vous à votre routeur via WinBox</div>
-      <div style="font-size:11px;color:var(--t2);margin-bottom:4px">2. Ouvrez <strong>New Terminal</strong></div>
-      <div style="font-size:11px;color:var(--t2);margin-bottom:4px">3. Collez la commande ci-dessus et appuyez sur Entrée</div>
-      <div style="font-size:11px;color:var(--t2)">4. Le VPN se configure automatiquement</div>
+    <div class="main">
+      <div class="topbar" style="border-bottom:2px solid var(--gold)">
+        <button class="tbtog" onclick="tSide('a')">☰</button>
+        <span class="tbtit" id="a-title">Vue globale</span>
+        <span class="admin-badge">ADMIN</span>
+        <div class="tbact" id="a-act"></div>
+      </div>
+      <div class="content">
+        <div class="page on" id="ap-dashboard"><div class="sg" id="a-stats"></div><div id="a-recent"></div></div>
+        <div class="page" id="ap-users"><div class="tw" id="a-users-wrap"><div class="emp"><div class="emp-i">👥</div><p>Chargement...</p></div></div></div>
+        <div class="page" id="ap-payments"><div class="tw" id="a-pay-wrap"><div class="emp"><div class="emp-i">💳</div><p>Aucun paiement.</p></div></div></div>
+        <div class="page" id="ap-all-services"><div id="a-svc-wrap"><div class="emp"><div class="emp-i">⚡</div><p>Aucun service.</p></div></div></div>
+        <div class="page" id="ap-transactions"><div class="tw" id="a-tx-wrap"><div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div></div></div>
+        <div class="page" id="ap-mikhmon"><div class="tw" id="a-rt-wrap"><div class="emp"><div class="emp-i">📡</div><p>Aucun routeur.</p></div></div></div>
+        <div class="page" id="ap-wireguard"><div id="a-wg-list"><div class="emp"><div class="emp-i">🔒</div><p>Aucun réseau WG.</p></div></div></div>
+        <div class="page" id="ap-scripts"><div id="a-sc-list"><div class="emp"><div class="emp-i">&lt;/&gt;</div><p>Aucun script.</p></div></div></div>
+      </div>
     </div>
-    <div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:6px">Script complet (optionnel) :</div>
-    <textarea id="script-content" readonly style="width:100%;background:#0a0c10;border:1px solid var(--bd);border-radius:7px;padding:12px;color:var(--green);font-family:monospace;font-size:11px;min-height:160px;resize:vertical"></textarea>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="bpri" style="flex:1" onclick="copyScript()">📋 Copier le script complet</button>
-      <button class="bol" onclick="cm('mod-script-view')">Fermer</button>
-    </div>
-    <div style="font-size:10px;color:var(--t2);margin-top:10px;text-align:center">IP client : <span id="script-ip" style="color:var(--gold);font-family:monospace"></span> — Serveur : <span id="script-server" style="color:var(--gold);font-family:monospace"></span></div>
   </div>
 </div>
 
+<!-- MODALS COMMUNS -->
 <div class="ov" id="mod-buy">
   <div class="mod">
     <div class="mh"><span class="mt" id="mod-buy-title">Acheter service</span><button class="mc" onclick="cm('mod-buy')">✕</button></div>
     <input type="hidden" id="buy-plan-id">
-    <div style="background:var(--s2);border-radius:8px;padding:14px;margin-bottom:16px">
-      <div style="font-size:24px;text-align:center;margin-bottom:8px" id="buy-icon"></div>
-      <div style="text-align:center;font-size:13px;color:var(--t2);margin-bottom:12px" id="buy-desc"></div>
-      <div style="text-align:center"><span class="badge bgo" style="font-size:14px;padding:6px 14px" id="buy-cost-badge"></span></div>
+    <div style="background:var(--s2);border-radius:8px;padding:14px;margin-bottom:16px;text-align:center">
+      <div style="font-size:28px;margin-bottom:6px" id="buy-icon"></div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:10px" id="buy-desc"></div>
+      <span class="badge bgo" style="font-size:13px;padding:5px 14px" id="buy-cost-badge"></span>
     </div>
     <label class="fl">Durée</label>
     <select class="fi" id="buy-months">
@@ -367,22 +306,54 @@ textarea.fi{resize:vertical;min-height:70px}
       <option value="6">6 mois — 60 CRT (3000 FCFA)</option>
       <option value="12">12 mois — 120 CRT (6000 FCFA)</option>
     </select>
-    <div style="font-size:12px;color:var(--t2);margin-bottom:14px">Votre solde : <span id="buy-balance" style="color:var(--gold);font-weight:700"></span> CRT</div>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:14px">Solde actuel : <span id="buy-balance" style="color:var(--gold);font-weight:700"></span> CRT</div>
     <div class="alert alert-e" id="buy-modal-err"></div>
-    <div class="ma">
-      <button class="bol" onclick="cm('mod-buy')">Annuler</button>
-      <button class="bpri" onclick="confirmBuy()">Confirmer l'achat</button>
+    <div class="ma"><button class="bol" onclick="cm('mod-buy')">Annuler</button><button class="bpri" onclick="confirmBuy()">Confirmer</button></div>
+  </div>
+</div>
+
+<div class="ov" id="mod-script-view">
+  <div class="mod" style="max-width:560px">
+    <div class="mh"><span class="mt">📋 Script RouterOS</span><button class="mc" onclick="cm('mod-script-view')">✕</button></div>
+    <div id="install-cmd-box" style="display:none;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">⚡ Coller dans New Terminal (WinBox)</div>
+      <div style="background:#0a0c10;border:1px solid var(--gold);border-radius:7px;padding:10px;display:flex;align-items:center;gap:8px">
+        <input id="install-cmd" readonly style="flex:1;background:transparent;border:none;color:var(--green);font-family:monospace;font-size:11px;outline:none">
+        <button onclick="copyInstallCmd()" style="background:var(--gold);color:#000;font-weight:700;font-size:11px;padding:5px 10px;border-radius:5px;border:none;cursor:pointer">📋 Copier</button>
+      </div>
     </div>
+    <div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:12px;font-size:11px;color:var(--t2)">
+      1. WinBox → New Terminal &nbsp;|&nbsp; 2. Coller la commande &nbsp;|&nbsp; 3. Entrée
+    </div>
+    <textarea id="script-content" readonly style="width:100%;background:#0a0c10;border:1px solid var(--bd);border-radius:7px;padding:12px;color:var(--green);font-family:monospace;font-size:11px;min-height:150px;resize:vertical"></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="bpri" style="flex:1" onclick="copyScript()">📋 Copier script complet</button>
+      <button class="bol" onclick="cm('mod-script-view')">Fermer</button>
+    </div>
+    <div style="font-size:10px;color:var(--t2);margin-top:8px;text-align:center">IP : <span id="script-ip" style="color:var(--gold);font-family:monospace"></span> — Serveur : <span id="script-server" style="color:var(--gold);font-family:monospace"></span></div>
+  </div>
+</div>
+
+<div class="ov" id="mod-detail">
+  <div class="mod" style="max-width:520px">
+    <div class="mh"><span class="mt">🔌 Connexion à distance</span><button class="mc" onclick="cm('mod-detail')">✕</button></div>
+    <div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:11px;color:var(--t2)">Adresses pour accéder à votre routeur via le tunnel VPN Startech.</div>
+    <div id="detail-addresses"></div>
+    <div style="margin-top:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:6px">Commandes iptables (admin VPS) :</div>
+      <textarea id="detail-iptables" readonly style="width:100%;background:#0a0c10;border:1px solid var(--bd);border-radius:7px;padding:10px;color:var(--green);font-family:monospace;font-size:10px;min-height:80px;resize:none"></textarea>
+    </div>
+    <div class="ma"><button class="bol" onclick="cm('mod-detail')">Fermer</button></div>
   </div>
 </div>
 
 <div class="ov" id="mod-router">
   <div class="mod">
     <div class="mh"><span class="mt">Ajouter routeur</span><button class="mc" onclick="cm('mod-router')">✕</button></div>
-    <label class="fl">Nom</label><input class="fi" id="rn" placeholder="Ex: BAOBAB 99">
+    <label class="fl">Nom</label><input class="fi" id="rn" placeholder="BAOBAB 99">
     <div class="frow">
       <div><label class="fl">IP</label><input class="fi" id="ri" placeholder="192.168.1.1"></div>
-      <div><label class="fl">Port API</label><input class="fi" id="rp" value="8728" type="number"></div>
+      <div><label class="fl">Port API</label><input class="fi" id="rp2" value="8728" type="number"></div>
     </div>
     <div class="frow">
       <div><label class="fl">Utilisateur</label><input class="fi" id="ru2" value="admin"></div>
@@ -396,26 +367,12 @@ textarea.fi{resize:vertical;min-height:70px}
 <div class="ov" id="mod-wg">
   <div class="mod">
     <div class="mh"><span class="mt">Ajouter réseau WG</span><button class="mc" onclick="cm('mod-wg')">✕</button></div>
-    <label class="fl">Nom</label><input class="fi" id="wgn" placeholder="Ex: Startech">
+    <label class="fl">Nom</label><input class="fi" id="wgn" placeholder="Startech">
     <div class="frow">
       <div><label class="fl">Sous-réseau</label><input class="fi" id="wgs" value="10.8.0.0/24"></div>
       <div><label class="fl">Port</label><input class="fi" id="wgp" value="51820" type="number"></div>
     </div>
     <div class="ma"><button class="bol" onclick="cm('mod-wg')">Annuler</button><button class="bpri" onclick="saveWG()">Créer</button></div>
-  </div>
-</div>
-
-<div class="ov" id="mod-vpn">
-  <div class="mod">
-    <div class="mh"><span class="mt">Créer compte VPN</span><button class="mc" onclick="cm('mod-vpn')">✕</button></div>
-    <label class="fl">Client</label><input class="fi" id="vn" placeholder="Nom du client">
-    <div class="frow">
-      <div><label class="fl">Forfait</label>
-        <select class="fi" id="vp"><option value="1mois">1 mois</option><option value="3mois">3 mois</option><option value="1an">1 an</option></select>
-      </div>
-      <div><label class="fl">Expiration</label><input class="fi" id="ve" type="date"></div>
-    </div>
-    <div class="ma"><button class="bol" onclick="cm('mod-vpn')">Annuler</button><button class="bpri" onclick="saveVPN()">Créer</button></div>
   </div>
 </div>
 
@@ -442,9 +399,7 @@ textarea.fi{resize:vertical;min-height:70px}
     <label class="fl">Email</label><input class="fi" id="ue" type="email">
     <div class="frow">
       <div><label class="fl">Mot de passe</label><input class="fi" id="upw" type="password"></div>
-      <div><label class="fl">Rôle</label>
-        <select class="fi" id="ur"><option value="client">Client</option><option value="admin">Admin</option></select>
-      </div>
+      <div><label class="fl">Rôle</label><select class="fi" id="ur"><option value="client">Client</option><option value="admin">Admin</option></select></div>
     </div>
     <div class="ma"><button class="bol" onclick="cm('mod-user')">Annuler</button><button class="bpri" onclick="saveU()">Créer</button></div>
   </div>
@@ -461,77 +416,52 @@ textarea.fi{resize:vertical;min-height:70px}
 </div>
 
 <script>
-// GOOGLE AUTH
+var tk='',cu=null,selPack=null;
 var GOOGLE_CLIENT_ID='996722318188-tktv13clq0euaf3cp13403k6vpb6degc.apps.googleusercontent.com';
-
-function signInWithGoogle(){
-  if(typeof google==='undefined'){
-    alert('Chargement Google en cours, réessayez dans quelques secondes.');
-    return;
-  }
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleResponse,
-    auto_select: false,
-    cancel_on_tap_outside: true
-  });
-  google.accounts.id.prompt(function(notification){
-    if(notification.isNotDisplayed()||notification.isSkippedMoment()){
-      // Fallback : ouvrir popup
-      google.accounts.id.renderButton(
-        document.createElement('div'),
-        {theme:'outline',size:'large'}
-      );
-    }
-  });
-}
-
-async function handleGoogleResponse(response){
-  // Envoyer le token Google au backend
-  var d=await fetch('/api/auth/google',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({credential:response.credential})
-  }).then(function(r){return r.json();});
-  if(d.error){
-    var e=document.getElementById('lerr');e.textContent=d.error;e.style.display='block';return;
-  }
-  tk=d.token;cu=d.user;localStorage.setItem('st_tk',tk);startApp();
-}
-
-var tk='', cu=null, selPack=null;
 
 function hd(){return{'Content-Type':'application/json','Authorization':'Bearer '+tk};}
 async function api(m,u,b){var o={method:m,headers:hd()};if(b)o.body=JSON.stringify(b);var r=await fetch(u,o);return r.json();}
 
-// AUTH TABS
+// GOOGLE
+function signInWithGoogle(){
+  if(typeof google==='undefined'){alert('Chargement Google...');return;}
+  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleResponse,auto_select:false});
+  google.accounts.id.prompt();
+}
+async function handleGoogleResponse(response){
+  var d=await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})}).then(function(r){return r.json();});
+  if(d.error){var e=document.getElementById('lerr');e.textContent=d.error;e.style.display='block';return;}
+  tk=d.token;cu=d.user;localStorage.setItem('st_tk',tk);startApp();
+}
+
+// AUTH
 function switchTab(t){
   document.getElementById('form-login').style.display=t==='login'?'block':'none';
   document.getElementById('form-register').style.display=t==='register'?'block':'none';
   document.getElementById('tab-login').classList.toggle('on',t==='login');
   document.getElementById('tab-register').classList.toggle('on',t==='register');
 }
-
 async function doLogin(){
-  var u=document.getElementById('lu').value,p=document.getElementById('lp').value;
-  if(!u||!p)return;
+  var u=document.getElementById('lu').value,p=document.getElementById('lp').value;if(!u||!p)return;
   var d=await api('POST','/api/auth/login',{username:u,password:p});
   if(d.error){var e=document.getElementById('lerr');e.textContent=d.error;e.style.display='block';return;}
   tk=d.token;cu=d.user;localStorage.setItem('st_tk',tk);startApp();
 }
-
 async function doRegister(){
-  var u=document.getElementById('ru').value,e=document.getElementById('re').value,p=document.getElementById('rp').value;
-  if(!u||!e||!p)return;
+  var u=document.getElementById('ru').value,e=document.getElementById('re').value,p=document.getElementById('rp').value;if(!u||!e||!p)return;
   var d=await api('POST','/api/auth/register',{username:u,email:e,password:p});
   if(d.error){var er=document.getElementById('rerr');er.textContent=d.error;er.style.display='block';return;}
   tk=d.token;cu=d.user;localStorage.setItem('st_tk',tk);startApp();
 }
-
 document.getElementById('lp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 document.getElementById('rp').addEventListener('keydown',function(e){if(e.key==='Enter')doRegister();});
 
-function doLogout(){tk='';cu=null;localStorage.removeItem('st_tk');document.getElementById('app').style.display='none';document.getElementById('auth-screen').style.display='flex';}
+function doLogout(){
+  tk='';cu=null;localStorage.removeItem('st_tk');
+  document.getElementById('app-client').style.display='none';
+  document.getElementById('app-admin').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+}
 
 async function tryAuto(){
   var s=localStorage.getItem('st_tk');if(!s)return;tk=s;
@@ -542,83 +472,81 @@ async function tryAuto(){
 
 function startApp(){
   document.getElementById('auth-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('sb-nm').textContent=cu.username;
-  document.getElementById('sb-rl').textContent=cu.role;
-  document.getElementById('sb-av').textContent=cu.username[0].toUpperCase();
-  // Masquer sections admin si client
-  if(cu.role!=='admin'){
-    document.getElementById('nadm').style.display='none';
-    document.getElementById('ni-scripts').style.display='none';
-    document.getElementById('ni-users').style.display='none';
-    document.getElementById('ni-payments').style.display='none';
+  if(cu.role==='admin'){
+    document.getElementById('app-admin').style.display='block';
+    document.getElementById('a-av').textContent=cu.username[0].toUpperCase();
+    document.getElementById('a-nm').textContent=cu.username;
+    loadAdminDashboard();
+  } else {
+    document.getElementById('app-client').style.display='block';
+    document.getElementById('c-av').textContent=cu.username[0].toUpperCase();
+    document.getElementById('c-nm').textContent=cu.username;
+    loadClientDashboard();
   }
-  loadDB();
 }
 
 // NAVIGATION
-function gp(n){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on');});
-  document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('on');});
-  var pg=document.getElementById('pg-'+n);if(pg)pg.classList.add('on');
-  var ni=document.getElementById('ni-'+n);if(ni)ni.classList.add('on');
-  var titles={dashboard:'Tableau de bord',boutique:'Boutique',credits:'Acheter crédits',services:'Mes services',mikhmon:'Mikhmon Online',wireguard:'WireGuard VPN',vpnaccounts:'Comptes VPN',scripts:'Scripts MikroTik',users:'Utilisateurs',payments:'Paiements',transactions:'Transactions'};
-  document.getElementById('tbtit').textContent=titles[n]||n;
-  var a=document.getElementById('tbact');a.innerHTML='';
-  if(n==='mikhmon'){a.innerHTML='<button class="bpri" onclick="om(\'mod-router\')">+ Routeur</button>';loadR();}
-  else if(n==='wireguard'){a.innerHTML='<button class="bpri" onclick="om(\'mod-wg\')">+ Réseau</button>';loadWG();}
-  else if(n==='vpnaccounts'){if(cu.role==='admin')a.innerHTML='<button class="bpri" onclick="om(\'mod-vpn\')">+ Compte</button>';loadVPN();}
-  else if(n==='scripts'){if(cu.role==='admin')a.innerHTML='<button class="bpri" onclick="om(\'mod-script\')">+ Script</button>';loadSC();}
-  else if(n==='users'){a.innerHTML='<button class="bpri" onclick="om(\'mod-user\')">+ Utilisateur</button>';loadU();}
-  else if(n==='boutique'){loadShop();}
-  else if(n==='credits'){loadPacks();}
-  else if(n==='services'){loadMyServices();}
-  else if(n==='payments'){loadPayments();}
-  else if(n==='transactions'){loadTX();}
-  cSide();
+function cp(n){
+  document.querySelectorAll('#app-client .page').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('#app-client .ni').forEach(function(x){x.classList.remove('on');});
+  var pg=document.getElementById('cp-'+n);if(pg)pg.classList.add('on');
+  var titles={dashboard:'Tableau de bord',boutique:'Boutique',credits:'Acheter crédits',services:'Mes services',vpn:'Mes VPN',transactions:'Mes transactions'};
+  document.getElementById('c-title').textContent=titles[n]||n;
+  document.getElementById('c-act').innerHTML='';
+  if(n==='boutique')loadShop();
+  else if(n==='credits')loadPacks();
+  else if(n==='services')loadMyServices();
+  else if(n==='vpn')loadClientVPN();
+  else if(n==='transactions')loadClientTX();
+  cSide('c');
 }
 
-function tSide(){document.getElementById('sidebar').classList.toggle('op');document.getElementById('ovbg').classList.toggle('op');}
-function cSide(){document.getElementById('sidebar').classList.remove('op');document.getElementById('ovbg').classList.remove('op');}
+function ap(n){
+  document.querySelectorAll('#app-admin .page').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('#app-admin .ni').forEach(function(x){x.classList.remove('on');});
+  var pg=document.getElementById('ap-'+n);if(pg)pg.classList.add('on');
+  var titles={dashboard:'Vue globale',users:'Utilisateurs',payments:'Paiements',transactions:'Transactions','all-services':'Services clients',mikhmon:'Mikhmon Online',wireguard:'WireGuard',scripts:'Scripts MikroTik'};
+  document.getElementById('a-title').textContent=titles[n]||n;
+  var a=document.getElementById('a-act');a.innerHTML='';
+  if(n==='users'){a.innerHTML='<button class="bpri" onclick="om(\'mod-user\')">+ Utilisateur</button>';loadAdminUsers();}
+  else if(n==='payments')loadAdminPayments();
+  else if(n==='transactions')loadAdminTX();
+  else if(n==='all-services')loadAllServices();
+  else if(n==='mikhmon'){a.innerHTML='<button class="bpri" onclick="om(\'mod-router\')">+ Routeur</button>';loadRouters();}
+  else if(n==='wireguard'){a.innerHTML='<button class="bpri" onclick="om(\'mod-wg\')">+ Réseau</button>';loadWG();}
+  else if(n==='scripts'){a.innerHTML='<button class="bpri" onclick="om(\'mod-script\')">+ Script</button>';loadScripts();}
+  cSide('a');
+}
+
+function tSide(t){document.getElementById('sidebar-'+t).classList.toggle('op');document.getElementById('ovbg-'+t).classList.toggle('op');}
+function cSide(t){document.getElementById('sidebar-'+t).classList.remove('op');document.getElementById('ovbg-'+t).classList.remove('op');}
 function om(id){document.getElementById(id).classList.add('op');}
 function cm(id){document.getElementById(id).classList.remove('op');}
 
-// DASHBOARD
-async function loadDB(){
+// ===== CLIENT =====
+async function loadClientDashboard(){
   var d=await api('GET','/api/dashboard');if(d.error)return;
-  cu.credits=d.user.credits;cu.gnx=d.user.gnx;
-  document.getElementById('sb-crt').textContent=d.user.credits;
-  document.getElementById('sb-fcfa').textContent=(d.user.credits*50).toLocaleString();
-  var statsHtml='';
-  if(cu.role==='admin'){
-    statsHtml='<div class="sc g" style="cursor:pointer" onclick="gp(\'mikhmon\')"><div class="si">📡</div><div class="sv">'+d.stats.routers+'</div><div class="sl">Routeurs</div></div>'+
-    '<div class="sc gr" style="cursor:pointer" onclick="gp(\'wireguard\')"><div class="si">🔒</div><div class="sv">'+d.stats.vpn_networks+'</div><div class="sl">Réseaux WG</div></div>'+
-    '<div class="sc bl" style="cursor:pointer" onclick="gp(\'users\')"><div class="si">👥</div><div class="sv">'+d.stats.users+'</div><div class="sl">Utilisateurs</div></div>'+
-    '<div class="sc or" style="cursor:pointer" onclick="gp(\'services\')"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Services</div></div>'+
-    '<div class="sc pu" style="cursor:pointer" onclick="gp(\'payments\')"><div class="si">💳</div><div class="sv">'+d.stats.transactions+'</div><div class="sl">Transactions</div></div>'+
-    '<div class="sc re" style="cursor:pointer" onclick="gp(\'vpnaccounts\')"><div class="si">👤</div><div class="sv">'+d.stats.vpn_accounts+'</div><div class="sl">Comptes VPN</div></div>';
-  } else {
-    statsHtml='<div class="sc g" style="cursor:pointer" onclick="gp(\'credits\')"><div class="si">🪙</div><div class="sv">'+d.user.credits+'</div><div class="sl">Crédits CRT</div></div>'+
-    '<div class="sc gr" style="cursor:pointer" onclick="gp(\'credits\')"><div class="si">💵</div><div class="sv">'+(d.user.credits*50).toLocaleString()+'</div><div class="sl">FCFA</div></div>'+
-    '<div class="sc bl" style="cursor:pointer" onclick="gp(\'services\')"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Mes services</div></div>'+
-    '<div class="sc or" style="cursor:pointer" onclick="gp(\'boutique\')"><div class="si">🛒</div><div class="sv">3</div><div class="sl">Services dispo</div></div>';
-  }
-  document.getElementById('dash-stats').innerHTML=statsHtml;
-  // Services actifs
+  cu.credits=d.user.credits;
+  document.getElementById('c-crt').textContent=d.user.credits;
+  document.getElementById('c-fcfa').textContent=(d.user.credits*50).toLocaleString();
+  document.getElementById('c-stats').innerHTML=
+    '<div class="sc g" onclick="cp(\'credits\')"><div class="si">🪙</div><div class="sv">'+d.user.credits+'</div><div class="sl">Crédits CRT</div></div>'+
+    '<div class="sc gr" onclick="cp(\'credits\')"><div class="si">💵</div><div class="sv">'+(d.user.credits*50).toLocaleString()+'</div><div class="sl">FCFA</div></div>'+
+    '<div class="sc bl" onclick="cp(\'services\')"><div class="si">⚡</div><div class="sv">'+(d.myServices?d.myServices.length:0)+'</div><div class="sl">Services actifs</div></div>'+
+    '<div class="sc or" onclick="cp(\'boutique\')"><div class="si">🛒</div><div class="sv">3</div><div class="sl">Services dispo</div></div>';
   var svcs=d.myServices||[];
   if(!svcs.length){
-    document.getElementById('dash-services').innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service actif. <span style="color:var(--gold);cursor:pointer" onclick="gp(\'boutique\')">Visiter la boutique</span></p></div>';
+    document.getElementById('c-services-dash').innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service actif. <span style="color:var(--gold);cursor:pointer" onclick="cp(\'boutique\')">Visiter la boutique</span></p></div>';
   } else {
-    document.getElementById('dash-services').innerHTML=svcs.map(function(s){
+    document.getElementById('c-services-dash').innerHTML=svcs.map(function(s){
       var exp=new Date(s.expiry),ok=exp>=new Date();
-      return '<div class="svc-card"><div class="svc-icon">'+getPlanIcon(s.planId)+'</div><div class="svc-info"><div class="svc-name">'+s.planName+'</div><div class="svc-exp">Expire le '+exp.toLocaleDateString('fr-FR')+'</div></div><span class="badge '+(ok?'bgr':'bre')+'">'+(ok?'Actif':'Expiré')+'</span></div>';
+      return '<div class="svc-card" style="display:flex;align-items:center;gap:12px"><div style="font-size:26px">'+getPlanIcon(s.planId)+'</div><div style="flex:1"><div style="font-size:14px;font-weight:700">'+s.planName+'</div><div style="font-size:11px;color:var(--t2)">Expire le '+exp.toLocaleDateString('fr-FR')+'</div></div><span class="badge '+(ok?'bgr':'bre')+'">'+(ok?'Actif':'Expiré')+'</span></div>';
     }).join('');
   }
 }
 
-function getPlanIcon(id){var icons={wg:'🔒',mikhmon:'📡',vpn:'👤'};return icons[id]||'⚡';}
+function getPlanIcon(id){return{wg:'🔒',mikhmon:'📡',vpn:'👤'}[id]||'⚡';}
 
-// BOUTIQUE
 async function loadShop(){
   var plans=await api('GET','/api/plans');
   document.getElementById('shop-list').innerHTML=plans.map(function(p){
@@ -643,22 +571,17 @@ async function confirmBuy(){
   var err=document.getElementById('buy-modal-err');
   var d=await api('POST','/api/services/buy',{planId:planId,months:months});
   if(d.error){err.textContent=d.error;err.style.display='block';return;}
-  cm('mod-buy');
-  cu.credits=d.creditsLeft;
-  document.getElementById('sb-crt').textContent=d.creditsLeft;
-  document.getElementById('sb-fcfa').textContent=(d.creditsLeft*50).toLocaleString();
-  var ok=document.getElementById('buy-ok');
-  ok.textContent='Service acheté avec succès ! '+d.creditsLeft+' CRT restants.';
-  ok.style.display='block';
+  cm('mod-buy');cu.credits=d.creditsLeft;
+  document.getElementById('c-crt').textContent=d.creditsLeft;
+  document.getElementById('c-fcfa').textContent=(d.creditsLeft*50).toLocaleString();
+  var ok=document.getElementById('buy-ok');ok.textContent='Service acheté ! '+d.creditsLeft+' CRT restants.';ok.style.display='block';
   setTimeout(function(){ok.style.display='none';},4000);
-  loadDB();
+  loadClientDashboard();
 }
 
-// PACKS CREDITS
 async function loadPacks(){
   var packs=await api('GET','/api/packs');
-  selPack=null;
-  document.getElementById('pack-selected').style.display='none';
+  selPack=null;document.getElementById('pack-selected').style.display='none';
   document.getElementById('packs-list').innerHTML=packs.map(function(p){
     return '<div class="pack-card" id="pack-'+p.id+'" onclick="selectPack(\''+p.id+'\','+p.crt+','+p.fcfa+')"><div class="pack-crt">'+p.crt+'</div><div class="pack-lbl">Crédits CRT</div><div class="pack-fcfa">'+p.fcfa.toLocaleString()+' FCFA</div></div>';
   }).join('');
@@ -676,180 +599,43 @@ async function initPayment(){
   if(!selPack)return;
   var d=await api('POST','/api/payment/init',{packId:selPack.id});
   if(d.error){alert(d.error);return;}
-  alert('Paiement initié !\nMontant : '+selPack.fcfa+' FCFA\nID : '+d.paymentId+'\n\nContactez l\'admin pour confirmer le paiement.');
+  alert('Paiement initié !\nMontant : '+selPack.fcfa+' FCFA\nID : '+d.paymentId+'\n\nContactez l\'admin pour confirmer.');
 }
 
-// MES SERVICES
 async function loadMyServices(){
   var d=await api('GET','/api/services/mine');
   var l=document.getElementById('svc-list');
-  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service. <span style="color:var(--gold);cursor:pointer" onclick="gp(\'boutique\')">Visiter la boutique</span></p></div>';return;}
+  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service. <span style="color:var(--gold);cursor:pointer" onclick="cp(\'boutique\')">Boutique</span></p></div>';return;}
   l.innerHTML=d.map(function(s){
     var exp=new Date(s.expiry),ok=exp>=new Date();
     var hasScript=s.planId==='wg'||s.planId==='vpn';
-    var scriptBtn=hasScript?'<button class="bpri" style="font-size:11px;padding:6px 12px;margin-top:8px" onclick="viewScript(\''+s.id+'\')">📋 Voir le script WinBox</button>':'';
-    var mikhmonInfo=s.planId==='mikhmon'&&s.details?'<div style="font-size:11px;color:var(--t2);margin-top:6px">URL: <span style="color:var(--gold)">'+s.details.mikhmonURL+'</span></div>':'';
-    return '<div class="svc-card" style="flex-direction:column;align-items:flex-start"><div style="display:flex;align-items:center;gap:14px;width:100%"><div class="svc-icon">'+getPlanIcon(s.planId)+'</div><div class="svc-info"><div class="svc-name">'+s.planName+'</div><div class="svc-exp">'+s.months+' mois — Expire le '+exp.toLocaleDateString('fr-FR')+'</div></div><span class="badge '+(ok?'bgr':'bre')+'">'+(ok?'Actif':'Expiré')+'</span></div>'+mikhmonInfo+scriptBtn+'</div>';
+    var scriptBtn=hasScript?'<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;margin-right:6px" onclick="viewScript(\''+s.id+'\')">Installer</button>':'';
+    var detailBtn=hasScript?'<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewDetail(\''+s.id+'\')">Détail</button>':'';
+    return '<div class="svc-card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="font-size:26px">'+getPlanIcon(s.planId)+'</div><div style="flex:1"><div style="font-size:14px;font-weight:700">'+s.planName+'</div><div style="font-size:11px;color:var(--t2)">'+s.months+' mois — Expire le '+exp.toLocaleDateString('fr-FR')+'</div></div><span class="badge '+(ok?'bgr':'bre')+'">'+(ok?'Actif':'Expiré')+'</span></div>'+scriptBtn+detailBtn+'</div>';
   }).join('');
 }
 
-async function viewScript(svcId){
-  var d=await api('GET','/api/services/'+svcId+'/script');
-  if(d.error){alert(d.error);return;}
-  document.getElementById('script-content').value=d.script;
-  document.getElementById('script-ip').textContent=d.clientIP;
-  document.getElementById('script-server').textContent=d.serverIP+':'+d.serverPort;
-  // Afficher la commande d'installation courte
-  var installBox=document.getElementById('install-cmd-box');
-  var installCmd=document.getElementById('install-cmd');
-  if(d.installCmd){
-    installCmd.value=d.installCmd;
-    installBox.style.display='block';
-  }
-  om('mod-script-view');
-}
-
-function copyIptables(){
-  var txt=document.getElementById('detail-iptables').value;
-  navigator.clipboard.writeText(txt).then(function(){
-    var btn=event.target;btn.textContent='✅ Copié !';
-    setTimeout(function(){btn.textContent='📋 Copier commandes iptables';},2000);
-  });
-}
-
-async function viewDetail(svcId){
-  var d=await api('GET','/api/services/'+svcId+'/ports');
-  if(d.error){alert(d.error);return;}
-  var addrHtml=d.addresses.map(function(a){
-    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:12px;margin-bottom:8px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
-        '<div style="font-size:13px;font-weight:700">'+a.icon+' '+a.label+'</div>'+
-        '<span class="badge bgr">Ouvert</span>'+
-      '</div>'+
-      '<div style="display:flex;align-items:center;gap:8px">'+
-        '<input readonly value="'+a.address+'" style="flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;color:var(--gold);font-family:monospace;font-size:12px;outline:none">'+
-        '<button onclick="navigator.clipboard.writeText(\''+a.copy+'\').then(function(){event.target.textContent=\'✅\';setTimeout(function(){event.target.textContent=\'📋\'},1500)})" style="background:var(--s2);border:1px solid var(--bd);color:var(--t2);padding:7px 10px;border-radius:6px;border:none;cursor:pointer;font-size:14px">📋</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-  document.getElementById('detail-addresses').innerHTML=addrHtml;
-  document.getElementById('detail-iptables').value=d.iptablesScript;
-  om('mod-detail');
-}
-
-function copyInstallCmd(){
-  var txt=document.getElementById('install-cmd').value;
-  navigator.clipboard.writeText(txt).then(function(){
-    var btn=event.target;btn.textContent='✅ Copié !';
-    setTimeout(function(){btn.textContent='📋 Copier';},2000);
-  });
-}
-
-function copyScript(){
-  var txt=document.getElementById('script-content').value;
-  navigator.clipboard.writeText(txt).then(function(){
-    var btn=event.target;btn.textContent='✅ Copié !';
-    setTimeout(function(){btn.textContent='📋 Copier le script';},2000);
-  });
-}
-
-// ROUTEURS - style mikroot
-async function loadR(){
-  var d=await api('GET','/api/routers'),w=document.getElementById('rt-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📡</div><p>Aucun routeur. Ajoutez-en un.</p></div>';return;}
-  w.innerHTML=d.map(function(r){
-    var exp=r.expiry?new Date(r.expiry):null;
-    var expired=exp&&exp<new Date();
-    var expStr=exp?'( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )':'( pas d\'expiration )';
-    var expColor=expired?'color:var(--red)':'color:var(--t2)';
-    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
-        '<div style="font-size:15px;font-weight:700">'+r.name+'</div>'+
-        '<span style="font-size:16px;cursor:pointer;color:var(--t2)" onclick="editRouter(\''+r.id+'\')">✏️</span>'+
-      '</div>'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
-        '<span style="font-size:12px;'+expColor+'">'+expStr+'</span>'+
-        '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin-left:auto">'+
-          '<div style="width:36px;height:20px;background:'+(expired?'var(--t3)':'var(--blue)')+';border-radius:10px;position:relative"><div style="position:absolute;top:2px;'+(expired?'left:2px':'right:2px')+';width:16px;height:16px;background:#fff;border-radius:50%"></div></div>'+
-          '<span style="font-size:12px;color:var(--t2)">'+(expired?'Inactif':'Actif')+'</span>'+
-        '</label>'+
-      '</div>'+
-      '<div style="display:flex;gap:7px;flex-wrap:wrap">'+
-        '<span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px" id="status-'+r.id+'">Online</span>'+
-        '<button style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="pingRouter(\''+r.id+'\',\''+r.ip+'\')">Ping</button>'+
-        '<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="installRouter(\''+r.id+'\')">Installer</button>'+
-        '<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="detailRouter(\''+r.id+'\',\''+r.name+'\',\''+r.ip+'\','+r.port+')">Détail</button>'+
-        '<button style="background:var(--red);color:#fff;font-size:11px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer" onclick="delR(\''+r.id+'\')">🗑</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
-
-async function pingRouter(id,ip){
-  var btn=event.target;btn.textContent='...';btn.disabled=true;
-  await new Promise(function(r){setTimeout(r,1200);}); // simulation
-  btn.textContent='Ping';btn.disabled=false;
-  var status=document.getElementById('status-'+id);
-  // Simuler online/offline aléatoire pour démo
-  var online=Math.random()>0.3;
-  if(status){status.textContent=online?'Online':'Offline';status.style.background=online?'#22c55e':'#ef4444';}
-  alert('Ping '+ip+': '+(online?'Réponse reçue (OK)':'Timeout - Routeur injoignable'));
-}
-
-function installRouter(id){
-  alert('Fonction Installer : envoie le script de configuration sur le routeur.\n(Disponible dans la prochaine version avec connexion API RouterOS)');
-}
-
-function detailRouter(id,name,ip,port){
-  alert('Routeur: '+name+'\nIP: '+ip+'\nPort API: '+port+'\n\nConnexion WinBox: '+ip);
-}
-
-function editRouter(id){
-  alert('Modification routeur (prochaine version)');
-}
-
-// WG
-async function loadWG(){
-  var d=await api('GET','/api/wg/networks'),l=document.getElementById('wg-list');
-  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">🔒</div><p>Aucun réseau WireGuard.</p></div>';return;}
-  l.innerHTML=d.map(function(n){return'<div class="tw" style="margin-bottom:12px"><div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;background:var(--s2)"><div><strong>'+n.name+'</strong> <span class="badge bbl" style="margin-left:7px">'+n.subnet+'</span> <span style="color:var(--t2);font-size:11px;margin-left:6px">Port '+n.port+'</span></div><span class="badge bgo">'+(n.devices?n.devices.length:0)+' équip.</span></div></div>';}).join('');
-}
-async function saveWG(){var b={name:document.getElementById('wgn').value,subnet:document.getElementById('wgs').value||'10.8.0.0/24',port:document.getElementById('wgp').value||51820};if(!b.name)return;await api('POST','/api/wg/networks',b);cm('mod-wg');loadWG();}
-
-// COMPTES VPN - style mikroot
-async function loadVPN(){
-  var w=document.getElementById('vpn-wrap');
-  var svcs=[];
-  if(cu.role==='admin'){
-    var all=await api('GET','/api/services');
-    svcs=(all||[]).filter(function(s){return s.planId==='vpn'||s.planId==='wg';});
-  } else {
-    var mine=await api('GET','/api/services/mine');
-    svcs=(mine||[]).filter(function(s){return s.planId==='vpn'||s.planId==='wg';});
-  }
-  if(!svcs.length){w.innerHTML='<div class="emp"><div class="emp-i">👤</div><p>Aucun compte VPN. <span style="color:var(--gold);cursor:pointer" onclick="gp(\'boutique\')">Acheter</span></p></div>';return;}
-  w.innerHTML=svcs.map(function(s){
+async function loadClientVPN(){
+  var d=await api('GET','/api/services/mine');
+  var vpn=(d||[]).filter(function(s){return s.planId==='vpn'||s.planId==='wg';});
+  var w=document.getElementById('c-vpn-wrap');
+  if(!vpn.length){w.innerHTML='<div class="emp"><div class="emp-i">🔒</div><p>Aucun VPN. <span style="color:var(--gold);cursor:pointer" onclick="cp(\'boutique\')">Acheter</span></p></div>';return;}
+  w.innerHTML=vpn.map(function(s){
     var exp=new Date(s.expiry),expired=exp<new Date();
-    var expStr='( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )';
     var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
-    var label=cu.role==='admin'?s.userId:s.planName;
+    var expStr='( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )';
     return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
-        '<div style="font-size:15px;font-weight:700">'+label+'</div>'+
-      '</div>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:15px;font-weight:700">'+s.planName+'</div></div>'+
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
         '<span style="font-size:12px;color:'+(expired?'var(--red)':'var(--t2)')+'">'+expStr+'</span>'+
         '<span style="margin-left:auto;display:flex;align-items:center;gap:6px">'+
-          '<div style="width:36px;height:20px;background:'+(expired?'var(--t3)':'var(--blue)')+';border-radius:10px;position:relative">'+
-            '<div style="position:absolute;top:2px;'+(expired?'left:2px':'right:2px')+';width:16px;height:16px;background:#fff;border-radius:50%"></div>'+
-          '</div>'+
+          '<div style="width:36px;height:20px;background:'+(expired?'var(--t3)':'var(--blue)')+';border-radius:10px;position:relative"><div style="position:absolute;top:2px;'+(expired?'left:2px':'right:2px')+';width:16px;height:16px;background:#fff;border-radius:50%"></div></div>'+
           '<span style="font-size:12px;color:var(--t2)">'+(expired?'Inactif':'Actif')+'</span>'+
         '</span>'+
       '</div>'+
       '<div style="display:flex;gap:7px;flex-wrap:wrap">'+
         '<span style="background:'+(expired?'#ef4444':'#22c55e')+';color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px">'+(expired?'Offline':'Online')+'</span>'+
         '<span style="background:var(--s2);color:var(--t2);font-size:11px;padding:5px 12px;border-radius:6px;font-family:monospace">'+ip+'</span>'+
-        '<button style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="pingVPN(\''+ip+'\')">Ping</button>'+
         '<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewScript(\''+s.id+'\')">Installer</button>'+
         '<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewDetail(\''+s.id+'\')">Détail</button>'+
       '</div>'+
@@ -857,60 +643,145 @@ async function loadVPN(){
   }).join('');
 }
 
-function pingVPN(ip){alert('Ping '+ip+': Vérification tunnel WireGuard...\n\nPour un vrai ping, utilisez le terminal RouterOS.');}
-async function saveVPN(){var b={username:document.getElementById('vn').value,plan:document.getElementById('vp').value,expiry:document.getElementById('ve').value};if(!b.username)return;await api('POST','/api/vpn/accounts',b);cm('mod-vpn');loadVPN();}
-
-// SCRIPTS
-async function loadSC(){
-  var d=await api('GET','/api/scripts'),l=document.getElementById('sc-list');
-  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">&lt;/&gt;</div><p>Aucun script.</p></div>';return;}
-  var cc={hotspot:'bgo',firewall:'bre',vpn:'bgr',pppoe:'bbl',general:'bor'};
-  l.innerHTML='<div class="tw"><table><thead><tr><th>Nom</th><th>Cat.</th><th>Description</th><th>Coût</th></tr></thead><tbody>'+d.map(function(s){return'<tr><td><strong>'+s.name+'</strong></td><td><span class="badge '+(cc[s.category]||'bbl')+'">'+s.category+'</span></td><td style="color:var(--t2)">'+s.description+'</td><td><span class="badge bgo">'+s.cost+' CRT</span></td></tr>';}).join('')+'</tbody></table></div>';
-}
-async function saveSC(){var b={name:document.getElementById('scn').value,description:document.getElementById('scd').value,category:document.getElementById('scc').value,cost:parseInt(document.getElementById('sce').value)||0,code:document.getElementById('scco').value};if(!b.name)return;await api('POST','/api/scripts',b);cm('mod-script');loadSC();}
-
-// USERS
-async function loadU(){
-  var d=await api('GET','/api/users'),w=document.getElementById('us-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">👥</div><p>Aucun utilisateur.</p></div>';return;}
-  var rows=d.map(function(u){return'<tr><td><strong>'+u.username+'</strong><br><span style="color:var(--t2);font-size:10px">'+u.email+'</span></td><td><span class="badge '+(u.role==='admin'?'bre':u.role==='client'?'bbl':'bgo')+'">'+u.role+'</span></td><td><span class="badge bgo">'+u.credits+' CRT</span></td><td>'+new Date(u.createdAt).toLocaleDateString('fr-FR')+'</td><td><button class="bpri" style="font-size:10px;padding:5px 9px" onclick="oCR(\''+u.id+'\')">+ Crédits</button></td></tr>';}).join('');
-  w.innerHTML='<table><thead><tr><th>Utilisateur</th><th>Rôle</th><th>Crédits</th><th>Créé</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
-async function saveU(){var b={username:document.getElementById('un').value,email:document.getElementById('ue').value,password:document.getElementById('upw').value,role:document.getElementById('ur').value};if(!b.username||!b.password)return;var r=await api('POST','/api/auth/register-admin',b);if(r.error){alert(r.error);return;}cm('mod-user');loadU();}
-function oCR(id){document.getElementById('cr-uid').value=id;document.getElementById('cr-am').value='';document.getElementById('cr-no').value='';om('mod-cr');}
-async function saveCR(){var id=document.getElementById('cr-uid').value,am=document.getElementById('cr-am').value,no=document.getElementById('cr-no').value;await api('POST','/api/users/'+id+'/credits',{amount:am,note:no});cm('mod-cr');loadU();}
-
-// PAYMENTS
-async function loadPayments(){
-  var d=await api('GET','/api/payments'),w=document.getElementById('pay-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">💳</div><p>Aucun paiement.</p></div>';return;}
-  var rows=d.slice().reverse().map(function(p){
-    var badge=p.status==='confirmed'?'<span class="badge bgr">Confirmé</span>':'<span class="badge bor">En attente</span>';
-    var btn=p.status==='pending'?'<button class="bpri" style="font-size:10px;padding:5px 9px" onclick="confirmPay(\''+p.id+'\')">Confirmer</button>':'';
-    return'<tr><td style="font-size:10px;color:var(--t2)">'+new Date(p.createdAt).toLocaleString('fr-FR')+'</td><td><strong>'+p.crt+' CRT</strong></td><td>'+p.fcfa.toLocaleString()+' FCFA</td><td>'+badge+'</td><td>'+btn+'</td></tr>';
-  }).join('');
-  w.innerHTML='<table><thead><tr><th>Date</th><th>CRT</th><th>Montant</th><th>Statut</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
-async function confirmPay(id){if(!confirm('Confirmer ce paiement ?'))return;var d=await api('POST','/api/payment/confirm/'+id);if(d.error){alert(d.error);return;}alert('Paiement confirmé ! Crédits ajoutés.');loadPayments();}
-
-// TRANSACTIONS
-async function loadTX(){
-  var d=await api('GET','/api/transactions'),w=document.getElementById('tx-wrap');
+async function loadClientTX(){
+  var d=await api('GET','/api/transactions');
+  var w=document.getElementById('c-tx-wrap');
   if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div>';return;}
   var rows=d.slice().reverse().map(function(t){var pos=t.amount>0;return'<tr><td style="font-size:10px;color:var(--t2)">'+new Date(t.date).toLocaleString('fr-FR')+'</td><td><span class="badge '+(pos?'bgr':'bre')+'">'+t.type+'</span></td><td style="font-weight:700;color:'+(pos?'var(--green)':'var(--red)')+'">'+(pos?'+':'')+t.amount+' CRT</td><td style="color:var(--t2)">'+(t.note||'-')+'</td></tr>';}).join('');
   w.innerHTML='<table><thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Note</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 
-tryAuto();
+// ===== ADMIN =====
+async function loadAdminDashboard(){
+  var d=await api('GET','/api/dashboard');if(d.error)return;
+  document.getElementById('a-stats').innerHTML=
+    '<div class="sc bl" onclick="ap(\'users\')"><div class="si">👥</div><div class="sv">'+d.stats.users+'</div><div class="sl">Utilisateurs</div></div>'+
+    '<div class="sc g" onclick="ap(\'all-services\')"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Services actifs</div></div>'+
+    '<div class="sc or" onclick="ap(\'payments\')"><div class="si">💳</div><div class="sv">'+d.stats.transactions+'</div><div class="sl">Transactions</div></div>'+
+    '<div class="sc gr" onclick="ap(\'mikhmon\')"><div class="si">📡</div><div class="sv">'+d.stats.routers+'</div><div class="sl">Routeurs</div></div>'+
+    '<div class="sc pu" onclick="ap(\'wireguard\')"><div class="si">🔒</div><div class="sv">'+d.stats.vpn_networks+'</div><div class="sl">Réseaux WG</div></div>'+
+    '<div class="sc re" onclick="ap(\'scripts\')"><div class="si">&lt;/&gt;</div><div class="sv">'+d.stats.scripts+'</div><div class="sl">Scripts</div></div>';
+}
 
-// Init Google Sign-In au chargement
-window.addEventListener('load', function(){
-  if(typeof google !== 'undefined' && GOOGLE_CLIENT_ID){
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleResponse,
-      auto_select: false
-    });
+async function loadAdminUsers(){
+  var d=await api('GET','/api/users'),w=document.getElementById('a-users-wrap');
+  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">👥</div><p>Aucun utilisateur.</p></div>';return;}
+  var rows=d.map(function(u){return'<tr><td><strong>'+u.username+'</strong><br><span style="color:var(--t2);font-size:10px">'+u.email+'</span></td><td><span class="badge '+(u.role==='admin'?'bre':'bbl')+'">'+u.role+'</span></td><td><span class="badge bgo">'+u.credits+' CRT</span></td><td>'+new Date(u.createdAt).toLocaleDateString('fr-FR')+'</td><td><button class="bpri" style="font-size:10px;padding:5px 9px" onclick="oCR(\''+u.id+'\')">+ Crédits</button></td></tr>';}).join('');
+  w.innerHTML='<table><thead><tr><th>Utilisateur</th><th>Rôle</th><th>Crédits</th><th>Créé</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+async function loadAdminPayments(){
+  var d=await api('GET','/api/payments'),w=document.getElementById('a-pay-wrap');
+  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">💳</div><p>Aucun paiement.</p></div>';return;}
+  var rows=d.slice().reverse().map(function(p){
+    var badge=p.status==='confirmed'?'<span class="badge bgr">Confirmé</span>':'<span class="badge bor">En attente</span>';
+    var btn=p.status==='pending'?'<button class="bpri" style="font-size:10px;padding:5px 9px" onclick="confirmPay(\''+p.id+'\')">Confirmer</button>':'';
+    return'<tr><td style="font-size:10px;color:var(--t2)">'+new Date(p.createdAt).toLocaleString('fr-FR')+'</td><td><strong>'+p.username+'</strong></td><td><strong>'+p.crt+' CRT</strong></td><td>'+p.fcfa.toLocaleString()+' FCFA</td><td>'+badge+'</td><td>'+btn+'</td></tr>';
+  }).join('');
+  w.innerHTML='<table><thead><tr><th>Date</th><th>Client</th><th>CRT</th><th>Montant</th><th>Statut</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+async function confirmPay(id){if(!confirm('Confirmer ce paiement ?'))return;var d=await api('POST','/api/payment/confirm/'+id);if(d.error){alert(d.error);return;}loadAdminPayments();}
+
+async function loadAdminTX(){
+  var d=await api('GET','/api/transactions'),w=document.getElementById('a-tx-wrap');
+  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div>';return;}
+  var rows=d.slice().reverse().map(function(t){var pos=t.amount>0;return'<tr><td style="font-size:10px;color:var(--t2)">'+new Date(t.date).toLocaleString('fr-FR')+'</td><td><span class="badge '+(pos?'bgr':'bre')+'">'+t.type+'</span></td><td style="font-weight:700;color:'+(pos?'var(--green)':'var(--red)')+'">'+(pos?'+':'')+t.amount+' CRT</td><td style="color:var(--t2)">'+(t.note||'-')+'</td></tr>';}).join('');
+  w.innerHTML='<table><thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Note</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+async function loadAllServices(){
+  var d=await api('GET','/api/services'),w=document.getElementById('a-svc-wrap');
+  if(!d||!d.length){w.innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service.</p></div>';return;}
+  w.innerHTML=d.map(function(s){
+    var exp=new Date(s.expiry),expired=exp<new Date();
+    var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
+    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px">'+
+      '<div style="font-size:24px">'+getPlanIcon(s.planId)+'</div>'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+s.planName+'</div><div style="font-size:11px;color:var(--t2)">Client: '+s.userId+' | IP: '+ip+'</div></div>'+
+      '<span class="badge '+(expired?'bre':'bgr')+'">'+(expired?'Expiré':'Actif')+'</span>'+
+      '<span style="font-size:11px;color:var(--t2)">'+exp.toLocaleDateString('fr-FR')+'</span>'+
+    '</div>';
+  }).join('');
+}
+
+async function loadRouters(){
+  var d=await api('GET','/api/routers'),w=document.getElementById('a-rt-wrap');
+  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📡</div><p>Aucun routeur.</p></div>';return;}
+  w.innerHTML=d.map(function(r){
+    var exp=r.expiry?new Date(r.expiry):null,expired=exp&&exp<new Date();
+    var expStr=exp?'( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )':'';
+    return '<div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:8px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="font-size:14px;font-weight:700">'+r.name+'</div></div>'+
+      '<div style="font-size:11px;color:'+(expired?'var(--red)':'var(--t2)')+';margin-bottom:10px">'+expStr+'</div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
+        '<span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:5px">Online</span>'+
+        '<button style="background:#f59e0b;color:#fff;font-size:11px;padding:4px 10px;border-radius:5px;border:none;cursor:pointer">Ping</button>'+
+        '<button style="background:#06b6d4;color:#fff;font-size:11px;padding:4px 10px;border-radius:5px;border:none;cursor:pointer">Installer</button>'+
+        '<button style="background:#1e293b;color:#fff;font-size:11px;padding:4px 10px;border-radius:5px;border:none;cursor:pointer">Détail</button>'+
+        '<button class="bdng" style="font-size:11px;padding:4px 10px" onclick="delR(\''+r.id+'\')">🗑</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+async function saveR(){var b={name:document.getElementById('rn').value,ip:document.getElementById('ri').value,port:document.getElementById('rp2').value||8728,username:document.getElementById('ru2').value||'admin',password:document.getElementById('rpw').value,expiry:document.getElementById('rexp').value};if(!b.name||!b.ip)return;await api('POST','/api/routers',b);cm('mod-router');loadRouters();}
+async function delR(id){if(!confirm('Supprimer ?'))return;await api('DELETE','/api/routers/'+id);loadRouters();}
+
+async function loadWG(){
+  var d=await api('GET','/api/wg/networks'),l=document.getElementById('a-wg-list');
+  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">🔒</div><p>Aucun réseau WireGuard.</p></div>';return;}
+  l.innerHTML=d.map(function(n){return'<div class="tw" style="margin-bottom:10px"><div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;background:var(--s2)"><div><strong>'+n.name+'</strong> <span class="badge bbl" style="margin-left:7px">'+n.subnet+'</span> <span style="color:var(--t2);font-size:11px;margin-left:6px">Port '+n.port+'</span></div><span class="badge bgo">'+(n.devices?n.devices.length:0)+' équip.</span></div></div>';}).join('');
+}
+async function saveWG(){var b={name:document.getElementById('wgn').value,subnet:document.getElementById('wgs').value||'10.8.0.0/24',port:document.getElementById('wgp').value||51820};if(!b.name)return;await api('POST','/api/wg/networks',b);cm('mod-wg');loadWG();}
+
+async function loadScripts(){
+  var d=await api('GET','/api/scripts'),l=document.getElementById('a-sc-list');
+  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">&lt;/&gt;</div><p>Aucun script.</p></div>';return;}
+  var cc={hotspot:'bgo',firewall:'bre',vpn:'bgr',pppoe:'bbl',general:'bor'};
+  l.innerHTML='<div class="tw"><table><thead><tr><th>Nom</th><th>Cat.</th><th>Description</th><th>Coût</th></tr></thead><tbody>'+d.map(function(s){return'<tr><td><strong>'+s.name+'</strong></td><td><span class="badge '+(cc[s.category]||'bbl')+'">'+s.category+'</span></td><td style="color:var(--t2)">'+s.description+'</td><td><span class="badge bgo">'+s.cost+' CRT</span></td></tr>';}).join('')+'</tbody></table></div>';
+}
+async function saveSC(){var b={name:document.getElementById('scn').value,description:document.getElementById('scd').value,category:document.getElementById('scc').value,cost:parseInt(document.getElementById('sce').value)||0,code:document.getElementById('scco').value};if(!b.name)return;await api('POST','/api/scripts',b);cm('mod-script');loadScripts();}
+
+async function saveU(){var b={username:document.getElementById('un').value,email:document.getElementById('ue').value,password:document.getElementById('upw').value,role:document.getElementById('ur').value};if(!b.username||!b.password)return;var r=await api('POST','/api/auth/register-admin',b);if(r.error){alert(r.error);return;}cm('mod-user');loadAdminUsers();}
+function oCR(id){document.getElementById('cr-uid').value=id;document.getElementById('cr-am').value='';document.getElementById('cr-no').value='';om('mod-cr');}
+async function saveCR(){var id=document.getElementById('cr-uid').value,am=document.getElementById('cr-am').value,no=document.getElementById('cr-no').value;await api('POST','/api/users/'+id+'/credits',{amount:am,note:no});cm('mod-cr');loadAdminUsers();}
+
+// SCRIPTS VPN
+async function viewScript(svcId){
+  var d=await api('GET','/api/services/'+svcId+'/script');
+  if(d.error){alert(d.error);return;}
+  document.getElementById('script-content').value=d.script;
+  document.getElementById('script-ip').textContent=d.clientIP;
+  document.getElementById('script-server').textContent=d.serverIP+':'+d.serverPort;
+  var box=document.getElementById('install-cmd-box');
+  var cmd=document.getElementById('install-cmd');
+  if(d.installCmd){cmd.value=d.installCmd;box.style.display='block';}
+  om('mod-script-view');
+}
+
+async function viewDetail(svcId){
+  var d=await api('GET','/api/services/'+svcId+'/ports');
+  if(d.error){alert(d.error);return;}
+  document.getElementById('detail-addresses').innerHTML=d.addresses.map(function(a){
+    return '<div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:8px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="font-size:13px;font-weight:700">'+a.icon+' '+a.label+'</div><span class="badge bgr">Ouvert</span></div>'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+        '<input readonly value="'+a.address+'" style="flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;color:var(--gold);font-family:monospace;font-size:12px;outline:none">'+
+        '<button onclick="navigator.clipboard.writeText(\''+a.copy+'\').then(function(){event.target.textContent=\'✅\';setTimeout(function(){event.target.textContent=\'📋\'},1500)})" style="background:var(--s2);border:1px solid var(--bd);color:var(--t2);padding:7px 10px;border-radius:6px;border:none;cursor:pointer">📋</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('detail-iptables').value=d.iptablesScript;
+  om('mod-detail');
+}
+
+function copyInstallCmd(){var txt=document.getElementById('install-cmd').value;navigator.clipboard.writeText(txt).then(function(){var btn=event.target;btn.textContent='✅';setTimeout(function(){btn.textContent='📋 Copier';},2000);});}
+function copyScript(){var txt=document.getElementById('script-content').value;navigator.clipboard.writeText(txt).then(function(){var btn=event.target;btn.textContent='✅ Copié !';setTimeout(function(){btn.textContent='📋 Copier script complet';},2000);});}
+
+window.addEventListener('load',function(){
+  if(typeof google!=='undefined'&&GOOGLE_CLIENT_ID){
+    google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleResponse,auto_select:false});
   }
 });
+tryAuto();
 </script></body></html>
