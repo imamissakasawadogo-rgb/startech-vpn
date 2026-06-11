@@ -416,7 +416,7 @@ textarea.fi{resize:vertical;min-height:80px}
       <div class="topbar">
         <button class="topbar-toggle" onclick="tSide()">☰</button>
         <div class="topbar-crt" id="topbar-crt">
-          <div class="crt-badge" onclick="gp('credits')" id="tb-crt-badge">
+          <div class="crt-badge" onclick="openDepot()" id="tb-crt-badge">
             <span id="tb-crt">0 CRT</span>
             <span class="plus">+</span>
           </div>
@@ -647,6 +647,90 @@ textarea.fi{resize:vertical;min-height:80px}
 </div>
 
 <!-- MODALS -->
+<div class="ov" id="mod-depot">
+  <div class="mod" style="max-width:540px">
+    <div class="mod-header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;background:#ede9fe;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">💳</div>
+        <div><div class="mod-title">Dépôt de crédit</div><div style="font-size:11px;color:var(--t2)">1 CRT = 50 XOF</div></div>
+      </div>
+      <button class="mod-close" onclick="cm('mod-depot')">✕</button>
+    </div>
+
+    <!-- ETAPE 1 -->
+    <div id="depot-step1">
+      <label class="fl">NOMBRE DE CRÉDITS À ACHETER</label>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <input type="number" id="depot-crt" class="fi" style="flex:1;margin-bottom:0" placeholder="Ex: 100" min="10" oninput="calcDepot()">
+        <span style="background:#ede9fe;color:var(--blue);font-size:12px;font-weight:700;padding:8px 14px;border-radius:7px">CRT</span>
+      </div>
+      <div id="depot-montant" style="background:#f5f3ff;border-radius:7px;padding:8px 12px;font-size:13px;color:var(--t2);margin-bottom:14px;display:none">
+        Montant à payer : <strong id="depot-xof" style="color:var(--blue)">0 XOF</strong>
+      </div>
+      <label class="fl">💎 CODE COUPON <span style="text-transform:none;font-weight:400;color:var(--t3)">(OPTIONNEL)</span></label>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <input class="fi" id="depot-coupon" placeholder="VOTRE-CODE" style="flex:1;margin-bottom:0">
+        <button style="background:var(--white);border:1.5px solid var(--orange);color:var(--orange);font-size:13px;font-weight:600;padding:9px 18px;border-radius:8px;cursor:pointer">Valider</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px">⭐ OFFRES SPÉCIALES</span>
+        <span style="background:#fef3c7;color:var(--orange);font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px">3 OFFRES</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+        <div onclick="selectOffer(20,1000)" style="border:1.5px solid var(--bd);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--bd)'">
+          <div style="font-size:18px;font-weight:800;color:var(--blue)">20 <span style="font-size:12px">CRT</span></div>
+          <div style="font-size:11px;color:var(--t2);margin-bottom:8px">1 000 XOF</div>
+          <button style="background:#f5f3ff;color:var(--blue);font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:none;cursor:pointer;width:100%">CHOISIR... ›</button>
+        </div>
+        <div onclick="selectOffer(50,2500)" style="border:1.5px solid var(--bd);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--bd)'">
+          <div style="font-size:18px;font-weight:800;color:var(--blue)">50 <span style="font-size:12px">CRT</span></div>
+          <div style="font-size:11px;color:var(--t2);margin-bottom:8px">2 500 XOF</div>
+          <button style="background:#f5f3ff;color:var(--blue);font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:none;cursor:pointer;width:100%">CHOISIR... ›</button>
+        </div>
+        <div onclick="selectOffer(100,5000)" style="border:1.5px solid var(--bd);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--bd)'">
+          <div style="font-size:18px;font-weight:800;color:var(--blue)">100 <span style="font-size:12px">CRT</span></div>
+          <div style="font-size:11px;color:var(--t2);margin-bottom:8px">5 000 XOF</div>
+          <button style="background:#f5f3ff;color:var(--blue);font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:none;cursor:pointer;width:100%">CHOISIR... ›</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;color:var(--orange);font-size:12px;margin-bottom:16px">
+        <span>⚠️</span> Contactez-nous si votre moyen de paiement ne figure pas dans la liste.
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <button class="btn-cancel" onclick="cm('mod-depot')">Fermer</button>
+        <button class="btn-save" onclick="depotStep2()" style="display:flex;align-items:center;gap:6px">Continuer ›</button>
+      </div>
+    </div>
+
+    <!-- ETAPE 2 -->
+    <div id="depot-step2" style="display:none">
+      <div style="background:#f5f3ff;border-radius:10px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:11px;color:var(--t2);margin-bottom:2px">Achat personnalisé</div><div style="font-size:20px;font-weight:800;color:var(--blue)"><span id="depot-crt2">0</span> <span style="font-size:13px">CRT</span></div></div>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--t2);margin-bottom:2px">Montant</div><div style="font-size:20px;font-weight:800"><span id="depot-xof2">0</span> <span style="font-size:13px;color:var(--t2)">XOF</span></div></div>
+      </div>
+      <label class="fl">CHOISISSEZ VOTRE MOYEN DE PAIEMENT</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+        <div onclick="selectPayment('fedapay')" id="pay-fedapay" style="border:2px solid var(--bd);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:13px;font-weight:700;color:#1a56db">FedaPay<br><span style="font-size:10px;color:var(--t2)">Orange/Moov</span></div>
+        </div>
+        <div onclick="selectPayment('om')" id="pay-om" style="border:2px solid var(--bd);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:13px;font-weight:700;color:#ff7900">Orange<br><span style="font-size:10px;color:var(--t2)">Money</span></div>
+        </div>
+        <div onclick="selectPayment('moov')" id="pay-moov" style="border:2px solid var(--bd);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center">
+          <div style="font-size:13px;font-weight:700;color:#009900">Moov<br><span style="font-size:10px;color:var(--t2)">Money</span></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;color:var(--orange);font-size:12px;margin-bottom:16px">
+        <span>⚠️</span> Contactez-nous si votre moyen de paiement ne figure pas dans la liste.
+      </div>
+      <div style="display:flex;justify-content:space-between">
+        <button onclick="depotStep1()" style="background:var(--white);border:1.5px solid var(--bd);color:var(--t2);font-size:13px;padding:9px 16px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:5px">‹ Retour</button>
+        <button class="btn-cancel" onclick="cm('mod-depot')">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="ov" id="mod-buy-vpn">
   <div class="mod">
     <div class="mod-header"><span class="mod-title">Ajouter un routeur</span><button class="mod-close" onclick="cm('mod-buy-vpn')">✕</button></div>
@@ -949,6 +1033,50 @@ function tSide(){document.getElementById(isAdmin?'sidebar-admin':'sidebar').clas
 function cSide(){document.getElementById(isAdmin?'sidebar-admin':'sidebar').classList.remove('op');document.getElementById('ovbg').classList.remove('op');}
 function om(id){document.getElementById(id).classList.add('op');}
 function cm(id){document.getElementById(id).classList.remove('op');}
+
+// DÉPÔT CRÉDIT
+var depotCRT=0,depotXOF=0,selectedPayment='';
+function openDepot(){depotStep1();om('mod-depot');}
+function calcDepot(){
+  var v=parseInt(document.getElementById('depot-crt').value)||0;
+  depotCRT=v;depotXOF=v*50;
+  var m=document.getElementById('depot-montant');
+  if(v>0){document.getElementById('depot-xof').textContent=depotXOF.toLocaleString()+' XOF';m.style.display='block';}
+  else m.style.display='none';
+}
+function selectOffer(crt,xof){
+  depotCRT=crt;depotXOF=xof;
+  document.getElementById('depot-crt').value=crt;
+  document.getElementById('depot-xof').textContent=xof.toLocaleString()+' XOF';
+  document.getElementById('depot-montant').style.display='block';
+}
+function depotStep2(){
+  if(!depotCRT||depotCRT<10){alert('Minimum 10 CRT');return;}
+  document.getElementById('depot-crt2').textContent=depotCRT;
+  document.getElementById('depot-xof2').textContent=depotXOF.toLocaleString();
+  document.getElementById('depot-step1').style.display='none';
+  document.getElementById('depot-step2').style.display='block';
+}
+function depotStep1(){
+  document.getElementById('depot-step1').style.display='block';
+  document.getElementById('depot-step2').style.display='none';
+  selectedPayment='';
+  document.querySelectorAll('[id^="pay-"]').forEach(function(el){el.style.borderColor='var(--bd)';});
+}
+function selectPayment(method){
+  selectedPayment=method;
+  document.querySelectorAll('[id^="pay-"]').forEach(function(el){el.style.borderColor='var(--bd)';});
+  document.getElementById('pay-'+method).style.borderColor='var(--blue)';
+  setTimeout(function(){confirmDepot();},500);
+}
+async function confirmDepot(){
+  if(!selectedPayment)return;
+  var packId=depotCRT<=20?'p20':depotCRT<=50?'p50':depotCRT<=100?'p100':'p200';
+  var d=await api('POST','/api/payment/init',{packId:packId,crt:depotCRT,fcfa:depotXOF});
+  if(d.error){alert(d.error);return;}
+  cm('mod-depot');
+  alert('Paiement initié !\nMontant : '+depotXOF.toLocaleString()+' FCFA\nID : '+d.paymentId+'\n\nContactez l\'admin pour confirmer.\nWhatsApp: +226 70 60 81 48');
+}
 
 function openWhatsApp(){window.open('https://wa.me/22670608148','_blank');}
 function openTelegram(){window.open('https://t.me/startechbusiness','_blank');}
