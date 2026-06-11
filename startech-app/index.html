@@ -388,6 +388,7 @@ textarea.fi{resize:vertical;min-height:80px}
         <div class="sb-item" onclick="openTelegram()"><span class="sb-icon">✈️</span> Channel Telegram</div>
         <div class="sb-item"><span class="sb-icon">🎧</span> Support</div>
         <div class="sb-item"><span class="sb-icon">📄</span> Documentation</div>
+        <div class="sb-item" onclick="gp('profil')"><span class="sb-icon">👤</span> Mon profil</div>
       </nav>
     </div>
 
@@ -571,6 +572,52 @@ textarea.fi{resize:vertical;min-height:80px}
               <div style="font-size:13px;color:var(--t2)">Paiement sécurisé via FedaPay (Orange Money / Moov Money)</div>
             </div>
             <button class="btn-primary" style="max-width:300px" onclick="initPayment()">Payer maintenant</button>
+          </div>
+        </div>
+
+        <!-- PROFIL -->
+        <div class="page" id="pg-profil">
+          <div class="section-title">Mon profil</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px">
+            <div style="background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:20px">
+              <div style="font-size:14px;font-weight:700;margin-bottom:16px">Informations personnelles</div>
+              <label class="fl">Nom complet</label>
+              <input class="fi" id="prof-name" placeholder="Votre nom">
+              <label class="fl">Téléphone</label>
+              <input class="fi" id="prof-phone" placeholder="+226 XX XX XX XX">
+              <label class="fl">Email</label>
+              <input class="fi" id="prof-email" readonly style="background:var(--bg);color:var(--t2)">
+              <button class="btn-save" onclick="saveProfil()" style="width:100%">Enregistrer</button>
+              <div id="prof-ok" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:8px;border-radius:6px;font-size:12px;margin-top:8px;text-align:center">Profil mis à jour ✓</div>
+            </div>
+            <div style="background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:20px">
+              <div style="font-size:14px;font-weight:700;margin-bottom:16px">Changer le mot de passe</div>
+              <label class="fl">Ancien mot de passe</label>
+              <input class="fi" type="password" id="prof-oldpwd" placeholder="••••••••">
+              <label class="fl">Nouveau mot de passe</label>
+              <input class="fi" type="password" id="prof-newpwd" placeholder="••••••••">
+              <label class="fl">Confirmer</label>
+              <input class="fi" type="password" id="prof-newpwd2" placeholder="••••••••">
+              <button class="btn-save" onclick="changePwd()" style="width:100%">Changer</button>
+              <div id="pwd-ok" style="display:none;padding:8px;border-radius:6px;font-size:12px;margin-top:8px;text-align:center"></div>
+            </div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-top:16px;max-width:700px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px">Mon compte</div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <div style="background:#f5f3ff;border-radius:8px;padding:14px 20px;text-align:center">
+                <div style="font-size:22px;font-weight:800;color:var(--blue)" id="prof-crt">0</div>
+                <div style="font-size:11px;color:var(--t2)">Crédits CRT</div>
+              </div>
+              <div style="background:#f0fdf4;border-radius:8px;padding:14px 20px;text-align:center">
+                <div style="font-size:22px;font-weight:800;color:var(--green)" id="prof-gnx">0</div>
+                <div style="font-size:11px;color:var(--t2)">Gains GNX</div>
+              </div>
+              <div style="background:#fffbeb;border-radius:8px;padding:14px 20px;text-align:center">
+                <div style="font-size:14px;font-weight:600;color:var(--t2)" id="prof-since"></div>
+                <div style="font-size:11px;color:var(--t2)">Membre depuis</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -976,14 +1023,17 @@ function startApp(){
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app').style.display='block';
   isAdmin=cu.role==='admin';
-  document.getElementById('tb-avatar').textContent=cu.username[0].toUpperCase();
   document.getElementById('tb-avatar').innerHTML=cu.username[0].toUpperCase()+'<div class="online-dot"></div>';
+  // S'assurer qu'une seule sidebar est visible
+  document.getElementById('sidebar').style.display='none';
+  document.getElementById('sidebar-admin').style.display='none';
   if(isAdmin){
     document.getElementById('sidebar-admin').style.display='flex';
     document.getElementById('topbar-crt').style.display='none';
     ap('dashboard');
   } else {
     document.getElementById('sidebar').style.display='flex';
+    document.getElementById('topbar-crt').style.display='flex';
     updateTopbar();
     AFFCODE='STB'+cu.id.substr(-6).toUpperCase();
     document.getElementById('aff-code').textContent=AFFCODE;
@@ -1009,6 +1059,7 @@ function gp(n){
   else if(n==='transactions')loadTX();
   else if(n==='credits')loadPacks();
   else if(n==='scripts')loadScripts();
+  else if(n==='profil')loadProfil();
   cSide();
 }
 
@@ -1033,6 +1084,48 @@ function tSide(){document.getElementById(isAdmin?'sidebar-admin':'sidebar').clas
 function cSide(){document.getElementById(isAdmin?'sidebar-admin':'sidebar').classList.remove('op');document.getElementById('ovbg').classList.remove('op');}
 function om(id){document.getElementById(id).classList.add('op');}
 function cm(id){document.getElementById(id).classList.remove('op');}
+
+// PROFIL
+async function loadProfil(){
+  var d=await api('GET','/api/profile');if(d.error)return;
+  document.getElementById('prof-name').value=d.name||d.username;
+  document.getElementById('prof-phone').value=d.phone||'';
+  document.getElementById('prof-email').value=d.email||'';
+  document.getElementById('prof-crt').textContent=d.credits;
+  document.getElementById('prof-gnx').textContent=d.gnx;
+  document.getElementById('prof-since').textContent=new Date(d.createdAt).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+}
+async function saveProfil(){
+  var d=await api('PUT','/api/profile',{name:document.getElementById('prof-name').value,phone:document.getElementById('prof-phone').value});
+  var ok=document.getElementById('prof-ok');
+  ok.textContent=d.message||d.error;
+  ok.style.background=d.error?'#fef2f2':'#f0fdf4';
+  ok.style.color=d.error?'var(--red)':'#166534';
+  ok.style.display='block';
+  setTimeout(function(){ok.style.display='none';},3000);
+}
+async function changePwd(){
+  var np=document.getElementById('prof-newpwd').value,np2=document.getElementById('prof-newpwd2').value;
+  var ok=document.getElementById('pwd-ok');
+  if(np!==np2){ok.textContent='Les mots de passe ne correspondent pas';ok.style.background='#fef2f2';ok.style.color='var(--red)';ok.style.display='block';return;}
+  var d=await api('PUT','/api/profile',{oldPassword:document.getElementById('prof-oldpwd').value,password:np});
+  ok.textContent=d.message||d.error;
+  ok.style.background=d.error?'#fef2f2':'#f0fdf4';
+  ok.style.color=d.error?'var(--red)':'#166534';
+  ok.style.display='block';
+  if(!d.error){document.getElementById('prof-oldpwd').value='';document.getElementById('prof-newpwd').value='';document.getElementById('prof-newpwd2').value='';}
+  setTimeout(function(){ok.style.display='none';},3000);
+}
+
+// RENOUVELER SERVICE
+async function renewService(svcId,months){
+  if(!confirm('Renouveler pour '+months+' mois ('+(months*10)+' CRT) ?'))return;
+  var d=await api('POST','/api/services/'+svcId+'/renew',{months:months});
+  if(d.error){alert(d.error);return;}
+  cu.credits=d.creditsLeft;updateTopbar();
+  alert('Service renouvelé !\nNouvelle expiration : '+new Date(d.newExpiry).toLocaleDateString('fr-FR'));
+  loadVPN();loadWG();loadMikhmon();
+}
 
 // DÉPÔT CRÉDIT
 var depotCRT=0,depotXOF=0,selectedPayment='';
@@ -1124,8 +1217,8 @@ async function loadVPN(){
         '<div class="device-actions-row">'+
           '<button class="btn-settings">⚙️</button>'+
           '<button class="btn-addport">+ Ajouter un port</button>'+
-          '<button class="btn-prolong">Prolonger</button>'+
-          '<select class="renew-select"><option>1 mois (10 CRT)</option><option>3 mois (30 CRT)</option></select>'+
+          '<button class="btn-prolong" onclick="om(\'mod-prolong-'+s.id+'\')">Prolonger</button>'+
+          '<select class="renew-select" id="renew-sel-'+s.id+'"><option value="1">1 mois (10 CRT)</option><option value="3">3 mois (30 CRT)</option><option value="6">6 mois (60 CRT)</option></select>'+
           '<div class="renew-toggle"><div class="toggle-sw off"></div><span>Renouveler</span></div>'+
         '</div>'+
         '<table class="ports-table"><thead><tr><th>ADRESSE DISTANTE</th><th>SERVICE TYPE (PORT)</th><th>STATUT</th><th>ACTIONS</th></tr></thead>'+
