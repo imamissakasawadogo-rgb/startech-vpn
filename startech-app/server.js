@@ -78,6 +78,51 @@ function save(d){fs.writeFileSync(DATA,JSON.stringify(d,null,2));}
 function auth(req,res,next){var h=req.headers['authorization'];if(!h)return res.status(401).json({error:'Token manquant'});try{req.user=jwt.verify(h.split(' ')[1],SECRET);next();}catch(e){res.status(401).json({error:'Token invalide'});}}
 function admin(req,res,next){if(req.user.role!=='admin')return res.status(403).json({error:'Acces refuse'});next();}
 
+// PROFIL UTILISATEUR
+app.get('/api/profile',auth,function(req,res){
+  var d=db(),u=d.users.find(function(x){return x.id===req.user.id;});
+  if(!u)return res.status(404).json({error:'Introuvable'});
+  res.json({id:u.id,username:u.username,email:u.email,phone:u.phone||'',name:u.name||u.username,role:u.role,credits:u.credits,gnx:u.gnx,createdAt:u.createdAt});
+});
+
+app.put('/api/profile',auth,function(req,res){
+  var d=db(),u=d.users.find(function(x){return x.id===req.user.id;});
+  if(!u)return res.status(404).json({error:'Introuvable'});
+  if(req.body.name)u.name=req.body.name;
+  if(req.body.phone)u.phone=req.body.phone;
+  if(req.body.password&&req.body.oldPassword){
+    if(!require('bcryptjs').compareSync(req.body.oldPassword,u.password))return res.status(400).json({error:'Ancien mot de passe incorrect'});
+    u.password=require('bcryptjs').hashSync(req.body.password,10);
+  }
+  save(d);res.json({success:true,message:'Profil mis à jour'});
+});
+
+// RENOUVELER UN SERVICE
+app.post('/api/services/:id/renew',auth,function(req,res){
+  var d=db();
+  var svc=d.services?d.services.find(function(s){return s.id===req.params.id&&s.userId===req.user.id;}):null;
+  if(!svc)return res.status(404).json({error:'Service introuvable'});
+  var u=d.users.find(function(x){return x.id===req.user.id;});
+  if(!u)return res.status(404).json({error:'Utilisateur introuvable'});
+  var months=parseInt(req.body.months)||1;
+  var cost=10*months;
+  // Si expiré depuis plus d'1 mois, +5 CRT de réactivation
+  var exp=new Date(svc.expiry);
+  var oneMonthAgo=new Date();oneMonthAgo.setMonth(oneMonthAgo.getMonth()-1);
+  var reactiv=exp<oneMonthAgo?5:0;
+  var total=cost+reactiv;
+  if(u.credits<total)return res.status(400).json({error:'Credits insuffisants. Besoin: '+total+' CRT'});
+  u.credits-=total;
+  // Prolonger depuis aujourd'hui ou depuis expiration si pas encore expiré
+  var base=exp>new Date()?exp:new Date();
+  base.setMonth(base.getMonth()+months);
+  svc.expiry=base.toISOString();
+  svc.status='active';
+  d.transactions.push({id:'t'+Date.now(),userId:u.id,type:'renouvellement',amount:-total,note:svc.planName+' x'+months+'mois'+(reactiv?' +reactiv':''),date:new Date().toISOString()});
+  save(d);
+  res.json({success:true,newExpiry:svc.expiry,creditsLeft:u.credits});
+});
+
 // MOT DE PASSE OUBLIÉ (sans email pour l'instant - version simple)
 app.post('/api/auth/forgot',function(req,res){
   var email=req.body.email;
