@@ -1,507 +1,869 @@
 <!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Startech APP</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0a0c10;--s1:#12161e;--s2:#1a1f2b;--bd:#1e2535;--gold:#d4a017;--gold2:#f0c040;--green:#05d890;--blue:#3d8bff;--red:#ff4d6d;--orange:#ff8c00;--text:#e8eaf0;--t2:#8892a4;--t3:#4a5568;--r:10px}
-body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+:root{--bg:#f0f2f5;--white:#ffffff;--s1:#f8f9fc;--bd:#e5e7eb;--gold:#d4a017;--blue:#6366f1;--blue2:#4f46e5;--green:#22c55e;--red:#ef4444;--orange:#f59e0b;--text:#111827;--t2:#6b7280;--t3:#9ca3af;--r:10px;--sidebar:220px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 button{cursor:pointer;border:none;outline:none;font-family:inherit}
-.auth-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 30% 20%,#1a1200,var(--bg) 60%)}
-.auth-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:36px 32px;width:100%;max-width:400px}
+input,select,textarea{font-family:inherit}
+
+/* ===== AUTH ===== */
+.auth-page{min-height:100vh;background:linear-gradient(135deg,#f0f2f5 0%,#e8eaf6 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.auth-dots{position:absolute;width:100%;height:100%;background-image:radial-gradient(#c7d2fe 1px,transparent 1px);background-size:24px 24px;opacity:.5}
+.auth-card{background:var(--white);border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 4px 24px rgba(0,0,0,.08);position:relative;z-index:1}
 .auth-logo{text-align:center;margin-bottom:24px}
-.auth-logo h1{color:var(--gold);font-size:20px;letter-spacing:2px;margin-top:6px}
-.auth-logo p{color:var(--t2);font-size:11px;margin-top:3px}
-.auth-tabs{display:flex;background:var(--s2);border-radius:8px;padding:3px;margin-bottom:16px}
-.auth-tab{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600;border-radius:6px;color:var(--t2);cursor:pointer;transition:all .2s}
-.auth-tab.on{background:var(--gold);color:#000}
-.fl{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
-.inp{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:10px 12px;color:var(--text);font-size:14px;font-family:inherit;margin-bottom:12px}
-.inp:focus{outline:none;border-color:var(--gold)}
-.btn-gold{width:100%;background:var(--gold);color:#000;font-weight:700;font-size:14px;padding:13px;border-radius:7px;margin-top:4px;transition:background .2s}
-.btn-gold:hover{background:var(--gold2)}
-.btn-google{width:100%;background:#fff;color:#333;font-weight:600;font-size:13px;padding:11px;border-radius:7px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;cursor:pointer}
-.divider{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.divider div{flex:1;height:1px;background:var(--bd)}
-.divider span{font-size:11px;color:var(--t2)}
-.auth-err{color:var(--red);font-size:12px;text-align:center;margin-top:10px;display:none}
-/* LAYOUT */
-#app-client,#app-admin{display:none;height:100vh;overflow:hidden}
+.auth-logo-icon{width:56px;height:56px;margin:0 auto 12px;background:var(--blue);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff}
+.auth-logo h1{font-size:22px;font-weight:700;color:var(--blue)}
+.auth-logo p{font-size:13px;color:var(--t2);margin-top:4px}
+.form-label{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
+.form-label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.form-label-row a{font-size:12px;color:var(--blue);text-decoration:none;font-weight:500}
+.form-label-row a:hover{text-decoration:underline}
+.input-wrap{position:relative;margin-bottom:14px}
+.input-field{width:100%;background:var(--white);border:1.5px solid var(--bd);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;transition:border-color .2s}
+.input-field:focus{outline:none;border-color:var(--blue)}
+.input-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:transparent;color:var(--t3);font-size:16px;cursor:pointer}
+.btn-primary{width:100%;background:var(--blue);color:#fff;font-weight:600;font-size:14px;padding:12px;border-radius:8px;transition:background .2s;margin-top:4px}
+.btn-primary:hover{background:var(--blue2)}
+.btn-google{width:100%;background:var(--white);color:var(--text);font-weight:500;font-size:13px;padding:10px;border-radius:8px;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;transition:border-color .2s}
+.btn-google:hover{border-color:var(--blue)}
+.auth-divider{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.auth-divider div{flex:1;height:1px;background:var(--bd)}
+.auth-divider span{font-size:12px;color:var(--t3)}
+.auth-link{text-align:center;margin-top:16px;font-size:13px;color:var(--t2)}
+.auth-link a{color:var(--blue);font-weight:500;text-decoration:none}
+.auth-err{color:var(--red);font-size:12px;text-align:center;margin-top:8px;display:none;padding:8px;background:#fef2f2;border-radius:6px}
+.phone-wrap{display:flex;gap:8px;margin-bottom:14px}
+.phone-prefix{background:var(--white);border:1.5px solid var(--bd);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.phone-input{flex:1;background:var(--white);border:1.5px solid var(--bd);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;width:100%}
+.phone-input:focus{outline:none;border-color:var(--blue)}
+.checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px;color:var(--t2)}
+.checkbox-row a{color:var(--blue)}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.affiliation-badge{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--t2)}
+
+/* ===== APP LAYOUT ===== */
+#app{display:none;height:100vh;overflow:hidden}
 .layout{display:flex;height:100vh}
-.sidebar{width:230px;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;transition:transform .3s}
-.sb-head{padding:18px 14px 14px;border-bottom:1px solid var(--bd)}
-.brand{display:flex;align-items:center;gap:9px}
-.brand-ic{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;font-size:14px}
-.brand-n{color:var(--gold);font-size:14px;font-weight:700;letter-spacing:1px}
-.sb-bal{padding:10px 12px;background:var(--s2);margin:10px;border-radius:8px}
-.bal-row{display:flex;gap:10px}
-.bal-b{flex:1;text-align:center}
-.bal-v{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold)}
-.bal-l{font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
-.nav{flex:1;overflow-y:auto;padding:6px 0}
-.nsec{padding:6px 14px 3px;font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
-.ni{display:flex;align-items:center;gap:9px;padding:9px 14px;cursor:pointer;border-left:3px solid transparent;font-size:13px;transition:background .15s}
-.ni:hover{background:var(--s2)}
-.ni.on{background:rgba(212,160,23,.08);border-left-color:var(--gold);color:var(--gold)}
-.sb-foot{padding:11px 14px;border-top:1px solid var(--bd)}
-.uinfo{display:flex;align-items:center;gap:8px}
-.uav{width:30px;height:30px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000}
-.unm{font-size:12px;font-weight:600}
-.url{font-size:10px;color:var(--t2)}
-.btn-logout{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:6px 12px;border-radius:6px}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);background:var(--white);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;transition:transform .3s}
+.sb-logo{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.sb-logo-ic{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff}
+.sb-logo-name{font-size:15px;font-weight:700;color:var(--blue)}
+.sb-logo-sub{font-size:10px;color:var(--t3)}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0}
+.sb-section{padding:8px 14px 4px;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-radius:0;color:var(--t2);font-size:13px;font-weight:500;transition:all .15s;border-left:3px solid transparent}
+.sb-item:hover{background:#f5f3ff;color:var(--blue)}
+.sb-item.on{background:#ede9fe;color:var(--blue);border-left-color:var(--blue);font-weight:600}
+.sb-item .sb-icon{font-size:15px;width:20px;text-align:center}
+.sb-item .sb-new{background:var(--blue);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:auto}
+.sb-plus{padding:8px 14px 4px;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:8px}
+
+/* TOPBAR */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{background:var(--s1);border-bottom:1px solid var(--bd);padding:13px 20px;display:flex;align-items:center;gap:10px}
-.tbtog{background:transparent;border:none;color:var(--t2);font-size:20px;cursor:pointer;display:none}
-.tbtit{font-size:15px;font-weight:700}
-.tbact{margin-left:auto;display:flex;gap:8px}
+.topbar{background:var(--white);border-bottom:1px solid var(--bd);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px}
+.topbar-toggle{background:transparent;color:var(--t2);font-size:20px;display:none}
+.topbar-crt{display:flex;align-items:center;gap:6px}
+.crt-badge{background:#ede9fe;color:var(--blue);font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;cursor:pointer}
+.crt-badge .plus{background:var(--blue);color:#fff;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.topbar-avatar{width:34px;height:34px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;cursor:pointer;position:relative}
+.topbar-avatar .online-dot{position:absolute;bottom:0;right:0;width:9px;height:9px;background:var(--green);border-radius:50%;border:2px solid var(--white)}
+.topbar-theme{background:transparent;color:var(--t2);font-size:18px;padding:4px}
+.topbar-lang{font-size:12px;color:var(--t2);font-weight:500}
+
+/* CONTENT */
 .content{flex:1;overflow-y:auto;padding:20px}
 .page{display:none}.page.on{display:block}
-.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:11px;margin-bottom:20px}
-.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:14px;position:relative;overflow:hidden;transition:border-color .2s,transform .15s;cursor:pointer}
-.sc:hover{border-color:var(--gold);transform:translateY(-2px)}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.sc.g::before{background:var(--gold)}.sc.gr::before{background:var(--green)}.sc.bl::before{background:var(--blue)}.sc.or::before{background:var(--orange)}.sc.re::before{background:var(--red)}.sc.pu::before{background:#a855f7}
-.si{font-size:22px;margin-bottom:6px}.sv{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700}.sl{font-size:10px;color:var(--t2);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
-.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px}
-.shop-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;text-align:center;transition:border-color .2s}
-.shop-card:hover{border-color:var(--gold)}
-.shop-icon{font-size:36px;margin-bottom:10px}
-.shop-name{font-size:15px;font-weight:700;margin-bottom:4px}
-.shop-desc{font-size:11px;color:var(--t2);margin-bottom:14px}
-.shop-price{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px}
-.price-crt{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--gold)}
-.price-fcfa{font-size:11px;color:var(--t2)}
-.btn-buy{background:var(--gold);color:#000;font-weight:700;font-size:12px;padding:9px 20px;border-radius:7px;width:100%}
-.btn-buy:hover{background:var(--gold2)}
-.packs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-.pack-card{background:var(--s1);border:2px solid var(--bd);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
-.pack-card:hover,.pack-card.sel{border-color:var(--gold);background:rgba(212,160,23,.05)}
-.pack-crt{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--gold)}
-.pack-lbl{font-size:10px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.pack-fcfa{font-size:14px;font-weight:600}
-.svc-card{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px}
-.tw{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
-table{width:100%;border-collapse:collapse}
-thead{background:var(--s2)}
-th{padding:9px 13px;text-align:left;font-size:10px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
-td{padding:9px 13px;font-size:12px;border-top:1px solid var(--bd)}
-tr:hover td{background:var(--s2)}
-.badge{display:inline-block;padding:2px 7px;border-radius:9px;font-size:10px;font-weight:600}
-.bgr{background:rgba(5,216,144,.15);color:var(--green)}.bre{background:rgba(255,77,109,.15);color:var(--red)}.bgo{background:rgba(212,160,23,.15);color:var(--gold)}.bbl{background:rgba(61,139,255,.15);color:var(--blue)}.bor{background:rgba(255,140,0,.15);color:var(--orange)}
-.bpri{background:var(--gold);color:#000;font-weight:700;font-size:11px;padding:7px 14px;border-radius:6px;border:none;cursor:pointer}
-.bpri:hover{background:var(--gold2)}
-.bdng{background:var(--red);color:#fff;font-size:11px;padding:5px 10px;border-radius:5px;border:none;cursor:pointer}
-.bol{background:transparent;border:1px solid var(--bd);color:var(--text);font-size:11px;padding:7px 13px;border-radius:6px;cursor:pointer}
-.bol:hover{border-color:var(--gold);color:var(--gold)}
-.emp{text-align:center;padding:40px;color:var(--t2)}
-.emp-i{font-size:36px;margin-bottom:10px}.emp p{font-size:12px}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:100}
+.breadcrumb{font-size:12px;color:var(--t2);margin-bottom:16px;display:flex;align-items:center;gap:6px}
+.breadcrumb span{color:var(--t3)}
+
+/* DASHBOARD */
+.dash-banner{background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.dash-banner-icon{font-size:28px}
+.dash-banner-text{flex:1;font-size:13px;font-weight:500}
+.dash-banner-text p{font-size:12px;color:var(--t2);margin-top:2px}
+.btn-join{background:var(--blue);color:#fff;font-size:12px;font-weight:600;padding:8px 18px;border-radius:8px;border:none;cursor:pointer}
+.dash-warn{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;gap:10px}
+.dash-warn-icon{font-size:18px;margin-top:1px}
+.dash-warn-text{font-size:12px;color:#92400e;line-height:1.6}
+.dash-warn-text strong{color:#78350f}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-box{background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:space-between}
+.stat-box-left .label{font-size:12px;color:var(--t2);margin-bottom:4px}
+.stat-box-left .val{font-size:24px;font-weight:700}
+.stat-box-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.stat-box-icon.blue{background:#ede9fe}.stat-box-icon.orange{background:#fff7ed}.stat-box-icon.green{background:#f0fdf4}
+
+/* AFFILIATION */
+.affil-section{background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:20px}
+.affil-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.affil-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.affil-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.affil-stat{text-align:center}
+.affil-stat .val{font-size:20px;font-weight:700;color:var(--blue)}
+.affil-stat .lbl{font-size:11px;color:var(--t2);margin-top:2px}
+.affil-code-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:8px}
+.affil-code{background:var(--blue);color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:6px;font-family:monospace}
+.affil-principal{background:#dcfce7;color:#166534;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;margin-left:4px}
+.affil-link{font-size:12px;color:var(--blue);font-family:monospace;flex:1}
+.btn-copy{background:transparent;color:var(--t2);font-size:14px;padding:4px;border:none;cursor:pointer}
+.btn-copy:hover{color:var(--blue)}
+.btn-voir{background:var(--white);border:1.5px solid var(--bd);color:var(--t2);font-size:12px;font-weight:500;padding:6px 14px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:5px}
+
+/* DEVICES / VPN */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.search-bar{display:flex;gap:8px;align-items:center;background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:8px 14px;flex:1;max-width:300px}
+.search-bar input{border:none;outline:none;font-size:13px;color:var(--text);background:transparent;width:100%}
+.select-filter{background:var(--white);border:1.5px solid var(--bd);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--t2);cursor:pointer}
+.btn-add{background:var(--blue);color:#fff;font-size:13px;font-weight:600;padding:9px 18px;border-radius:8px;display:flex;align-items:center;gap:6px}
+.section-title{font-size:16px;font-weight:700;margin-bottom:14px}
+
+/* DEVICE CARD */
+.device-card{background:var(--white);border:1px solid var(--bd);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.device-card-header{padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.device-name{font-size:14px;font-weight:700;flex:1;display:flex;align-items:center;gap:8px}
+.device-edit{color:var(--t3);font-size:14px}
+.device-exp{font-size:12px;color:var(--t2)}
+.device-exp.expired{color:var(--red)}
+.device-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)}
+.toggle-sw{width:38px;height:20px;border-radius:10px;position:relative;cursor:pointer}
+.toggle-sw.on{background:var(--blue)}.toggle-sw.off{background:var(--bd)}
+.toggle-sw::after{content:'';position:absolute;top:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left .2s}
+.toggle-sw.on::after{left:20px}.toggle-sw.off::after{left:2px}
+.device-btns{display:flex;gap:6px}
+.btn-online{background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none}
+.btn-offline{background:#ef4444;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none}
+.btn-ping{background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer}
+.btn-installer{background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;border:none;cursor:pointer}
+.btn-detail{background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;border:none;cursor:pointer}
+.btn-renew{background:#ef4444;color:#fff;font-size:11px;font-weight:700;padding:5px 14px;border-radius:6px;border:none;cursor:pointer}
+.device-body{border-top:1px solid var(--bd);padding:14px 18px;background:var(--s1)}
+.device-actions-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.btn-settings{background:var(--white);border:1.5px solid var(--bd);border-radius:7px;padding:7px 10px;font-size:14px;cursor:pointer}
+.btn-addport{background:var(--white);border:1.5px solid var(--blue);color:var(--blue);font-size:12px;font-weight:600;padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.btn-prolong{background:var(--white);border:1.5px solid var(--red);color:var(--red);font-size:12px;font-weight:600;padding:7px 14px;border-radius:7px;cursor:pointer}
+.renew-select{background:var(--white);border:1.5px solid var(--bd);border-radius:7px;padding:7px 12px;font-size:12px;color:var(--t2)}
+.renew-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t2)}
+.ports-table{width:100%}
+.ports-table thead th{text-align:left;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;padding:6px 8px;letter-spacing:.5px}
+.ports-table tbody td{padding:8px;font-size:12px;border-top:1px solid var(--bd)}
+.port-input{background:var(--white);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;font-size:12px;font-family:monospace;color:var(--text);width:100%}
+.port-select{background:var(--white);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text)}
+.port-toggle{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t2)}
+
+/* MIKHMON */
+.mikhmon-card{background:var(--white);border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.mikhmon-header{padding:12px 18px;display:flex;align-items:center;gap:10px}
+.mikhmon-domain{font-size:13px;font-weight:600;flex:1;display:flex;align-items:center;gap:8px}
+.mikhmon-link{color:var(--t3);font-size:14px;cursor:pointer}
+.mikhmon-exp{font-size:12px;color:var(--t2)}
+.mikhmon-exp.expired{color:var(--red)}
+.btn-renew-crt{background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer}
+.mikhmon-body{border-top:1px solid var(--bd);padding:12px 18px;background:var(--s1);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mikhmon-field{display:flex;align-items:center;gap:6px}
+.mikhmon-field label{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
+.mikhmon-input{background:var(--white);border:1px solid var(--bd);border-radius:6px;padding:5px 10px;font-size:12px;font-family:monospace;color:var(--text);width:120px}
+.btn-refresh{background:transparent;border:1px solid var(--bd);border-radius:5px;padding:4px 8px;font-size:12px;cursor:pointer;color:var(--t2)}
+
+/* WIREGUARD */
+.wg-card{background:var(--white);border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.wg-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.btn-gerer{background:#1e293b;color:#fff;font-size:12px;font-weight:600;padding:7px 16px;border-radius:7px;border:none;cursor:pointer}
+
+/* TRANSACTIONS */
+.tx-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.tx-box{background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.tx-box-left .lbl{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.tx-box-left .val{font-size:22px;font-weight:700}
+.tx-box-left .unit{font-size:12px;color:var(--t3);margin-left:4px}
+.btn-acheter{background:var(--white);border:1.5px solid var(--blue);color:var(--blue);font-size:12px;font-weight:600;padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.btn-convert{background:var(--white);border:1.5px solid var(--bd);color:var(--t2);font-size:12px;font-weight:600;padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.tx-filter{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.tx-title{font-size:15px;font-weight:700;margin-bottom:12px}
+.tx-table{width:100%;background:var(--white);border:1px solid var(--bd);border-radius:10px;overflow:hidden;border-collapse:collapse}
+.tx-table thead{background:var(--s1)}
+.tx-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.tx-table td{padding:10px 14px;font-size:13px;border-top:1px solid var(--bd)}
+.tx-table tr:hover td{background:#f9fafb}
+.badge-approved{background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px}
+.badge-pending{background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px}
+.badge-rejected{background:#fee2e2;color:#991b1b;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px}
+.tx-pos{color:#16a34a;font-weight:600}
+.tx-neg{color:#dc2626;font-weight:600}
+
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:100}
 .ov.op{display:flex}
-.mod{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:26px;width:90%;max-width:460px;max-height:90vh;overflow-y:auto}
-.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.mt{font-size:15px;font-weight:700}
-.mc{background:transparent;border:none;color:var(--t2);font-size:18px;cursor:pointer}
-.mc:hover{color:var(--red)}
-.ma{display:flex;gap:7px;justify-content:flex-end;margin-top:16px}
-.fi{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:9px 11px;color:var(--text);font-size:13px;font-family:inherit;margin-bottom:12px}
-.fi:focus{outline:none;border-color:var(--gold)}
-select.fi option{background:var(--s2)}
+.mod{background:var(--white);border-radius:14px;padding:24px;width:90%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.mod-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.mod-title{font-size:15px;font-weight:700}
+.mod-close{background:transparent;color:var(--t3);font-size:20px;cursor:pointer}
+.mod-close:hover{color:var(--red)}
+.mod-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.fi{width:100%;background:var(--white);border:1.5px solid var(--bd);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit;margin-bottom:12px}
+.fi:focus{outline:none;border-color:var(--blue)}
+select.fi option{background:var(--white)}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-textarea.fi{resize:vertical;min-height:70px}
-.sec-title{font-size:13px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.alert{padding:11px 14px;border-radius:7px;font-size:12px;margin-bottom:14px;display:none}
-.alert-s{background:rgba(5,216,144,.1);border:1px solid rgba(5,216,144,.3);color:var(--green)}
-.alert-e{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:var(--red)}
-.ovbg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none}
-.ovbg.op{display:block}
+.fl{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+textarea.fi{resize:vertical;min-height:80px}
+.btn-cancel{background:var(--white);border:1.5px solid var(--bd);color:var(--t2);font-size:13px;font-weight:500;padding:9px 18px;border-radius:8px;cursor:pointer}
+.btn-save{background:var(--blue);color:#fff;font-size:13px;font-weight:600;padding:9px 20px;border-radius:8px;cursor:pointer}
+.btn-danger{background:var(--red);color:#fff;font-size:13px;font-weight:600;padding:9px 20px;border-radius:8px;cursor:pointer}
+.alert-mod{padding:10px 14px;border-radius:7px;font-size:12px;margin-bottom:12px;display:none}
+.alert-e{background:#fef2f2;border:1px solid #fecaca;color:var(--red)}
+.alert-s{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+
+/* SHOP */
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:20px}
+.shop-card{background:var(--white);border:1.5px solid var(--bd);border-radius:14px;padding:22px;text-align:center;transition:border-color .2s,transform .15s;cursor:pointer}
+.shop-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.shop-icon{font-size:40px;margin-bottom:12px}
+.shop-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.shop-desc{font-size:12px;color:var(--t2);margin-bottom:16px}
+.shop-price{font-size:24px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.shop-price span{font-size:12px;color:var(--t2);font-weight:400}
+.btn-acheter-shop{background:var(--blue);color:#fff;font-weight:600;font-size:13px;padding:10px 24px;border-radius:8px;width:100%;border:none;cursor:pointer;transition:background .2s}
+.btn-acheter-shop:hover{background:var(--blue2)}
+
+/* PACKS */
+.packs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.pack-card{background:var(--white);border:2px solid var(--bd);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s}
+.pack-card:hover,.pack-card.sel{border-color:var(--blue);background:#f5f3ff}
+.pack-crt{font-size:32px;font-weight:800;color:var(--blue)}
+.pack-lbl{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.pack-fcfa{font-size:15px;font-weight:600}
+
+/* AVERTISSEMENT */
+.warn-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.warn-icon{font-size:18px;color:#f59e0b;flex-shrink:0}
+.warn-text{font-size:12px;color:#92400e;line-height:1.6}
+
+/* SCRIPT VIEW */
+.script-box{background:#0f172a;border-radius:8px;padding:14px;font-family:monospace;font-size:12px;color:#22c55e;min-height:160px;resize:vertical;width:100%;border:none;outline:none}
+.install-cmd{background:#0f172a;border:2px solid var(--blue);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.install-cmd input{flex:1;background:transparent;border:none;outline:none;color:#22c55e;font-family:monospace;font-size:12px}
+
 /* ADMIN SPECIFIC */
-.admin-header{background:linear-gradient(135deg,#1a0a00,var(--s1));border-bottom:2px solid var(--gold);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
-.admin-badge{background:var(--gold);color:#000;font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;letter-spacing:1px}
-@media(max-width:700px){
-  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%)}
+.admin-sidebar{border-right:2px solid var(--blue)}
+.admin-badge-top{background:var(--blue);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:3px;letter-spacing:1px}
+
+.ovbg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99;display:none}
+.ovbg.op{display:block}
+
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%);width:240px}
   .sidebar.op{transform:translateX(0)}
-  .tbtog{display:block}
-  .frow{grid-template-columns:1fr}
-  .sg{grid-template-columns:1fr 1fr}
+  .topbar-toggle{display:block}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .affil-stats{grid-template-columns:1fr 1fr}
+  .tx-summary{grid-template-columns:1fr}
   .shop-grid{grid-template-columns:1fr}
   .packs-grid{grid-template-columns:1fr 1fr}
   .content{padding:14px}
+  .frow{grid-template-columns:1fr}
 }
 </style></head><body>
 
-<!-- AUTH -->
-<div class="auth-wrap" id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-logo"><div style="font-size:40px">⚡</div><h1>STARTECH APP</h1><p>Plateforme MikroTik</p></div>
-    <div class="auth-tabs">
-      <div class="auth-tab on" id="tab-login" onclick="switchTab('login')">Connexion</div>
-      <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Créer un compte</div>
-    </div>
-    <button class="btn-google" onclick="signInWithGoogle()">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      Continuer avec Google
-    </button>
-    <div class="divider"><div></div><span>ou</span><div></div></div>
-    <div id="form-login">
-      <label class="fl">Identifiant ou email</label>
-      <input class="inp" type="text" id="lu" placeholder="admin ou email@...">
-      <label class="fl">Mot de passe</label>
-      <input class="inp" type="password" id="lp" placeholder="••••••••">
-      <button class="btn-gold" onclick="doLogin()">Connexion</button>
+<!-- ===== AUTH ===== -->
+<div id="auth-screen">
+  <!-- LOGIN -->
+  <div class="auth-page" id="auth-login">
+    <div class="auth-dots"></div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">S</div>
+        <h1>Startech APP</h1>
+        <p>Connectez-vous et commencez l'aventure</p>
+      </div>
+      <button class="btn-google" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continuer avec Google
+      </button>
+      <div class="auth-divider"><div></div><span>ou</span><div></div></div>
+      <label class="form-label">EMAIL</label>
+      <div class="input-wrap"><input class="input-field" type="email" id="lu" placeholder="Saisissez votre adresse e-mail"></div>
+      <div class="form-label-row">
+        <span class="form-label" style="margin-bottom:0">MOT DE PASSE</span>
+        <a href="#" onclick="showForgot()">Mot de passe oublié ?</a>
+      </div>
+      <div class="input-wrap">
+        <input class="input-field" type="password" id="lp" placeholder="••••••••" id="lp">
+        <button class="input-eye" onclick="togglePwd('lp',this)">👁</button>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">S'identifier</button>
       <p class="auth-err" id="lerr"></p>
+      <div class="auth-link">Nouveau sur notre plateforme ? <a href="#" onclick="showRegister()">Créer un compte</a></div>
     </div>
-    <div id="form-register" style="display:none">
-      <label class="fl">Nom d'utilisateur</label>
-      <input class="inp" type="text" id="ru" placeholder="monpseudo">
-      <label class="fl">Email</label>
-      <input class="inp" type="email" id="re" placeholder="email@exemple.com">
-      <label class="fl">Mot de passe</label>
-      <input class="inp" type="password" id="rp" placeholder="••••••••">
-      <button class="btn-gold" onclick="doRegister()">Créer mon compte</button>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="auth-page" id="auth-register" style="display:none">
+    <div class="auth-dots"></div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">S</div>
+        <h1>L'aventure commence ici 🎉</h1>
+        <p>Rendez la gestion de vos routeurs facile et amusante !</p>
+      </div>
+      <label class="form-label">NOM *</label>
+      <div class="input-wrap"><input class="input-field" type="text" id="rn" placeholder="Nom..."></div>
+      <label class="form-label">TÉLÉPHONE (NUMÉRO WHATSAPP RECOMMANDÉ) *</label>
+      <div class="phone-wrap">
+        <div class="phone-prefix">🇧🇫 +226</div>
+        <input class="phone-input" type="tel" id="rphone" placeholder="Numéro de téléphone">
+      </div>
+      <label class="form-label">EMAIL *</label>
+      <div class="input-wrap"><input class="input-field" type="email" id="re" placeholder="Saisissez votre adresse e-mail"></div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">MOT DE PASSE *</label>
+          <div class="input-wrap" style="margin-bottom:0">
+            <input class="input-field" type="password" id="rp" placeholder="••••••••">
+            <button class="input-eye" onclick="togglePwd('rp',this)">👁</button>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">CONFIRMER MOT DE PASSE *</label>
+          <div class="input-wrap" style="margin-bottom:0">
+            <input class="input-field" type="password" id="rp2" placeholder="••••••••">
+            <button class="input-eye" onclick="togglePwd('rp2',this)">👁</button>
+          </div>
+        </div>
+      </div>
+      <label class="form-label" style="margin-top:14px">CODE D'AFFILIATION (OPTIONNEL)</label>
+      <div class="input-wrap"><input class="input-field" type="text" id="raff" placeholder="Saisissez votre code (optionnel)"></div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="rcgu" style="accent-color:var(--blue)">
+        <label for="rcgu">J'accepte <a href="#">les conditions d'utilisations</a></label>
+      </div>
+      <button class="btn-primary" onclick="doRegister()">S'inscrire</button>
       <p class="auth-err" id="rerr"></p>
+      <div class="auth-link">Vous avez déjà un compte ? <a href="#" onclick="showLogin()">S'identifier plutôt</a></div>
+    </div>
+  </div>
+
+  <!-- MOT DE PASSE OUBLIÉ -->
+  <div class="auth-page" id="auth-forgot" style="display:none">
+    <div class="auth-dots"></div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🔑</div>
+        <h1>Mot de passe oublié</h1>
+        <p>Entrez votre email pour réinitialiser votre mot de passe</p>
+      </div>
+      <label class="form-label">EMAIL</label>
+      <div class="input-wrap"><input class="input-field" type="email" id="femail" placeholder="Saisissez votre adresse e-mail"></div>
+      <button class="btn-primary" onclick="doForgot()">Envoyer le lien</button>
+      <p class="auth-err" id="ferr" style="background:#f0fdf4;border:1px solid #bbf7d0;color:#166534"></p>
+      <div class="auth-link"><a href="#" onclick="showLogin()">← Retour à la connexion</a></div>
     </div>
   </div>
 </div>
 
-<!-- ==================== APP CLIENT ==================== -->
-<div id="app-client">
-  <div class="ovbg" id="ovbg-c" onclick="cSide('c')"></div>
+<!-- ===== APP ===== -->
+<div id="app">
+  <div class="ovbg" id="ovbg" onclick="cSide()"></div>
   <div class="layout">
-    <div class="sidebar" id="sidebar-c">
-      <div class="sb-head">
-        <div class="brand">
-          <div class="brand-ic">S</div>
-          <div><div class="brand-n">STARTECH</div><div style="font-size:9px;color:var(--t2)">Espace client</div></div>
-        </div>
+
+    <!-- SIDEBAR CLIENT -->
+    <div class="sidebar" id="sidebar" style="display:none">
+      <div class="sb-logo">
+        <div class="sb-logo-ic">S</div>
+        <div><div class="sb-logo-name">Startech</div><div class="sb-logo-sub">APP v2.0</div></div>
       </div>
-      <div class="sb-bal">
-        <div class="bal-row">
-          <div class="bal-b"><div class="bal-v" id="c-crt">0</div><div class="bal-l">CRT</div></div>
-          <div class="bal-b"><div class="bal-v" id="c-fcfa">0</div><div class="bal-l">FCFA</div></div>
-        </div>
-      </div>
-      <nav class="nav">
-        <div class="nsec">Mon espace</div>
-        <div class="ni on" onclick="cp('dashboard')"><span>🏠</span> Tableau de bord</div>
-        <div class="ni" onclick="cp('boutique')"><span>🛒</span> Boutique</div>
-        <div class="ni" onclick="cp('credits')"><span>🪙</span> Acheter crédits</div>
-        <div class="ni" onclick="cp('services')"><span>⚡</span> Mes services</div>
-        <div class="ni" onclick="cp('vpn')"><span>🔒</span> Mes VPN</div>
-        <div class="ni" onclick="cp('transactions')"><span>📊</span> Mes transactions</div>
+      <nav class="sb-nav">
+        <div class="sb-item on" onclick="gp('dashboard')"><span class="sb-icon">🏠</span> Tableau de bord</div>
+        <div class="sb-section">APPLICATIONS</div>
+        <div class="sb-item" onclick="gp('scripts')"><span class="sb-icon">&lt;/&gt;</span> Mikrotik Scripts <span class="sb-new">NEW</span></div>
+        <div class="sb-item" onclick="gp('vpn')"><span class="sb-icon">🖥️</span> Comptes VPN</div>
+        <div class="sb-item" onclick="gp('wireguard')"><span class="sb-icon">🔒</span> WireGuard</div>
+        <div class="sb-item" onclick="gp('mikhmon')"><span class="sb-icon">📡</span> Mikhmon Online</div>
+        <div class="sb-item" onclick="gp('transactions')"><span class="sb-icon">💳</span> Transactions</div>
+        <div class="sb-plus">PLUS</div>
+        <div class="sb-item" onclick="openWhatsApp()"><span class="sb-icon">💬</span> Channel Whatsapp</div>
+        <div class="sb-item" onclick="openTelegram()"><span class="sb-icon">✈️</span> Channel Telegram</div>
+        <div class="sb-item"><span class="sb-icon">🎧</span> Support</div>
+        <div class="sb-item"><span class="sb-icon">📄</span> Documentation</div>
       </nav>
-      <div class="sb-foot">
-        <div class="uinfo">
-          <div class="uav" id="c-av">C</div>
-          <div><div class="unm" id="c-nm">client</div><div class="url">Client</div></div>
-          <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
-        </div>
-      </div>
     </div>
+
+    <!-- SIDEBAR ADMIN -->
+    <div class="sidebar admin-sidebar" id="sidebar-admin" style="display:none">
+      <div class="sb-logo">
+        <div class="sb-logo-ic">S</div>
+        <div><div class="sb-logo-name" style="display:flex;align-items:center;gap:6px">Startech <span class="admin-badge-top">ADMIN</span></div><div class="sb-logo-sub">Panneau admin</div></div>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-item on" onclick="ap('dashboard')"><span class="sb-icon">🏠</span> Tableau de bord</div>
+        <div class="sb-section">GESTION CLIENTS</div>
+        <div class="sb-item" onclick="ap('users')"><span class="sb-icon">👥</span> Utilisateurs</div>
+        <div class="sb-item" onclick="ap('payments')"><span class="sb-icon">💳</span> Paiements</div>
+        <div class="sb-item" onclick="ap('all-services')"><span class="sb-icon">⚡</span> Services clients</div>
+        <div class="sb-item" onclick="ap('transactions')"><span class="sb-icon">📊</span> Transactions</div>
+        <div class="sb-section">INFRASTRUCTURE</div>
+        <div class="sb-item" onclick="ap('mikhmon')"><span class="sb-icon">📡</span> Mikhmon Online</div>
+        <div class="sb-item" onclick="ap('wireguard')"><span class="sb-icon">🔒</span> WireGuard</div>
+        <div class="sb-item" onclick="ap('scripts')"><span class="sb-icon">&lt;/&gt;</span> Scripts</div>
+      </nav>
+    </div>
+
+    <!-- MAIN -->
     <div class="main">
       <div class="topbar">
-        <button class="tbtog" onclick="tSide('c')">☰</button>
-        <span class="tbtit" id="c-title">Tableau de bord</span>
-        <div class="tbact" id="c-act"></div>
+        <button class="topbar-toggle" onclick="tSide()">☰</button>
+        <div class="topbar-crt" id="topbar-crt">
+          <div class="crt-badge" onclick="gp('credits')" id="tb-crt-badge">
+            <span id="tb-crt">0 CRT</span>
+            <span class="plus">+</span>
+          </div>
+          <div class="crt-badge" style="background:#f0fdf4;color:#166534">
+            <span id="tb-gnx">0 GNX</span>
+            <span class="plus" style="background:#22c55e">+</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="topbar-theme">🌙</button>
+          <span class="topbar-lang">fr</span>
+          <div class="topbar-avatar" id="tb-avatar">U<div class="online-dot"></div></div>
+          <button style="background:transparent;color:var(--t2);font-size:12px;font-weight:500;padding:6px 12px;border:1.5px solid var(--bd);border-radius:7px;cursor:pointer" onclick="doLogout()">Déconnexion</button>
+        </div>
       </div>
+
       <div class="content">
-        <div class="page on" id="cp-dashboard">
-          <div class="sg" id="c-stats"></div>
-          <div class="sec-title">Mes services actifs</div>
-          <div id="c-services-dash"></div>
-        </div>
-        <div class="page" id="cp-boutique">
-          <div class="alert alert-e" id="buy-err"></div>
-          <div class="alert alert-s" id="buy-ok"></div>
-          <div class="shop-grid" id="shop-list"></div>
-        </div>
-        <div class="page" id="cp-credits">
-          <p style="font-size:12px;color:var(--t2);margin-bottom:16px">1 CRT = 50 FCFA — Paiement via Orange Money / Moov Money</p>
-          <div class="packs-grid" id="packs-list"></div>
-          <div id="pack-selected" style="display:none">
-            <div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:16px">
-              <div style="font-size:18px;font-weight:700;margin-bottom:6px" id="pack-confirm-txt"></div>
-              <div style="font-size:12px;color:var(--t2)">Paiement sécurisé via FedaPay (Orange Money / Moov Money)</div>
+
+        <!-- CLIENT PAGES -->
+        <!-- DASHBOARD -->
+        <div class="page on" id="pg-dashboard">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+            <div class="dash-banner">
+              <div class="dash-banner-icon">💬</div>
+              <div class="dash-banner-text"><strong>Rejoignez-nous sur Whatsapp</strong><p>Pour ne rien rater</p></div>
+              <button class="btn-join" onclick="openWhatsApp()">Rejoindre</button>
             </div>
-            <button class="btn-gold" style="max-width:300px" onclick="initPayment()">Payer maintenant</button>
+            <div class="dash-banner">
+              <div class="dash-banner-icon">✈️</div>
+              <div class="dash-banner-text"><strong>Rejoignez-nous sur Télégram</strong><p>Pour ne rien rater</p></div>
+              <button class="btn-join" onclick="openTelegram()">Rejoindre</button>
+            </div>
+          </div>
+          <div class="dash-warn">
+            <div class="dash-warn-icon">⚠️</div>
+            <div class="dash-warn-text"><strong>Avertissement</strong><br>Un compte VPN, MIKHMON ou WIREGUARD non renouvelé dans un délai d'un mois après son expiration sera marqué comme dormant. Sa réactivation coûtera 5 crédits supplémentaires. Après un mois en état dormant, le compte sera définitivement supprimé.</div>
+          </div>
+          <div class="stats-row" id="dash-stats"></div>
+          <div class="affil-section">
+            <div class="affil-header">
+              <div class="affil-title">🎁 Programme d'affiliation</div>
+              <button class="btn-voir">📋 Voir tout</button>
+            </div>
+            <div class="affil-stats">
+              <div class="affil-stat"><div class="val" id="aff-gnx">0</div><div class="lbl">Solde GNX</div></div>
+              <div class="affil-stat"><div class="val" id="aff-total">0</div><div class="lbl">Gains Totaux</div></div>
+              <div class="affil-stat"><div class="val" id="aff-pending" style="color:var(--orange)">0</div><div class="lbl">En attente</div></div>
+              <div class="affil-stat"><div class="val">0</div><div class="lbl">Filleuls</div></div>
+            </div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px">Mes Codes d'Affiliation</div>
+            <div class="affil-code-row">
+              <span class="affil-code" id="aff-code">LOADING</span>
+              <span class="affil-principal">Principale</span>
+              <button class="btn-copy" onclick="copyAffCode()">📋</button>
+              <span class="affil-link" id="aff-link">https://app.startech-pro.com/ref/...</span>
+              <button class="btn-copy" onclick="copyAffLink()">📋</button>
+              <div style="margin-left:auto;font-size:12px;color:var(--t2)">Filleuls <span style="background:#ede9fe;color:var(--blue);padding:1px 6px;border-radius:4px;font-weight:700">0</span></div>
+              <div style="font-size:12px;color:var(--t2)">Gains <span style="color:var(--orange);font-weight:700">0 GNX</span></div>
+              <button class="btn-voir" style="font-size:11px;padding:4px 10px">📋 Détails</button>
+            </div>
           </div>
         </div>
-        <div class="page" id="cp-services"><div id="svc-list"></div></div>
-        <div class="page" id="cp-vpn"><div id="c-vpn-wrap"><div class="emp"><div class="emp-i">🔒</div><p>Aucun VPN. <span style="color:var(--gold);cursor:pointer" onclick="cp('boutique')">Acheter</span></p></div></div></div>
-        <div class="page" id="cp-transactions"><div class="tw" id="c-tx-wrap"><div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div></div></div>
+
+        <!-- SCRIPTS -->
+        <div class="page" id="pg-scripts">
+          <div class="warn-box"><div class="warn-icon">ℹ️</div><div class="warn-text">Les scripts MikroTik vous permettent de configurer automatiquement votre routeur. Achetez un script et collez-le dans le terminal WinBox.</div></div>
+          <div class="shop-grid" id="scripts-shop"></div>
+        </div>
+
+        <!-- COMPTES VPN -->
+        <div class="page" id="pg-vpn">
+          <div class="breadcrumb">VPN <span>›</span> Comptes</div>
+          <div class="page-header">
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="search-bar"><span style="color:var(--t3)">🔍</span><input placeholder="Nom routeur..."></div>
+              <select class="select-filter"><option>Tout...</option><option>Actif</option><option>Expiré</option></select>
+            </div>
+            <button class="btn-add" onclick="om('mod-buy-vpn')"><span>+</span> Ajouter un routeur</button>
+          </div>
+          <div class="section-title">Routeurs Mikrotik</div>
+          <div id="vpn-list"></div>
+        </div>
+
+        <!-- WIREGUARD -->
+        <div class="page" id="pg-wireguard">
+          <div class="breadcrumb">VPN <span>›</span> WireGuard</div>
+          <div class="warn-box"><div class="warn-icon">⚠️</div><div class="warn-text">Notre service VPN WireGuard est compatible avec tous les routeurs MikroTik à partir de la version 7.1 et plus</div></div>
+          <div class="page-header">
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="search-bar"><span style="color:var(--t3)">🔍</span><input placeholder="Nom réseau..."></div>
+              <select class="select-filter"><option>Tout...</option></select>
+            </div>
+            <button class="btn-add" onclick="om('mod-buy-wg')"><span>+</span> Ajouter un réseau</button>
+          </div>
+          <div class="section-title">Réseaux Wireguard</div>
+          <div id="wg-list"></div>
+        </div>
+
+        <!-- MIKHMON -->
+        <div class="page" id="pg-mikhmon">
+          <div class="breadcrumb">Mikhmon <span>›</span> Domaines</div>
+          <div class="warn-box" style="background:#fffbeb;border-color:#fde68a">
+            <div class="warn-icon">ℹ️</div>
+            <div class="warn-text" style="color:#92400e">Restez informé des dernières mises à jour ! Rejoignez notre canal <a href="#" style="color:var(--blue)">Telegram</a> pour ne rien manquer des nouveautés. <a href="#" style="color:var(--blue)">Cliquer ici</a></div>
+          </div>
+          <div class="page-header">
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="search-bar"><span style="color:var(--t3)">🔍</span><input placeholder="Nom routeur..."></div>
+              <select class="select-filter"><option>Tout...</option></select>
+            </div>
+            <button class="btn-add" onclick="om('mod-buy-mikhmon')"><span>+</span> Ajouter un domaine</button>
+          </div>
+          <div class="section-title">Mikhmon Online</div>
+          <div id="mikhmon-list"></div>
+        </div>
+
+        <!-- TRANSACTIONS -->
+        <div class="page" id="pg-transactions">
+          <div class="breadcrumb">Transactions</div>
+          <div class="tx-summary">
+            <div class="tx-box">
+              <div class="tx-box-left"><div class="lbl">CREDIT</div><div class="val"><span id="tx-crt">0</span><span class="unit">CRT</span></div></div>
+              <button class="btn-acheter" onclick="gp('credits')">+ Acheter</button>
+            </div>
+            <div class="tx-box">
+              <div class="tx-box-left"><div class="lbl">GAINS</div><div class="val"><span id="tx-gnx">0</span><span class="unit">GNX</span></div></div>
+              <button class="btn-convert">⇄ CRT</button>
+            </div>
+            <div class="tx-box">
+              <div class="tx-box-left"><div class="lbl">CFA</div><div class="val"><span id="tx-cfa">0</span><span class="unit">XOF</span></div></div>
+            </div>
+          </div>
+          <div class="tx-filter">
+            <select class="select-filter"><option>Choisir le status ...</option><option>Approved</option><option>Pending</option><option>Rejected</option></select>
+            <button class="btn-add" onclick="gp('credits')" style="margin-left:auto">+ Acheter du crédit</button>
+          </div>
+          <div class="tx-title">Liste des transactions</div>
+          <table class="tx-table" id="tx-table">
+            <thead><tr><th>#REF</th><th>DATE</th><th>NOMBRE(CRT)</th><th>MONTANT(CFA)</th><th>DESCRIPTION</th><th>STATUT</th><th>ACTIONS</th></tr></thead>
+            <tbody id="tx-body"><tr><td colspan="7" style="text-align:center;color:var(--t3);padding:30px">Aucune transaction</td></tr></tbody>
+          </table>
+        </div>
+
+        <!-- CRÉDITS -->
+        <div class="page" id="pg-credits">
+          <div class="section-title">Recharger mes crédits</div>
+          <p style="font-size:13px;color:var(--t2);margin-bottom:16px">1 CRT = 50 FCFA — Paiement via Orange Money / Moov Money (FedaPay)</p>
+          <div class="packs-grid" id="packs-list"></div>
+          <div id="pack-confirm" style="display:none">
+            <div style="background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:20px;margin-bottom:16px">
+              <div style="font-size:16px;font-weight:700;margin-bottom:6px" id="pack-txt"></div>
+              <div style="font-size:13px;color:var(--t2)">Paiement sécurisé via FedaPay (Orange Money / Moov Money)</div>
+            </div>
+            <button class="btn-primary" style="max-width:300px" onclick="initPayment()">Payer maintenant</button>
+          </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div class="page" id="pg-adash">
+          <div class="stats-row" id="a-stats-row"></div>
+          <div style="background:var(--white);border:1px solid var(--bd);border-radius:12px;padding:20px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:14px">Paiements récents en attente</div>
+            <div id="a-recent-pay"></div>
+          </div>
+        </div>
+
+        <!-- ADMIN USERS -->
+        <div class="page" id="pg-ausers">
+          <table class="tx-table" id="a-users-table">
+            <thead><tr><th>Utilisateur</th><th>Email</th><th>Rôle</th><th>Crédits</th><th>Créé</th><th>Actions</th></tr></thead>
+            <tbody id="a-users-body"></tbody>
+          </table>
+        </div>
+
+        <!-- ADMIN PAYMENTS -->
+        <div class="page" id="pg-apayments">
+          <table class="tx-table">
+            <thead><tr><th>Date</th><th>Client</th><th>CRT</th><th>Montant</th><th>Statut</th><th>Action</th></tr></thead>
+            <tbody id="a-pay-body"></tbody>
+          </table>
+        </div>
+
+        <!-- ADMIN SERVICES -->
+        <div class="page" id="pg-aservices">
+          <div id="a-svc-body"></div>
+        </div>
+
+        <!-- ADMIN TRANSACTIONS -->
+        <div class="page" id="pg-atx">
+          <table class="tx-table">
+            <thead><tr><th>#REF</th><th>Date</th><th>Type</th><th>Montant</th><th>Note</th></tr></thead>
+            <tbody id="a-tx-body"></tbody>
+          </table>
+        </div>
+
+        <!-- ADMIN MIKHMON -->
+        <div class="page" id="pg-amikh">
+          <div class="page-header">
+            <div class="search-bar"><span style="color:var(--t3)">🔍</span><input placeholder="Nom routeur..."></div>
+            <button class="btn-add" onclick="om('mod-router')"><span>+</span> Ajouter un routeur</button>
+          </div>
+          <div class="section-title">Routeurs Mikrotik</div>
+          <div id="a-router-list"></div>
+        </div>
+
+        <!-- ADMIN WIREGUARD -->
+        <div class="page" id="pg-awg">
+          <div class="page-header">
+            <div class="search-bar"><span style="color:var(--t3)">🔍</span><input placeholder="Nom réseau..."></div>
+            <button class="btn-add" onclick="om('mod-wg')"><span>+</span> Ajouter un réseau</button>
+          </div>
+          <div class="section-title">Réseaux Wireguard</div>
+          <div id="a-wg-list"></div>
+        </div>
+
+        <!-- ADMIN SCRIPTS -->
+        <div class="page" id="pg-ascripts">
+          <div class="page-header">
+            <div class="search-bar"><span style="color:var(--t3)">🔍</span><input placeholder="Rechercher..."></div>
+            <button class="btn-add" onclick="om('mod-script')"><span>+</span> Ajouter script</button>
+          </div>
+          <div id="a-scripts-list"></div>
+        </div>
+
       </div>
     </div>
   </div>
 </div>
 
-<!-- ==================== APP ADMIN ==================== -->
-<div id="app-admin">
-  <div class="ovbg" id="ovbg-a" onclick="cSide('a')"></div>
-  <div class="layout">
-    <div class="sidebar" id="sidebar-a" style="border-right:2px solid var(--gold)">
-      <div class="sb-head" style="background:linear-gradient(135deg,#1a0a00,var(--s1))">
-        <div class="brand">
-          <div class="brand-ic" style="background:var(--gold)">S</div>
-          <div>
-            <div class="brand-n">STARTECH</div>
-            <div style="display:flex;align-items:center;gap:4px;margin-top:2px"><span style="background:var(--gold);color:#000;font-size:9px;font-weight:800;padding:1px 5px;border-radius:3px">ADMIN</span></div>
-          </div>
-        </div>
-      </div>
-      <nav class="nav">
-        <div class="nsec">Tableau de bord</div>
-        <div class="ni on" onclick="ap('dashboard')"><span>🏠</span> Vue globale</div>
-        <div class="nsec">Gestion clients</div>
-        <div class="ni" onclick="ap('users')"><span>👥</span> Utilisateurs</div>
-        <div class="ni" onclick="ap('payments')"><span>💳</span> Paiements</div>
-        <div class="ni" onclick="ap('all-services')"><span>⚡</span> Services clients</div>
-        <div class="ni" onclick="ap('transactions')"><span>📊</span> Transactions</div>
-        <div class="nsec">Infrastructure</div>
-        <div class="ni" onclick="ap('mikhmon')"><span>📡</span> Mikhmon Online</div>
-        <div class="ni" onclick="ap('wireguard')"><span>🔒</span> WireGuard</div>
-        <div class="ni" onclick="ap('scripts')"><span>&lt;/&gt;</span> Scripts</div>
-      </nav>
-      <div class="sb-foot">
-        <div class="uinfo">
-          <div class="uav" id="a-av" style="background:var(--gold)">A</div>
-          <div><div class="unm" id="a-nm">admin</div><div class="url" style="color:var(--gold)">Administrateur</div></div>
-          <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
-        </div>
-      </div>
-    </div>
-    <div class="main">
-      <div class="topbar" style="border-bottom:2px solid var(--gold)">
-        <button class="tbtog" onclick="tSide('a')">☰</button>
-        <span class="tbtit" id="a-title">Vue globale</span>
-        <span class="admin-badge">ADMIN</span>
-        <div class="tbact" id="a-act"></div>
-      </div>
-      <div class="content">
-        <div class="page on" id="ap-dashboard"><div class="sg" id="a-stats"></div><div id="a-recent"></div></div>
-        <div class="page" id="ap-users"><div class="tw" id="a-users-wrap"><div class="emp"><div class="emp-i">👥</div><p>Chargement...</p></div></div></div>
-        <div class="page" id="ap-payments"><div class="tw" id="a-pay-wrap"><div class="emp"><div class="emp-i">💳</div><p>Aucun paiement.</p></div></div></div>
-        <div class="page" id="ap-all-services"><div id="a-svc-wrap"><div class="emp"><div class="emp-i">⚡</div><p>Aucun service.</p></div></div></div>
-        <div class="page" id="ap-transactions"><div class="tw" id="a-tx-wrap"><div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div></div></div>
-        <div class="page" id="ap-mikhmon"><div class="tw" id="a-rt-wrap"><div class="emp"><div class="emp-i">📡</div><p>Aucun routeur.</p></div></div></div>
-        <div class="page" id="ap-wireguard"><div id="a-wg-list"><div class="emp"><div class="emp-i">🔒</div><p>Aucun réseau WG.</p></div></div></div>
-        <div class="page" id="ap-scripts"><div id="a-sc-list"><div class="emp"><div class="emp-i">&lt;/&gt;</div><p>Aucun script.</p></div></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODALS COMMUNS -->
-<div class="ov" id="mod-buy">
+<!-- MODALS -->
+<div class="ov" id="mod-buy-vpn">
   <div class="mod">
-    <div class="mh"><span class="mt" id="mod-buy-title">Acheter service</span><button class="mc" onclick="cm('mod-buy')">✕</button></div>
-    <input type="hidden" id="buy-plan-id">
-    <div style="background:var(--s2);border-radius:8px;padding:14px;margin-bottom:16px;text-align:center">
-      <div style="font-size:28px;margin-bottom:6px" id="buy-icon"></div>
-      <div style="font-size:13px;color:var(--t2);margin-bottom:10px" id="buy-desc"></div>
-      <span class="badge bgo" style="font-size:13px;padding:5px 14px" id="buy-cost-badge"></span>
+    <div class="mod-header"><span class="mod-title">🖥️ Acheter Compte VPN</span><button class="mod-close" onclick="cm('mod-buy-vpn')">✕</button></div>
+    <div style="background:#f5f3ff;border-radius:8px;padding:14px;margin-bottom:14px;text-align:center">
+      <div style="font-size:32px;font-weight:800;color:var(--blue)">10 CRT</div>
+      <div style="font-size:13px;color:var(--t2)">= 500 FCFA par mois</div>
     </div>
     <label class="fl">Durée</label>
-    <select class="fi" id="buy-months">
-      <option value="1">1 mois — 10 CRT (500 FCFA)</option>
-      <option value="2">2 mois — 20 CRT (1000 FCFA)</option>
-      <option value="3">3 mois — 30 CRT (1500 FCFA)</option>
-      <option value="6">6 mois — 60 CRT (3000 FCFA)</option>
-      <option value="12">12 mois — 120 CRT (6000 FCFA)</option>
-    </select>
-    <div style="font-size:12px;color:var(--t2);margin-bottom:14px">Solde actuel : <span id="buy-balance" style="color:var(--gold);font-weight:700"></span> CRT</div>
-    <div class="alert alert-e" id="buy-modal-err"></div>
-    <div class="ma"><button class="bol" onclick="cm('mod-buy')">Annuler</button><button class="bpri" onclick="confirmBuy()">Confirmer</button></div>
+    <select class="fi" id="vpn-months"><option value="1">1 mois — 10 CRT (500 FCFA)</option><option value="2">2 mois — 20 CRT (1000 FCFA)</option><option value="3">3 mois — 30 CRT (1500 FCFA)</option><option value="6">6 mois — 60 CRT (3000 FCFA)</option><option value="12">12 mois — 120 CRT (6000 FCFA)</option></select>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Solde : <span id="vpn-bal" style="color:var(--blue);font-weight:700"></span> CRT</div>
+    <div class="alert-mod alert-e" id="vpn-err"></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-buy-vpn')">Annuler</button><button class="btn-save" onclick="buyService('vpn')">Confirmer</button></div>
+  </div>
+</div>
+
+<div class="ov" id="mod-buy-wg">
+  <div class="mod">
+    <div class="mod-header"><span class="mod-title">🔒 Acheter WireGuard VPN</span><button class="mod-close" onclick="cm('mod-buy-wg')">✕</button></div>
+    <div style="background:#f0fdf4;border-radius:8px;padding:14px;margin-bottom:14px;text-align:center">
+      <div style="font-size:32px;font-weight:800;color:#166534">10 CRT</div>
+      <div style="font-size:13px;color:var(--t2)">= 500 FCFA par mois</div>
+    </div>
+    <label class="fl">Durée</label>
+    <select class="fi" id="wg-months"><option value="1">1 mois — 10 CRT (500 FCFA)</option><option value="3">3 mois — 30 CRT (1500 FCFA)</option><option value="6">6 mois — 60 CRT (3000 FCFA)</option><option value="12">12 mois — 120 CRT (6000 FCFA)</option></select>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Solde : <span id="wg-bal" style="color:var(--blue);font-weight:700"></span> CRT</div>
+    <div class="alert-mod alert-e" id="wg-err"></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-buy-wg')">Annuler</button><button class="btn-save" onclick="buyService('wg')">Confirmer</button></div>
+  </div>
+</div>
+
+<div class="ov" id="mod-buy-mikhmon">
+  <div class="mod">
+    <div class="mod-header"><span class="mod-title">📡 Acheter Mikhmon Online</span><button class="mod-close" onclick="cm('mod-buy-mikhmon')">✕</button></div>
+    <div style="background:#fff7ed;border-radius:8px;padding:14px;margin-bottom:14px;text-align:center">
+      <div style="font-size:32px;font-weight:800;color:#c2410c">10 CRT</div>
+      <div style="font-size:13px;color:var(--t2)">= 500 FCFA par mois</div>
+    </div>
+    <label class="fl">Durée</label>
+    <select class="fi" id="mikh-months"><option value="1">1 mois — 10 CRT (500 FCFA)</option><option value="3">3 mois — 30 CRT (1500 FCFA)</option><option value="6">6 mois — 60 CRT (3000 FCFA)</option><option value="12">12 mois — 120 CRT (6000 FCFA)</option></select>
+    <div style="font-size:12px;color:var(--t2);margin-bottom:12px">Solde : <span id="mikh-bal" style="color:var(--blue);font-weight:700"></span> CRT</div>
+    <div class="alert-mod alert-e" id="mikh-err"></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-buy-mikhmon')">Annuler</button><button class="btn-save" onclick="buyService('mikhmon')">Confirmer</button></div>
   </div>
 </div>
 
 <div class="ov" id="mod-script-view">
   <div class="mod" style="max-width:560px">
-    <div class="mh"><span class="mt">📋 Script RouterOS</span><button class="mc" onclick="cm('mod-script-view')">✕</button></div>
-    <div id="install-cmd-box" style="display:none;margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:8px">⚡ Coller dans New Terminal (WinBox)</div>
-      <div style="background:#0a0c10;border:1px solid var(--gold);border-radius:7px;padding:10px;display:flex;align-items:center;gap:8px">
-        <input id="install-cmd" readonly style="flex:1;background:transparent;border:none;color:var(--green);font-family:monospace;font-size:11px;outline:none">
-        <button onclick="copyInstallCmd()" style="background:var(--gold);color:#000;font-weight:700;font-size:11px;padding:5px 10px;border-radius:5px;border:none;cursor:pointer">📋 Copier</button>
+    <div class="mod-header"><span class="mod-title">📋 Script d'installation VPN</span><button class="mod-close" onclick="cm('mod-script-view')">✕</button></div>
+    <div id="install-cmd-wrap" style="display:none">
+      <div style="font-size:12px;font-weight:600;color:var(--blue);margin-bottom:6px">⚡ Commande rapide — Coller dans New Terminal (WinBox)</div>
+      <div class="install-cmd">
+        <input id="install-cmd-txt" readonly>
+        <button onclick="copyInstall()" style="background:var(--blue);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:5px;border:none;cursor:pointer">📋 Copier</button>
       </div>
     </div>
-    <div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:12px;font-size:11px;color:var(--t2)">
-      1. WinBox → New Terminal &nbsp;|&nbsp; 2. Coller la commande &nbsp;|&nbsp; 3. Entrée
+    <div style="background:#f8f9fc;border-radius:8px;padding:12px;margin-bottom:10px;font-size:12px;color:var(--t2)">
+      Instructions : WinBox → New Terminal → Coller → Entrée
     </div>
-    <textarea id="script-content" readonly style="width:100%;background:#0a0c10;border:1px solid var(--bd);border-radius:7px;padding:12px;color:var(--green);font-family:monospace;font-size:11px;min-height:150px;resize:vertical"></textarea>
+    <textarea class="script-box" id="script-txt" readonly></textarea>
     <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="bpri" style="flex:1" onclick="copyScript()">📋 Copier script complet</button>
-      <button class="bol" onclick="cm('mod-script-view')">Fermer</button>
+      <button class="btn-save" style="flex:1" onclick="copyScript()">📋 Copier le script</button>
+      <button class="btn-cancel" onclick="cm('mod-script-view')">Fermer</button>
     </div>
-    <div style="font-size:10px;color:var(--t2);margin-top:8px;text-align:center">IP : <span id="script-ip" style="color:var(--gold);font-family:monospace"></span> — Serveur : <span id="script-server" style="color:var(--gold);font-family:monospace"></span></div>
+    <div style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">IP : <span id="s-ip" style="color:var(--blue);font-family:monospace"></span> — Serveur : <span id="s-srv" style="color:var(--blue);font-family:monospace"></span></div>
   </div>
 </div>
 
 <div class="ov" id="mod-detail">
   <div class="mod" style="max-width:520px">
-    <div class="mh"><span class="mt">🔌 Connexion à distance</span><button class="mc" onclick="cm('mod-detail')">✕</button></div>
-    <div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:11px;color:var(--t2)">Adresses pour accéder à votre routeur via le tunnel VPN Startech.</div>
-    <div id="detail-addresses"></div>
-    <div style="margin-top:14px">
+    <div class="mod-header"><span class="mod-title">🔌 Connexion à distance</span><button class="mod-close" onclick="cm('mod-detail')">✕</button></div>
+    <div id="detail-addrs"></div>
+    <div style="margin-top:12px">
       <div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:6px">Commandes iptables (admin VPS) :</div>
-      <textarea id="detail-iptables" readonly style="width:100%;background:#0a0c10;border:1px solid var(--bd);border-radius:7px;padding:10px;color:var(--green);font-family:monospace;font-size:10px;min-height:80px;resize:none"></textarea>
+      <textarea id="detail-ipt" readonly style="width:100%;background:#0f172a;border:none;border-radius:7px;padding:10px;color:#22c55e;font-family:monospace;font-size:10px;min-height:80px;resize:none"></textarea>
     </div>
-    <div class="ma"><button class="bol" onclick="cm('mod-detail')">Fermer</button></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-detail')">Fermer</button></div>
   </div>
 </div>
 
 <div class="ov" id="mod-router">
   <div class="mod">
-    <div class="mh"><span class="mt">Ajouter routeur</span><button class="mc" onclick="cm('mod-router')">✕</button></div>
-    <label class="fl">Nom</label><input class="fi" id="rn" placeholder="BAOBAB 99">
+    <div class="mod-header"><span class="mod-title">Ajouter routeur</span><button class="mod-close" onclick="cm('mod-router')">✕</button></div>
+    <label class="fl">Nom</label><input class="fi" id="rn2" placeholder="BAOBAB 99">
     <div class="frow">
-      <div><label class="fl">IP</label><input class="fi" id="ri" placeholder="192.168.1.1"></div>
-      <div><label class="fl">Port API</label><input class="fi" id="rp2" value="8728" type="number"></div>
+      <div><label class="fl">IP</label><input class="fi" id="ri2" placeholder="192.168.1.1"></div>
+      <div><label class="fl">Port API</label><input class="fi" id="rp3" value="8728" type="number"></div>
     </div>
     <div class="frow">
-      <div><label class="fl">Utilisateur</label><input class="fi" id="ru2" value="admin"></div>
-      <div><label class="fl">Mot de passe</label><input class="fi" id="rpw" type="password"></div>
+      <div><label class="fl">Utilisateur</label><input class="fi" id="ru3" value="admin"></div>
+      <div><label class="fl">Mot de passe</label><input class="fi" id="rpw2" type="password"></div>
     </div>
-    <label class="fl">Expiration</label><input class="fi" id="rexp" type="date">
-    <div class="ma"><button class="bol" onclick="cm('mod-router')">Annuler</button><button class="bpri" onclick="saveR()">Enregistrer</button></div>
+    <label class="fl">Expiration</label><input class="fi" id="rexp2" type="date">
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-router')">Annuler</button><button class="btn-save" onclick="saveRouter()">Enregistrer</button></div>
   </div>
 </div>
 
 <div class="ov" id="mod-wg">
   <div class="mod">
-    <div class="mh"><span class="mt">Ajouter réseau WG</span><button class="mc" onclick="cm('mod-wg')">✕</button></div>
-    <label class="fl">Nom</label><input class="fi" id="wgn" placeholder="Startech">
+    <div class="mod-header"><span class="mod-title">Ajouter réseau WG</span><button class="mod-close" onclick="cm('mod-wg')">✕</button></div>
+    <label class="fl">Nom</label><input class="fi" id="wgn2" placeholder="Startech">
     <div class="frow">
-      <div><label class="fl">Sous-réseau</label><input class="fi" id="wgs" value="10.8.0.0/24"></div>
-      <div><label class="fl">Port</label><input class="fi" id="wgp" value="51820" type="number"></div>
+      <div><label class="fl">Sous-réseau</label><input class="fi" id="wgs2" value="10.8.0.0/24"></div>
+      <div><label class="fl">Port</label><input class="fi" id="wgp2" value="51820" type="number"></div>
     </div>
-    <div class="ma"><button class="bol" onclick="cm('mod-wg')">Annuler</button><button class="bpri" onclick="saveWG()">Créer</button></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-wg')">Annuler</button><button class="btn-save" onclick="saveWG2()">Créer</button></div>
   </div>
 </div>
 
 <div class="ov" id="mod-script">
   <div class="mod">
-    <div class="mh"><span class="mt">Ajouter script</span><button class="mc" onclick="cm('mod-script')">✕</button></div>
-    <label class="fl">Nom</label><input class="fi" id="scn">
-    <label class="fl">Description</label><input class="fi" id="scd">
+    <div class="mod-header"><span class="mod-title">Ajouter script</span><button class="mod-close" onclick="cm('mod-script')">✕</button></div>
+    <label class="fl">Nom</label><input class="fi" id="scn2">
+    <label class="fl">Description</label><input class="fi" id="scd2">
     <div class="frow">
-      <div><label class="fl">Catégorie</label>
-        <select class="fi" id="scc"><option value="hotspot">Hotspot</option><option value="firewall">Firewall</option><option value="vpn">VPN</option><option value="pppoe">PPPoE</option><option value="general">Général</option></select>
-      </div>
-      <div><label class="fl">Coût CRT</label><input class="fi" id="sce" type="number" value="0"></div>
+      <div><label class="fl">Catégorie</label><select class="fi" id="scc2"><option value="hotspot">Hotspot</option><option value="firewall">Firewall</option><option value="vpn">VPN</option><option value="pppoe">PPPoE</option><option value="general">Général</option></select></div>
+      <div><label class="fl">Coût CRT</label><input class="fi" id="sce2" type="number" value="0"></div>
     </div>
-    <label class="fl">Code RouterOS</label><textarea class="fi" id="scco"></textarea>
-    <div class="ma"><button class="bol" onclick="cm('mod-script')">Annuler</button><button class="bpri" onclick="saveSC()">Enregistrer</button></div>
+    <label class="fl">Code RouterOS</label><textarea class="fi" id="scco2" style="min-height:80px"></textarea>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-script')">Annuler</button><button class="btn-save" onclick="saveScript2()">Enregistrer</button></div>
   </div>
 </div>
 
 <div class="ov" id="mod-user">
   <div class="mod">
-    <div class="mh"><span class="mt">Ajouter utilisateur</span><button class="mc" onclick="cm('mod-user')">✕</button></div>
-    <label class="fl">Nom utilisateur</label><input class="fi" id="un">
-    <label class="fl">Email</label><input class="fi" id="ue" type="email">
+    <div class="mod-header"><span class="mod-title">Ajouter utilisateur</span><button class="mod-close" onclick="cm('mod-user')">✕</button></div>
+    <label class="fl">Nom utilisateur</label><input class="fi" id="un2">
+    <label class="fl">Email</label><input class="fi" id="ue2" type="email">
     <div class="frow">
-      <div><label class="fl">Mot de passe</label><input class="fi" id="upw" type="password"></div>
-      <div><label class="fl">Rôle</label><select class="fi" id="ur"><option value="client">Client</option><option value="admin">Admin</option></select></div>
+      <div><label class="fl">Mot de passe</label><input class="fi" id="upw2" type="password"></div>
+      <div><label class="fl">Rôle</label><select class="fi" id="ur2"><option value="client">Client</option><option value="admin">Admin</option></select></div>
     </div>
-    <div class="ma"><button class="bol" onclick="cm('mod-user')">Annuler</button><button class="bpri" onclick="saveU()">Créer</button></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-user')">Annuler</button><button class="btn-save" onclick="saveUser2()">Créer</button></div>
   </div>
 </div>
 
 <div class="ov" id="mod-cr">
   <div class="mod">
-    <div class="mh"><span class="mt">Recharger crédits</span><button class="mc" onclick="cm('mod-cr')">✕</button></div>
+    <div class="mod-header"><span class="mod-title">Recharger crédits</span><button class="mod-close" onclick="cm('mod-cr')">✕</button></div>
     <input type="hidden" id="cr-uid">
     <label class="fl">Montant (CRT)</label><input class="fi" id="cr-am" type="number">
     <label class="fl">Note</label><input class="fi" id="cr-no" placeholder="Recharge manuelle">
-    <div class="ma"><button class="bol" onclick="cm('mod-cr')">Annuler</button><button class="bpri" onclick="saveCR()">Confirmer</button></div>
+    <div class="mod-actions"><button class="btn-cancel" onclick="cm('mod-cr')">Annuler</button><button class="btn-save" onclick="saveCR2()">Confirmer</button></div>
   </div>
 </div>
 
 <script>
-var tk='',cu=null,selPack=null;
+var tk='',cu=null,selPack=null,isAdmin=false;
 var GOOGLE_CLIENT_ID='996722318188-tktv13clq0euaf3cp13403k6vpb6degc.apps.googleusercontent.com';
+var AFFCODE='';
 
 function hd(){return{'Content-Type':'application/json','Authorization':'Bearer '+tk};}
 async function api(m,u,b){var o={method:m,headers:hd()};if(b)o.body=JSON.stringify(b);var r=await fetch(u,o);return r.json();}
 
+// AUTH SCREENS
+function showLogin(){document.getElementById('auth-login').style.display='flex';document.getElementById('auth-register').style.display='none';document.getElementById('auth-forgot').style.display='none';}
+function showRegister(){document.getElementById('auth-login').style.display='none';document.getElementById('auth-register').style.display='flex';document.getElementById('auth-forgot').style.display='none';}
+function showForgot(){document.getElementById('auth-login').style.display='none';document.getElementById('auth-register').style.display='none';document.getElementById('auth-forgot').style.display='flex';}
+
+function togglePwd(id,btn){var inp=document.getElementById(id);inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'👁':'🙈';}
+
 // GOOGLE
 function signInWithGoogle(){
-  if(typeof google==='undefined'){
-    var s=document.createElement('script');
-    s.src='https://accounts.google.com/gsi/client';
-    s.onload=function(){signInWithGoogle();};
-    document.head.appendChild(s);
-    return;
-  }
-  google.accounts.id.initialize({
-    client_id:GOOGLE_CLIENT_ID,
-    callback:handleGoogleResponse,
-    auto_select:false,
-    cancel_on_tap_outside:false
-  });
+  if(typeof google==='undefined'){setTimeout(signInWithGoogle,500);return;}
+  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleResponse,auto_select:false,cancel_on_tap_outside:false});
   google.accounts.id.prompt(function(n){
     if(n.isNotDisplayed()||n.isSkippedMoment()){
-      // Fallback : afficher le bouton Google standard
+      var d=document.createElement('div');
+      google.accounts.id.renderButton(d,{theme:'outline',size:'large',width:340});
       var wrap=document.createElement('div');
-      wrap.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.5)';
-      wrap.innerHTML='<div style="font-size:14px;font-weight:600;margin-bottom:12px;color:#333">Choisir un compte Google</div>';
-      var btnDiv=document.createElement('div');
-      google.accounts.id.renderButton(btnDiv,{theme:'outline',size:'large',text:'continue_with',width:280});
-      wrap.appendChild(btnDiv);
-      var close=document.createElement('button');
-      close.textContent='Annuler';
-      close.style.cssText='margin-top:10px;width:100%;padding:8px;background:#f5f5f5;border:none;border-radius:6px;cursor:pointer;font-size:13px';
-      close.onclick=function(){document.body.removeChild(overlay);};
-      wrap.appendChild(close);
-      var overlay=document.createElement('div');
-      overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998';
-      overlay.onclick=function(){document.body.removeChild(overlay);};
-      overlay.appendChild(wrap);
-      document.body.appendChild(overlay);
+      wrap.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:#fff;padding:24px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);text-align:center';
+      wrap.innerHTML='<div style="font-size:15px;font-weight:600;margin-bottom:14px;color:#111">Choisir un compte Google</div>';
+      wrap.appendChild(d);
+      var cl=document.createElement('button');
+      cl.textContent='Annuler';cl.style.cssText='margin-top:12px;width:100%;padding:9px;background:#f5f5f5;border:none;border-radius:7px;cursor:pointer;font-size:13px';
+      var ov2=document.createElement('div');
+      ov2.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998';
+      cl.onclick=ov2.onclick=function(){if(document.body.contains(ov2))document.body.removeChild(ov2);};
+      wrap.appendChild(cl);ov2.appendChild(wrap);document.body.appendChild(ov2);
     }
   });
 }
-
 async function handleGoogleResponse(response){
   var d=await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})}).then(function(r){return r.json();});
+  var ov2=document.querySelector('[style*="inset:0"]');if(ov2&&document.body.contains(ov2))document.body.removeChild(ov2);
   if(d.error){var e=document.getElementById('lerr');e.textContent=d.error;e.style.display='block';return;}
-  // Fermer overlay si ouvert
-  var overlay=document.querySelector('[style*="inset:0"]');
-  if(overlay)document.body.removeChild(overlay);
   tk=d.token;cu=d.user;localStorage.setItem('st_tk',tk);startApp();
 }
 
-function initGoogleBtn(){
-  if(typeof google==='undefined'||!GOOGLE_CLIENT_ID)return;
-  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleResponse,auto_select:false});
-}
-
-// AUTH
-function switchTab(t){
-  document.getElementById('form-login').style.display=t==='login'?'block':'none';
-  document.getElementById('form-register').style.display=t==='register'?'block':'none';
-  document.getElementById('tab-login').classList.toggle('on',t==='login');
-  document.getElementById('tab-register').classList.toggle('on',t==='register');
-}
 async function doLogin(){
-  var u=document.getElementById('lu').value,p=document.getElementById('lp').value;if(!u||!p)return;
+  var u=document.getElementById('lu').value.trim(),p=document.getElementById('lp').value;if(!u||!p)return;
   var d=await api('POST','/api/auth/login',{username:u,password:p});
   if(d.error){var e=document.getElementById('lerr');e.textContent=d.error;e.style.display='block';return;}
   tk=d.token;cu=d.user;localStorage.setItem('st_tk',tk);startApp();
 }
+document.getElementById('lp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
 async function doRegister(){
-  var u=document.getElementById('ru').value,e=document.getElementById('re').value,p=document.getElementById('rp').value;if(!u||!e||!p)return;
-  var d=await api('POST','/api/auth/register',{username:u,email:e,password:p});
+  if(!document.getElementById('rcgu').checked){alert('Veuillez accepter les conditions d\'utilisation');return;}
+  var u=document.getElementById('rn').value.trim(),e=document.getElementById('re').value.trim(),p=document.getElementById('rp').value,p2=document.getElementById('rp2').value,ph=document.getElementById('rphone').value.trim();
+  if(!u||!e||!p){var er=document.getElementById('rerr');er.textContent='Tous les champs obligatoires doivent être remplis';er.style.display='block';return;}
+  if(p!==p2){var er=document.getElementById('rerr');er.textContent='Les mots de passe ne correspondent pas';er.style.display='block';return;}
+  var d=await api('POST','/api/auth/register',{username:u,email:e,password:p,phone:ph,affCode:document.getElementById('raff').value});
   if(d.error){var er=document.getElementById('rerr');er.textContent=d.error;er.style.display='block';return;}
   tk=d.token;cu=d.user;localStorage.setItem('st_tk',tk);startApp();
 }
-document.getElementById('lp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
-document.getElementById('rp').addEventListener('keydown',function(e){if(e.key==='Enter')doRegister();});
 
-function doLogout(){
-  tk='';cu=null;localStorage.removeItem('st_tk');
-  document.getElementById('app-client').style.display='none';
-  document.getElementById('app-admin').style.display='none';
-  document.getElementById('auth-screen').style.display='flex';
+async function doForgot(){
+  var email=document.getElementById('femail').value.trim();if(!email)return;
+  var d=await api('POST','/api/auth/forgot',{email:email});
+  var el=document.getElementById('ferr');
+  el.textContent=d.message||d.error||'Email envoyé si le compte existe';
+  el.style.display='block';
+  el.style.background=d.error?'#fef2f2':'#f0fdf4';
+  el.style.color=d.error?'var(--red)':'#166534';
 }
+
+function doLogout(){tk='';cu=null;localStorage.removeItem('st_tk');document.getElementById('app').style.display='none';document.getElementById('auth-screen').style.display='block';showLogin();}
 
 async function tryAuto(){
   var s=localStorage.getItem('st_tk');if(!s)return;tk=s;
@@ -512,316 +874,393 @@ async function tryAuto(){
 
 function startApp(){
   document.getElementById('auth-screen').style.display='none';
-  if(cu.role==='admin'){
-    document.getElementById('app-admin').style.display='block';
-    document.getElementById('a-av').textContent=cu.username[0].toUpperCase();
-    document.getElementById('a-nm').textContent=cu.username;
-    loadAdminDashboard();
+  document.getElementById('app').style.display='block';
+  isAdmin=cu.role==='admin';
+  document.getElementById('tb-avatar').textContent=cu.username[0].toUpperCase();
+  document.getElementById('tb-avatar').innerHTML=cu.username[0].toUpperCase()+'<div class="online-dot"></div>';
+  if(isAdmin){
+    document.getElementById('sidebar-admin').style.display='flex';
+    document.getElementById('topbar-crt').style.display='none';
+    ap('dashboard');
   } else {
-    document.getElementById('app-client').style.display='block';
-    document.getElementById('c-av').textContent=cu.username[0].toUpperCase();
-    document.getElementById('c-nm').textContent=cu.username;
-    loadClientDashboard();
+    document.getElementById('sidebar').style.display='flex';
+    updateTopbar();
+    AFFCODE='STB'+cu.id.substr(-6).toUpperCase();
+    document.getElementById('aff-code').textContent=AFFCODE;
+    document.getElementById('aff-link').textContent='https://app.startech-pro.com/ref/'+AFFCODE;
+    gp('dashboard');
   }
 }
 
-// NAVIGATION
-function cp(n){
-  document.querySelectorAll('#app-client .page').forEach(function(p){p.classList.remove('on');});
-  document.querySelectorAll('#app-client .ni').forEach(function(x){x.classList.remove('on');});
-  var pg=document.getElementById('cp-'+n);if(pg)pg.classList.add('on');
-  var titles={dashboard:'Tableau de bord',boutique:'Boutique',credits:'Acheter crédits',services:'Mes services',vpn:'Mes VPN',transactions:'Mes transactions'};
-  document.getElementById('c-title').textContent=titles[n]||n;
-  document.getElementById('c-act').innerHTML='';
-  if(n==='boutique')loadShop();
+function updateTopbar(){
+  document.getElementById('tb-crt').textContent=(cu.credits||0)+' CRT';
+  document.getElementById('tb-gnx').textContent=(cu.gnx||0)+' GNX';
+}
+
+// CLIENT NAVIGATION
+function gp(n){
+  document.querySelectorAll('#app .page').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('#sidebar .sb-item').forEach(function(x){x.classList.remove('on');});
+  var pg=document.getElementById('pg-'+n);if(pg)pg.classList.add('on');
+  if(n==='dashboard')loadDashboard();
+  else if(n==='vpn'){document.getElementById('vpn-bal').textContent=cu.credits;loadVPN();}
+  else if(n==='wireguard'){document.getElementById('wg-bal').textContent=cu.credits;loadWG();}
+  else if(n==='mikhmon'){document.getElementById('mikh-bal').textContent=cu.credits;loadMikhmon();}
+  else if(n==='transactions')loadTX();
   else if(n==='credits')loadPacks();
-  else if(n==='services')loadMyServices();
-  else if(n==='vpn')loadClientVPN();
-  else if(n==='transactions')loadClientTX();
-  cSide('c');
+  else if(n==='scripts')loadScripts();
+  cSide();
 }
 
+// ADMIN NAVIGATION
 function ap(n){
-  document.querySelectorAll('#app-admin .page').forEach(function(p){p.classList.remove('on');});
-  document.querySelectorAll('#app-admin .ni').forEach(function(x){x.classList.remove('on');});
-  var pg=document.getElementById('ap-'+n);if(pg)pg.classList.add('on');
-  var titles={dashboard:'Vue globale',users:'Utilisateurs',payments:'Paiements',transactions:'Transactions','all-services':'Services clients',mikhmon:'Mikhmon Online',wireguard:'WireGuard',scripts:'Scripts MikroTik'};
-  document.getElementById('a-title').textContent=titles[n]||n;
-  var a=document.getElementById('a-act');a.innerHTML='';
-  if(n==='users'){a.innerHTML='<button class="bpri" onclick="om(\'mod-user\')">+ Utilisateur</button>';loadAdminUsers();}
-  else if(n==='payments')loadAdminPayments();
+  document.querySelectorAll('#app .page').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('#sidebar-admin .sb-item').forEach(function(x){x.classList.remove('on');});
+  var map={'dashboard':'pg-adash','users':'pg-ausers','payments':'pg-apayments','all-services':'pg-aservices','transactions':'pg-atx','mikhmon':'pg-amikh','wireguard':'pg-awg','scripts':'pg-ascripts'};
+  var pg=document.getElementById(map[n]);if(pg)pg.classList.add('on');
+  if(n==='dashboard')loadAdminDash();
+  else if(n==='users')loadAdminUsers();
+  else if(n==='payments')loadAdminPay();
+  else if(n==='all-services')loadAdminSvc();
   else if(n==='transactions')loadAdminTX();
-  else if(n==='all-services')loadAllServices();
-  else if(n==='mikhmon'){a.innerHTML='<button class="bpri" onclick="om(\'mod-router\')">+ Routeur</button>';loadRouters();}
-  else if(n==='wireguard'){a.innerHTML='<button class="bpri" onclick="om(\'mod-wg\')">+ Réseau</button>';loadWG();}
-  else if(n==='scripts'){a.innerHTML='<button class="bpri" onclick="om(\'mod-script\')">+ Script</button>';loadScripts();}
-  cSide('a');
+  else if(n==='mikhmon')loadAdminRouters();
+  else if(n==='wireguard')loadAdminWG();
+  else if(n==='scripts')loadAdminScripts();
+  cSide();
 }
 
-function tSide(t){document.getElementById('sidebar-'+t).classList.toggle('op');document.getElementById('ovbg-'+t).classList.toggle('op');}
-function cSide(t){document.getElementById('sidebar-'+t).classList.remove('op');document.getElementById('ovbg-'+t).classList.remove('op');}
+function tSide(){document.getElementById(isAdmin?'sidebar-admin':'sidebar').classList.toggle('op');document.getElementById('ovbg').classList.toggle('op');}
+function cSide(){document.getElementById(isAdmin?'sidebar-admin':'sidebar').classList.remove('op');document.getElementById('ovbg').classList.remove('op');}
 function om(id){document.getElementById(id).classList.add('op');}
 function cm(id){document.getElementById(id).classList.remove('op');}
 
-// ===== CLIENT =====
-async function loadClientDashboard(){
+function openWhatsApp(){window.open('https://wa.me/22670608148','_blank');}
+function openTelegram(){window.open('https://t.me/startechbusiness','_blank');}
+
+// DASHBOARD CLIENT
+async function loadDashboard(){
   var d=await api('GET','/api/dashboard');if(d.error)return;
-  cu.credits=d.user.credits;
-  document.getElementById('c-crt').textContent=d.user.credits;
-  document.getElementById('c-fcfa').textContent=(d.user.credits*50).toLocaleString();
-  document.getElementById('c-stats').innerHTML=
-    '<div class="sc g" onclick="cp(\'credits\')"><div class="si">🪙</div><div class="sv">'+d.user.credits+'</div><div class="sl">Crédits CRT</div></div>'+
-    '<div class="sc gr" onclick="cp(\'credits\')"><div class="si">💵</div><div class="sv">'+(d.user.credits*50).toLocaleString()+'</div><div class="sl">FCFA</div></div>'+
-    '<div class="sc bl" onclick="cp(\'services\')"><div class="si">⚡</div><div class="sv">'+(d.myServices?d.myServices.length:0)+'</div><div class="sl">Services actifs</div></div>'+
-    '<div class="sc or" onclick="cp(\'boutique\')"><div class="si">🛒</div><div class="sv">3</div><div class="sl">Services dispo</div></div>';
+  cu.credits=d.user.credits;cu.gnx=d.user.gnx;updateTopbar();
   var svcs=d.myServices||[];
-  if(!svcs.length){
-    document.getElementById('c-services-dash').innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service actif. <span style="color:var(--gold);cursor:pointer" onclick="cp(\'boutique\')">Visiter la boutique</span></p></div>';
-  } else {
-    document.getElementById('c-services-dash').innerHTML=svcs.map(function(s){
-      var exp=new Date(s.expiry),ok=exp>=new Date();
-      return '<div class="svc-card" style="display:flex;align-items:center;gap:12px"><div style="font-size:26px">'+getPlanIcon(s.planId)+'</div><div style="flex:1"><div style="font-size:14px;font-weight:700">'+s.planName+'</div><div style="font-size:11px;color:var(--t2)">Expire le '+exp.toLocaleDateString('fr-FR')+'</div></div><span class="badge '+(ok?'bgr':'bre')+'">'+(ok?'Actif':'Expiré')+'</span></div>';
-    }).join('');
-  }
+  var online=svcs.filter(function(s){return new Date(s.expiry)>=new Date();}).length;
+  var total=svcs.length;
+  document.getElementById('dash-stats').innerHTML=
+    '<div class="stat-box"><div class="stat-box-left"><div class="label">Routeur en ligne</div><div class="val" style="color:var(--blue)">'+online+'</div></div><div class="stat-box-icon blue">🖥️</div></div>'+
+    '<div class="stat-box"><div class="stat-box-left"><div class="label">Routeur actif</div><div class="val" style="color:var(--blue)">'+total+'</div></div><div class="stat-box-icon blue">🖥️</div></div>'+
+    '<div class="stat-box"><div class="stat-box-left"><div class="label">Total Routeur</div><div class="val" style="color:var(--orange)">'+total+'</div></div><div class="stat-box-icon orange">⏱️</div></div>'+
+    '<div class="stat-box"><div class="stat-box-left"><div class="label">Crédit disponible</div><div class="val" style="color:var(--green)">'+d.user.credits+' <span style="font-size:12px">CRT</span></div></div><div class="stat-box-icon green">💳</div></div>';
+  document.getElementById('tx-crt').textContent=d.user.credits;
+  document.getElementById('tx-gnx').textContent=d.user.gnx;
+  document.getElementById('tx-cfa').textContent=(d.user.credits*50).toLocaleString();
 }
 
-function getPlanIcon(id){return{wg:'🔒',mikhmon:'📡',vpn:'👤'}[id]||'⚡';}
-
-async function loadShop(){
-  var plans=await api('GET','/api/plans');
-  document.getElementById('shop-list').innerHTML=plans.map(function(p){
-    return '<div class="shop-card"><div class="shop-icon">'+p.icon+'</div><div class="shop-name">'+p.name+'</div><div class="shop-desc">'+p.desc+'</div><div class="shop-price"><span class="price-crt">'+p.cost+' CRT</span><span class="price-fcfa">= '+(p.cost*50)+' FCFA/mois</span></div><button class="btn-buy" onclick="openBuy(\''+p.id+'\',\''+p.name+'\',\''+p.icon+'\',\''+p.desc+'\','+p.cost+')">Acheter</button></div>';
+// VPN CLIENT
+async function loadVPN(){
+  var d=await api('GET','/api/services/mine');
+  var vpns=(d||[]).filter(function(s){return s.planId==='vpn';});
+  var l=document.getElementById('vpn-list');
+  if(!vpns.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">Aucun compte VPN. <span style="color:var(--blue);cursor:pointer" onclick="om(\'mod-buy-vpn\')">Ajouter un routeur</span></div>';return;}
+  l.innerHTML=vpns.map(function(s,i){
+    var exp=new Date(s.expiry),expired=exp<new Date();
+    var expStr='( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )';
+    var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
+    return '<div class="device-card">'+
+      '<div class="device-card-header">'+
+        '<div class="device-name">'+s.planName+' #'+(i+1)+' <span class="device-edit">✏️</span></div>'+
+        '<span class="device-exp'+(expired?' expired':'')+'">'+expStr+'</span>'+
+        '<div class="device-toggle"><div class="toggle-sw '+(expired?'off':'on')+'"></div><span>'+(expired?'Inactif':'Actif')+'</span></div>'+
+        '<div class="device-btns">'+
+          '<button class="'+(expired?'btn-offline':'btn-online')+'">'+(expired?'Offline':'Online')+'</button>'+
+          '<button class="btn-ping">Ping</button>'+
+          '<button class="btn-installer" onclick="viewScript(\''+s.id+'\')">Installer</button>'+
+          '<button class="btn-detail" onclick="viewDetail(\''+s.id+'\')">Détail</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="device-body">'+
+        '<div class="device-actions-row">'+
+          '<button class="btn-settings">⚙️</button>'+
+          '<button class="btn-addport">+ Ajouter un port</button>'+
+          '<button class="btn-prolong">Prolonger</button>'+
+          '<select class="renew-select"><option>1 mois (10 CRT)</option><option>3 mois (30 CRT)</option></select>'+
+          '<div class="renew-toggle"><div class="toggle-sw off"></div><span>Renouveler</span></div>'+
+        '</div>'+
+        '<table class="ports-table"><thead><tr><th>ADRESSE DISTANTE</th><th>SERVICE TYPE (PORT)</th><th>STATUT</th><th>ACTIONS</th></tr></thead>'+
+        '<tbody>'+
+          '<tr><td><input class="port-input" value="api.startech-pro.com:'+(9000+i*3)+'" readonly></td><td><select class="port-select"><option>SSTP</option><option>WireGuard</option></select> winbox (8291)</td><td><div class="port-toggle"><div class="toggle-sw on"></div><span>Ouvert</span></div></td><td></td></tr>'+
+          '<tr><td><input class="port-input" value="api.startech-pro.com:'+(9001+i*3)+'" readonly></td><td>www (80)</td><td><div class="port-toggle"><div class="toggle-sw on"></div><span>Ouvert</span></div></td><td></td></tr>'+
+          '<tr><td><input class="port-input" value="api.startech-pro.com:'+(9002+i*3)+'" readonly></td><td>api-mikhmon (8728)</td><td><div class="port-toggle"><div class="toggle-sw on"></div><span>Ouvert</span></div></td><td></td></tr>'+
+        '</tbody></table>'+
+      '</div>'+
+    '</div>';
   }).join('');
 }
 
-function openBuy(id,name,icon,desc,cost){
-  document.getElementById('buy-plan-id').value=id;
-  document.getElementById('mod-buy-title').textContent='Acheter '+name;
-  document.getElementById('buy-icon').textContent=icon;
-  document.getElementById('buy-desc').textContent=desc;
-  document.getElementById('buy-cost-badge').textContent=cost+' CRT/mois';
-  document.getElementById('buy-balance').textContent=cu.credits;
-  document.getElementById('buy-modal-err').style.display='none';
-  om('mod-buy');
+// WIREGUARD CLIENT
+async function loadWG(){
+  var d=await api('GET','/api/services/mine');
+  var wgs=(d||[]).filter(function(s){return s.planId==='wg';});
+  var l=document.getElementById('wg-list');
+  if(!wgs.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">Aucun réseau WireGuard. <span style="color:var(--blue);cursor:pointer" onclick="om(\'mod-buy-wg\')">Ajouter un réseau</span></div>';return;}
+  l.innerHTML=wgs.map(function(s){
+    var exp=new Date(s.expiry),expired=exp<new Date();
+    var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
+    return '<div class="wg-card">'+
+      '<div class="wg-name">'+s.planName+' <span style="font-size:12px;color:var(--t2);font-weight:400;font-family:monospace">'+ip+'</span></div>'+
+      '<button class="btn-gerer" onclick="viewScript(\''+s.id+'\')">Gérer</button>'+
+    '</div>';
+  }).join('');
 }
 
-async function confirmBuy(){
-  var planId=document.getElementById('buy-plan-id').value;
-  var months=parseInt(document.getElementById('buy-months').value);
-  var err=document.getElementById('buy-modal-err');
-  var d=await api('POST','/api/services/buy',{planId:planId,months:months});
-  if(d.error){err.textContent=d.error;err.style.display='block';return;}
-  cm('mod-buy');cu.credits=d.creditsLeft;
-  document.getElementById('c-crt').textContent=d.creditsLeft;
-  document.getElementById('c-fcfa').textContent=(d.creditsLeft*50).toLocaleString();
-  var ok=document.getElementById('buy-ok');ok.textContent='Service acheté ! '+d.creditsLeft+' CRT restants.';ok.style.display='block';
-  setTimeout(function(){ok.style.display='none';},4000);
-  loadClientDashboard();
+// MIKHMON CLIENT
+async function loadMikhmon(){
+  var d=await api('GET','/api/services/mine');
+  var mkhs=(d||[]).filter(function(s){return s.planId==='mikhmon';});
+  var l=document.getElementById('mikhmon-list');
+  if(!mkhs.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">Aucun domaine Mikhmon. <span style="color:var(--blue);cursor:pointer" onclick="om(\'mod-buy-mikhmon\')">Ajouter un domaine</span></div>';return;}
+  l.innerHTML=mkhs.map(function(s){
+    var exp=new Date(s.expiry),expired=exp<new Date();
+    var expStr='( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )';
+    var user=s.details?s.details.username:cu.username;
+    var pass=s.details?s.details.password:'N/A';
+    var url=s.details&&s.details.mikhmonURL?s.details.mikhmonURL:'mikhmon.startech-pro.com';
+    return '<div class="mikhmon-card">'+
+      '<div class="mikhmon-header">'+
+        '<div class="mikhmon-domain">'+url+' <span class="mikhmon-link">🔗</span></div>'+
+        '<span class="mikhmon-exp'+(expired?' expired':'')+'">'+expStr+'</span>'+
+        (expired?'<button class="btn-renew-crt">Renouveler | +5 CRT</button>':'<span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:5px">Online</span> <span style="background:#94a3b8;color:#fff;font-size:10px;padding:3px 7px;border-radius:4px">7.X.X</span>')+
+        '<button class="btn-detail" onclick="showMikhmonDetail(\''+s.id+'\')">Détail</button>'+
+      '</div>'+
+      (expired?'':
+      '<div class="mikhmon-body">'+
+        '<button class="btn-prolong">Prolonger</button>'+
+        '<select class="renew-select"><option>1 mois (10 CRT)</option></select>'+
+        '<div class="renew-toggle"><div class="toggle-sw off"></div><span>Renouveler</span></div>'+
+        '<div class="mikhmon-field"><label>username</label><input class="mikhmon-input" value="'+user+'" readonly></div>'+
+        '<button class="btn-copy">📋</button>'+
+        '<div class="mikhmon-field"><label>password</label><input class="mikhmon-input" value="'+pass+'" readonly></div>'+
+        '<button class="btn-copy">📋</button>'+
+        '<button class="btn-refresh">🔄</button>'+
+      '</div>')+
+    '</div>';
+  }).join('');
 }
 
+// TRANSACTIONS CLIENT
+async function loadTX(){
+  var d=await api('GET','/api/transactions');
+  var tbody=document.getElementById('tx-body');
+  if(!d.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--t3);padding:30px">Aucune transaction</td></tr>';return;}
+  var ref=100000+Math.floor(Math.random()*50000);
+  tbody.innerHTML=d.slice().reverse().map(function(t){
+    var pos=t.amount>0;
+    var amt=(pos?'+':'')+t.amount;
+    var fcfa=Math.abs(t.amount)*50;
+    var badge=pos?'<span class="badge-approved">Approved</span>':'<span class="badge-pending">Pending</span>';
+    var desc=pos?'DEPOSIT '+Math.abs(t.amount)+' CRT FOR '+fcfa+' XOF':'BUY SERVICE FOR '+Math.abs(t.amount)+'.00 CRT';
+    if(t.type==='achat_service')desc='BUY '+t.note.toUpperCase()+' FOR '+Math.abs(t.amount)+'.00 CRT';
+    return '<tr><td style="font-family:monospace;color:var(--t2)">'+(ref++)+' </td><td style="color:var(--t2);font-size:12px">'+new Date(t.date).toLocaleString('fr-FR')+'</td><td class="'+(pos?'tx-pos':'tx-neg')+'">'+amt+'</td><td>'+fcfa+'</td><td style="font-size:12px;color:var(--t2)">'+desc+'</td><td>'+badge+'</td><td><button style="background:transparent;border:1px solid var(--bd);padding:4px 8px;border-radius:5px;cursor:pointer;font-size:12px">⚙️</button></td></tr>';
+  }).join('');
+}
+
+// PACKS
 async function loadPacks(){
   var packs=await api('GET','/api/packs');
-  selPack=null;document.getElementById('pack-selected').style.display='none';
+  selPack=null;document.getElementById('pack-confirm').style.display='none';
   document.getElementById('packs-list').innerHTML=packs.map(function(p){
-    return '<div class="pack-card" id="pack-'+p.id+'" onclick="selectPack(\''+p.id+'\','+p.crt+','+p.fcfa+')"><div class="pack-crt">'+p.crt+'</div><div class="pack-lbl">Crédits CRT</div><div class="pack-fcfa">'+p.fcfa.toLocaleString()+' FCFA</div></div>';
+    return '<div class="pack-card" id="pk-'+p.id+'" onclick="selPk(\''+p.id+'\','+p.crt+','+p.fcfa+')"><div class="pack-crt">'+p.crt+'</div><div class="pack-lbl">Crédits CRT</div><div class="pack-fcfa">'+p.fcfa.toLocaleString()+' FCFA</div></div>';
   }).join('');
 }
-
-function selectPack(id,crt,fcfa){
+function selPk(id,crt,fcfa){
   selPack={id:id,crt:crt,fcfa:fcfa};
   document.querySelectorAll('.pack-card').forEach(function(c){c.classList.remove('sel');});
-  document.getElementById('pack-'+id).classList.add('sel');
-  document.getElementById('pack-confirm-txt').textContent=crt+' CRT = '+fcfa.toLocaleString()+' FCFA';
-  document.getElementById('pack-selected').style.display='block';
+  document.getElementById('pk-'+id).classList.add('sel');
+  document.getElementById('pack-txt').textContent=crt+' CRT = '+fcfa.toLocaleString()+' FCFA';
+  document.getElementById('pack-confirm').style.display='block';
 }
-
 async function initPayment(){
   if(!selPack)return;
   var d=await api('POST','/api/payment/init',{packId:selPack.id});
   if(d.error){alert(d.error);return;}
-  alert('Paiement initié !\nMontant : '+selPack.fcfa+' FCFA\nID : '+d.paymentId+'\n\nContactez l\'admin pour confirmer.');
+  alert('Paiement initié !\nMontant : '+selPack.fcfa+' FCFA\nID : '+d.paymentId+'\n\nContactez l\'admin pour confirmer le paiement.\nWhatsApp: +226 70 60 81 48');
 }
 
-async function loadMyServices(){
-  var d=await api('GET','/api/services/mine');
-  var l=document.getElementById('svc-list');
-  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service. <span style="color:var(--gold);cursor:pointer" onclick="cp(\'boutique\')">Boutique</span></p></div>';return;}
-  l.innerHTML=d.map(function(s){
-    var exp=new Date(s.expiry),ok=exp>=new Date();
-    var hasScript=s.planId==='wg'||s.planId==='vpn';
-    var scriptBtn=hasScript?'<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;margin-right:6px" onclick="viewScript(\''+s.id+'\')">Installer</button>':'';
-    var detailBtn=hasScript?'<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewDetail(\''+s.id+'\')">Détail</button>':'';
-    return '<div class="svc-card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="font-size:26px">'+getPlanIcon(s.planId)+'</div><div style="flex:1"><div style="font-size:14px;font-weight:700">'+s.planName+'</div><div style="font-size:11px;color:var(--t2)">'+s.months+' mois — Expire le '+exp.toLocaleDateString('fr-FR')+'</div></div><span class="badge '+(ok?'bgr':'bre')+'">'+(ok?'Actif':'Expiré')+'</span></div>'+scriptBtn+detailBtn+'</div>';
-  }).join('');
-}
-
-async function loadClientVPN(){
-  var d=await api('GET','/api/services/mine');
-  var vpn=(d||[]).filter(function(s){return s.planId==='vpn'||s.planId==='wg';});
-  var w=document.getElementById('c-vpn-wrap');
-  if(!vpn.length){w.innerHTML='<div class="emp"><div class="emp-i">🔒</div><p>Aucun VPN. <span style="color:var(--gold);cursor:pointer" onclick="cp(\'boutique\')">Acheter</span></p></div>';return;}
-  w.innerHTML=vpn.map(function(s){
-    var exp=new Date(s.expiry),expired=exp<new Date();
-    var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
-    var expStr='( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )';
-    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:15px;font-weight:700">'+s.planName+'</div></div>'+
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'+
-        '<span style="font-size:12px;color:'+(expired?'var(--red)':'var(--t2)')+'">'+expStr+'</span>'+
-        '<span style="margin-left:auto;display:flex;align-items:center;gap:6px">'+
-          '<div style="width:36px;height:20px;background:'+(expired?'var(--t3)':'var(--blue)')+';border-radius:10px;position:relative"><div style="position:absolute;top:2px;'+(expired?'left:2px':'right:2px')+';width:16px;height:16px;background:#fff;border-radius:50%"></div></div>'+
-          '<span style="font-size:12px;color:var(--t2)">'+(expired?'Inactif':'Actif')+'</span>'+
-        '</span>'+
-      '</div>'+
-      '<div style="display:flex;gap:7px;flex-wrap:wrap">'+
-        '<span style="background:'+(expired?'#ef4444':'#22c55e')+';color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px">'+(expired?'Offline':'Online')+'</span>'+
-        '<span style="background:var(--s2);color:var(--t2);font-size:11px;padding:5px 12px;border-radius:6px;font-family:monospace">'+ip+'</span>'+
-        '<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewScript(\''+s.id+'\')">Installer</button>'+
-        '<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewDetail(\''+s.id+'\')">Détail</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
-
-async function loadClientTX(){
-  var d=await api('GET','/api/transactions');
-  var w=document.getElementById('c-tx-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div>';return;}
-  var rows=d.slice().reverse().map(function(t){var pos=t.amount>0;return'<tr><td style="font-size:10px;color:var(--t2)">'+new Date(t.date).toLocaleString('fr-FR')+'</td><td><span class="badge '+(pos?'bgr':'bre')+'">'+t.type+'</span></td><td style="font-weight:700;color:'+(pos?'var(--green)':'var(--red)')+'">'+(pos?'+':'')+t.amount+' CRT</td><td style="color:var(--t2)">'+(t.note||'-')+'</td></tr>';}).join('');
-  w.innerHTML='<table><thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Note</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
-
-// ===== ADMIN =====
-async function loadAdminDashboard(){
-  var d=await api('GET','/api/dashboard');if(d.error)return;
-  document.getElementById('a-stats').innerHTML=
-    '<div class="sc bl" onclick="ap(\'users\')"><div class="si">👥</div><div class="sv">'+d.stats.users+'</div><div class="sl">Utilisateurs</div></div>'+
-    '<div class="sc g" onclick="ap(\'all-services\')"><div class="si">⚡</div><div class="sv">'+d.stats.services+'</div><div class="sl">Services actifs</div></div>'+
-    '<div class="sc or" onclick="ap(\'payments\')"><div class="si">💳</div><div class="sv">'+d.stats.transactions+'</div><div class="sl">Transactions</div></div>'+
-    '<div class="sc gr" onclick="ap(\'mikhmon\')"><div class="si">📡</div><div class="sv">'+d.stats.routers+'</div><div class="sl">Routeurs</div></div>'+
-    '<div class="sc pu" onclick="ap(\'wireguard\')"><div class="si">🔒</div><div class="sv">'+d.stats.vpn_networks+'</div><div class="sl">Réseaux WG</div></div>'+
-    '<div class="sc re" onclick="ap(\'scripts\')"><div class="si">&lt;/&gt;</div><div class="sv">'+d.stats.scripts+'</div><div class="sl">Scripts</div></div>';
-}
-
-async function loadAdminUsers(){
-  var d=await api('GET','/api/users'),w=document.getElementById('a-users-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">👥</div><p>Aucun utilisateur.</p></div>';return;}
-  var rows=d.map(function(u){return'<tr><td><strong>'+u.username+'</strong><br><span style="color:var(--t2);font-size:10px">'+u.email+'</span></td><td><span class="badge '+(u.role==='admin'?'bre':'bbl')+'">'+u.role+'</span></td><td><span class="badge bgo">'+u.credits+' CRT</span></td><td>'+new Date(u.createdAt).toLocaleDateString('fr-FR')+'</td><td><button class="bpri" style="font-size:10px;padding:5px 9px" onclick="oCR(\''+u.id+'\')">+ Crédits</button></td></tr>';}).join('');
-  w.innerHTML='<table><thead><tr><th>Utilisateur</th><th>Rôle</th><th>Crédits</th><th>Créé</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
-
-async function loadAdminPayments(){
-  var d=await api('GET','/api/payments'),w=document.getElementById('a-pay-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">💳</div><p>Aucun paiement.</p></div>';return;}
-  var rows=d.slice().reverse().map(function(p){
-    var badge=p.status==='confirmed'?'<span class="badge bgr">Confirmé</span>':'<span class="badge bor">En attente</span>';
-    var btn=p.status==='pending'?'<button class="bpri" style="font-size:10px;padding:5px 9px" onclick="confirmPay(\''+p.id+'\')">Confirmer</button>':'';
-    return'<tr><td style="font-size:10px;color:var(--t2)">'+new Date(p.createdAt).toLocaleString('fr-FR')+'</td><td><strong>'+p.username+'</strong></td><td><strong>'+p.crt+' CRT</strong></td><td>'+p.fcfa.toLocaleString()+' FCFA</td><td>'+badge+'</td><td>'+btn+'</td></tr>';
-  }).join('');
-  w.innerHTML='<table><thead><tr><th>Date</th><th>Client</th><th>CRT</th><th>Montant</th><th>Statut</th><th>Action</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
-
-async function confirmPay(id){if(!confirm('Confirmer ce paiement ?'))return;var d=await api('POST','/api/payment/confirm/'+id);if(d.error){alert(d.error);return;}loadAdminPayments();}
-
-async function loadAdminTX(){
-  var d=await api('GET','/api/transactions'),w=document.getElementById('a-tx-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📊</div><p>Aucune transaction.</p></div>';return;}
-  var rows=d.slice().reverse().map(function(t){var pos=t.amount>0;return'<tr><td style="font-size:10px;color:var(--t2)">'+new Date(t.date).toLocaleString('fr-FR')+'</td><td><span class="badge '+(pos?'bgr':'bre')+'">'+t.type+'</span></td><td style="font-weight:700;color:'+(pos?'var(--green)':'var(--red)')+'">'+(pos?'+':'')+t.amount+' CRT</td><td style="color:var(--t2)">'+(t.note||'-')+'</td></tr>';}).join('');
-  w.innerHTML='<table><thead><tr><th>Date</th><th>Type</th><th>Montant</th><th>Note</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
-
-async function loadAllServices(){
-  var d=await api('GET','/api/services'),w=document.getElementById('a-svc-wrap');
-  if(!d||!d.length){w.innerHTML='<div class="emp"><div class="emp-i">⚡</div><p>Aucun service.</p></div>';return;}
-  w.innerHTML=d.map(function(s){
-    var exp=new Date(s.expiry),expired=exp<new Date();
-    var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
-    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px">'+
-      '<div style="font-size:24px">'+getPlanIcon(s.planId)+'</div>'+
-      '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+s.planName+'</div><div style="font-size:11px;color:var(--t2)">Client: '+s.userId+' | IP: '+ip+'</div></div>'+
-      '<span class="badge '+(expired?'bre':'bgr')+'">'+(expired?'Expiré':'Actif')+'</span>'+
-      '<span style="font-size:11px;color:var(--t2)">'+exp.toLocaleDateString('fr-FR')+'</span>'+
-    '</div>';
-  }).join('');
-}
-
-async function loadRouters(){
-  var d=await api('GET','/api/routers'),w=document.getElementById('a-rt-wrap');
-  if(!d.length){w.innerHTML='<div class="emp"><div class="emp-i">📡</div><p>Aucun routeur.</p></div>';return;}
-  w.innerHTML=d.map(function(r){
-    var exp=r.expiry?new Date(r.expiry):null,expired=exp&&exp<new Date();
-    var expStr=exp?'( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )':'';
-    return '<div style="background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:8px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="font-size:14px;font-weight:700">'+r.name+'</div></div>'+
-      '<div style="font-size:11px;color:'+(expired?'var(--red)':'var(--t2)')+';margin-bottom:10px">'+expStr+'</div>'+
-      '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
-        '<span style="background:#22c55e;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:5px">Online</span>'+
-        '<button style="background:#f59e0b;color:#fff;font-size:11px;padding:4px 10px;border-radius:5px;border:none;cursor:pointer">Ping</button>'+
-        '<button style="background:#06b6d4;color:#fff;font-size:11px;padding:4px 10px;border-radius:5px;border:none;cursor:pointer">Installer</button>'+
-        '<button style="background:#1e293b;color:#fff;font-size:11px;padding:4px 10px;border-radius:5px;border:none;cursor:pointer">Détail</button>'+
-        '<button class="bdng" style="font-size:11px;padding:4px 10px" onclick="delR(\''+r.id+'\')">🗑</button>'+
-      '</div>'+
-    '</div>';
-  }).join('');
-}
-async function saveR(){var b={name:document.getElementById('rn').value,ip:document.getElementById('ri').value,port:document.getElementById('rp2').value||8728,username:document.getElementById('ru2').value||'admin',password:document.getElementById('rpw').value,expiry:document.getElementById('rexp').value};if(!b.name||!b.ip)return;await api('POST','/api/routers',b);cm('mod-router');loadRouters();}
-async function delR(id){if(!confirm('Supprimer ?'))return;await api('DELETE','/api/routers/'+id);loadRouters();}
-
-async function loadWG(){
-  var d=await api('GET','/api/wg/networks'),l=document.getElementById('a-wg-list');
-  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">🔒</div><p>Aucun réseau WireGuard.</p></div>';return;}
-  l.innerHTML=d.map(function(n){return'<div class="tw" style="margin-bottom:10px"><div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;background:var(--s2)"><div><strong>'+n.name+'</strong> <span class="badge bbl" style="margin-left:7px">'+n.subnet+'</span> <span style="color:var(--t2);font-size:11px;margin-left:6px">Port '+n.port+'</span></div><span class="badge bgo">'+(n.devices?n.devices.length:0)+' équip.</span></div></div>';}).join('');
-}
-async function saveWG(){var b={name:document.getElementById('wgn').value,subnet:document.getElementById('wgs').value||'10.8.0.0/24',port:document.getElementById('wgp').value||51820};if(!b.name)return;await api('POST','/api/wg/networks',b);cm('mod-wg');loadWG();}
-
+// SCRIPTS CLIENT
 async function loadScripts(){
-  var d=await api('GET','/api/scripts'),l=document.getElementById('a-sc-list');
-  if(!d.length){l.innerHTML='<div class="emp"><div class="emp-i">&lt;/&gt;</div><p>Aucun script.</p></div>';return;}
-  var cc={hotspot:'bgo',firewall:'bre',vpn:'bgr',pppoe:'bbl',general:'bor'};
-  l.innerHTML='<div class="tw"><table><thead><tr><th>Nom</th><th>Cat.</th><th>Description</th><th>Coût</th></tr></thead><tbody>'+d.map(function(s){return'<tr><td><strong>'+s.name+'</strong></td><td><span class="badge '+(cc[s.category]||'bbl')+'">'+s.category+'</span></td><td style="color:var(--t2)">'+s.description+'</td><td><span class="badge bgo">'+s.cost+' CRT</span></td></tr>';}).join('')+'</tbody></table></div>';
+  var d=await api('GET','/api/scripts');
+  var l=document.getElementById('scripts-shop');
+  var plans=[{id:'vpn',name:'Compte VPN',desc:'Tunnel WireGuard pour routeur MikroTik',icon:'🖥️',cost:10},{id:'wg',name:'WireGuard VPN',desc:'Réseau WireGuard sécurisé',icon:'🔒',cost:10},{id:'mikhmon',name:'Mikhmon Online',desc:'Gestion hotspot en ligne',icon:'📡',cost:10}];
+  l.innerHTML=plans.map(function(p){
+    return '<div class="shop-card"><div class="shop-icon">'+p.icon+'</div><div class="shop-name">'+p.name+'</div><div class="shop-desc">'+p.desc+'</div><div class="shop-price">'+p.cost+' CRT <span>= '+(p.cost*50)+' FCFA/mois</span></div><button class="btn-acheter-shop" onclick="buyService(\''+p.id+'\')">Acheter</button></div>';
+  }).join('');
+  if(d&&d.length){l.innerHTML+='<div style="width:100%;padding:16px 0"><div style="font-size:14px;font-weight:700;margin-bottom:12px">Scripts disponibles</div>'+d.map(function(s){return'<div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px"><div style="flex:1"><div style="font-weight:600">'+s.name+'</div><div style="font-size:12px;color:var(--t2)">'+s.description+'</div></div><span style="background:#ede9fe;color:var(--blue);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px">'+s.cost+' CRT</span></div>';}).join('')+'</div>';}
 }
-async function saveSC(){var b={name:document.getElementById('scn').value,description:document.getElementById('scd').value,category:document.getElementById('scc').value,cost:parseInt(document.getElementById('sce').value)||0,code:document.getElementById('scco').value};if(!b.name)return;await api('POST','/api/scripts',b);cm('mod-script');loadScripts();}
 
-async function saveU(){var b={username:document.getElementById('un').value,email:document.getElementById('ue').value,password:document.getElementById('upw').value,role:document.getElementById('ur').value};if(!b.username||!b.password)return;var r=await api('POST','/api/auth/register-admin',b);if(r.error){alert(r.error);return;}cm('mod-user');loadAdminUsers();}
-function oCR(id){document.getElementById('cr-uid').value=id;document.getElementById('cr-am').value='';document.getElementById('cr-no').value='';om('mod-cr');}
-async function saveCR(){var id=document.getElementById('cr-uid').value,am=document.getElementById('cr-am').value,no=document.getElementById('cr-no').value;await api('POST','/api/users/'+id+'/credits',{amount:am,note:no});cm('mod-cr');loadAdminUsers();}
+// BUY SERVICE
+async function buyService(planId){
+  var monthsId={'vpn':'vpn-months','wg':'wg-months','mikhmon':'mikh-months'};
+  var errId={'vpn':'vpn-err','wg':'wg-err','mikhmon':'mikh-err'};
+  var modId={'vpn':'mod-buy-vpn','wg':'mod-buy-wg','mikhmon':'mod-buy-mikhmon'};
+  var months=parseInt(document.getElementById(monthsId[planId])?document.getElementById(monthsId[planId]).value:1)||1;
+  var err=document.getElementById(errId[planId]);
+  var d=await api('POST','/api/services/buy',{planId:planId,months:months});
+  if(d.error){if(err){err.textContent=d.error;err.style.display='block';}else alert(d.error);return;}
+  cm(modId[planId]);cu.credits=d.creditsLeft;updateTopbar();
+  if(planId==='vpn')loadVPN();
+  else if(planId==='wg')loadWG();
+  else if(planId==='mikhmon')loadMikhmon();
+  loadDashboard();
+}
 
-// SCRIPTS VPN
 async function viewScript(svcId){
   var d=await api('GET','/api/services/'+svcId+'/script');
   if(d.error){alert(d.error);return;}
-  document.getElementById('script-content').value=d.script;
-  document.getElementById('script-ip').textContent=d.clientIP;
-  document.getElementById('script-server').textContent=d.serverIP+':'+d.serverPort;
-  var box=document.getElementById('install-cmd-box');
-  var cmd=document.getElementById('install-cmd');
-  if(d.installCmd){cmd.value=d.installCmd;box.style.display='block';}
+  document.getElementById('script-txt').value=d.script;
+  document.getElementById('s-ip').textContent=d.clientIP;
+  document.getElementById('s-srv').textContent=d.serverIP+':'+d.serverPort;
+  var box=document.getElementById('install-cmd-wrap');
+  if(d.installCmd){document.getElementById('install-cmd-txt').value=d.installCmd;box.style.display='block';}
   om('mod-script-view');
 }
 
 async function viewDetail(svcId){
   var d=await api('GET','/api/services/'+svcId+'/ports');
   if(d.error){alert(d.error);return;}
-  document.getElementById('detail-addresses').innerHTML=d.addresses.map(function(a){
-    return '<div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:8px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="font-size:13px;font-weight:700">'+a.icon+' '+a.label+'</div><span class="badge bgr">Ouvert</span></div>'+
-      '<div style="display:flex;align-items:center;gap:8px">'+
-        '<input readonly value="'+a.address+'" style="flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;color:var(--gold);font-family:monospace;font-size:12px;outline:none">'+
-        '<button onclick="navigator.clipboard.writeText(\''+a.copy+'\').then(function(){event.target.textContent=\'✅\';setTimeout(function(){event.target.textContent=\'📋\'},1500)})" style="background:var(--s2);border:1px solid var(--bd);color:var(--t2);padding:7px 10px;border-radius:6px;border:none;cursor:pointer">📋</button>'+
-      '</div>'+
-    '</div>';
+  document.getElementById('detail-addrs').innerHTML=d.addresses.map(function(a){
+    return '<div style="background:var(--s1);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600">'+a.icon+' '+a.label+'</div></div><div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px"><input readonly value="'+a.address+'" style="flex:1;background:var(--white);border:1px solid var(--bd);border-radius:6px;padding:6px 10px;color:var(--blue);font-family:monospace;font-size:12px;outline:none"><button onclick="navigator.clipboard.writeText(\''+a.copy+'\')" style="background:var(--white);border:1px solid var(--bd);padding:6px 10px;border-radius:5px;cursor:pointer">📋</button></div><span style="background:#dcfce7;color:#166534;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;margin-left:8px">Ouvert</span></div>';
   }).join('');
-  document.getElementById('detail-iptables').value=d.iptablesScript;
+  document.getElementById('detail-ipt').value=d.iptablesScript;
   om('mod-detail');
 }
 
-function copyInstallCmd(){var txt=document.getElementById('install-cmd').value;navigator.clipboard.writeText(txt).then(function(){var btn=event.target;btn.textContent='✅';setTimeout(function(){btn.textContent='📋 Copier';},2000);});}
-function copyScript(){var txt=document.getElementById('script-content').value;navigator.clipboard.writeText(txt).then(function(){var btn=event.target;btn.textContent='✅ Copié !';setTimeout(function(){btn.textContent='📋 Copier script complet';},2000);});}
+function showMikhmonDetail(id){viewScript(id);}
+function copyInstall(){var t=document.getElementById('install-cmd-txt').value;navigator.clipboard.writeText(t);}
+function copyScript(){var t=document.getElementById('script-txt').value;navigator.clipboard.writeText(t);}
+function copyAffCode(){navigator.clipboard.writeText(AFFCODE);}
+function copyAffLink(){navigator.clipboard.writeText(document.getElementById('aff-link').textContent);}
 
+// ===== ADMIN =====
+async function loadAdminDash(){
+  var d=await api('GET','/api/dashboard');if(d.error)return;
+  document.getElementById('a-stats-row').innerHTML=
+    '<div class="stat-box" onclick="ap(\'users\')" style="cursor:pointer"><div class="stat-box-left"><div class="label">Utilisateurs</div><div class="val" style="color:var(--blue)">'+d.stats.users+'</div></div><div class="stat-box-icon blue">👥</div></div>'+
+    '<div class="stat-box" onclick="ap(\'all-services\')" style="cursor:pointer"><div class="stat-box-left"><div class="label">Services actifs</div><div class="val" style="color:var(--green)">'+d.stats.services+'</div></div><div class="stat-box-icon green">⚡</div></div>'+
+    '<div class="stat-box" onclick="ap(\'mikhmon\')" style="cursor:pointer"><div class="stat-box-left"><div class="label">Routeurs</div><div class="val" style="color:var(--orange)">'+d.stats.routers+'</div></div><div class="stat-box-icon orange">📡</div></div>'+
+    '<div class="stat-box" onclick="ap(\'payments\')" style="cursor:pointer"><div class="stat-box-left"><div class="label">Transactions</div><div class="val" style="color:var(--blue)">'+d.stats.transactions+'</div></div><div class="stat-box-icon blue">💳</div></div>';
+  loadAdminPay();
+}
+
+async function loadAdminUsers(){
+  var d=await api('GET','/api/users');
+  var tbody=document.getElementById('a-users-body');
+  if(!d.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--t3)">Aucun utilisateur</td></tr>';return;}
+  tbody.innerHTML=d.map(function(u){
+    return '<tr><td><strong>'+u.username+'</strong></td><td style="color:var(--t2);font-size:12px">'+u.email+'</td><td><span style="background:'+(u.role==='admin'?'#fee2e2':'#ede9fe')+';color:'+(u.role==='admin'?'var(--red)':'var(--blue)')+';font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px">'+u.role+'</span></td><td><span style="background:#f0fdf4;color:#166534;font-size:12px;font-weight:600;padding:3px 8px;border-radius:5px">'+u.credits+' CRT</span></td><td style="font-size:12px;color:var(--t2)">'+new Date(u.createdAt).toLocaleDateString('fr-FR')+'</td><td><button class="btn-save" style="font-size:11px;padding:5px 10px" onclick="oCR(\''+u.id+'\')">+ Crédits</button></td></tr>';
+  }).join('');
+}
+
+async function loadAdminPay(){
+  var d=await api('GET','/api/payments');
+  var el=document.getElementById('a-pay-body')||document.getElementById('a-recent-pay');
+  var pending=d.filter(function(p){return p.status==='pending';});
+  if(el&&el.id==='a-recent-pay'){
+    if(!pending.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--t3)">Aucun paiement en attente</div>';return;}
+    el.innerHTML=pending.map(function(p){return'<div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--bg);border-radius:8px;margin-bottom:6px"><div><strong>'+p.username+'</strong> — <span style="color:var(--blue);font-weight:700">'+p.crt+' CRT</span> = '+p.fcfa.toLocaleString()+' FCFA</div><button class="btn-save" style="font-size:11px;padding:5px 12px" onclick="confirmPay(\''+p.id+'\')">Confirmer</button></div>';}).join('');
+    return;
+  }
+  if(!el)return;
+  if(!d.length){el.innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--t3)">Aucun paiement</td></tr>';return;}
+  el.innerHTML=d.slice().reverse().map(function(p){
+    var badge=p.status==='confirmed'?'<span class="badge-approved">Confirmé</span>':'<span class="badge-pending">En attente</span>';
+    var btn=p.status==='pending'?'<button class="btn-save" style="font-size:11px;padding:5px 10px" onclick="confirmPay(\''+p.id+'\')">Confirmer</button>':'';
+    return'<tr><td style="font-size:11px;color:var(--t2)">'+new Date(p.createdAt).toLocaleString('fr-FR')+'</td><td><strong>'+p.username+'</strong></td><td style="color:var(--blue);font-weight:700">'+p.crt+' CRT</td><td>'+p.fcfa.toLocaleString()+' FCFA</td><td>'+badge+'</td><td>'+btn+'</td></tr>';
+  }).join('');
+}
+async function confirmPay(id){if(!confirm('Confirmer ?'))return;var d=await api('POST','/api/payment/confirm/'+id);if(d.error){alert(d.error);return;}loadAdminPay();loadAdminDash();}
+
+async function loadAdminSvc(){
+  var d=await api('GET','/api/services');
+  var l=document.getElementById('a-svc-body');
+  if(!d||!d.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">Aucun service</div>';return;}
+  l.innerHTML=d.map(function(s){
+    var exp=new Date(s.expiry),expired=exp<new Date();
+    var ip=s.details&&s.details.clientIP?s.details.clientIP:'N/A';
+    return '<div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:14px 18px;margin-bottom:8px;display:flex;align-items:center;gap:12px">'+
+      '<div style="font-size:22px">'+{wg:'🔒',vpn:'🖥️',mikhmon:'📡'}[s.planId]+'</div>'+
+      '<div style="flex:1"><div style="font-weight:600">'+s.planName+'</div><div style="font-size:11px;color:var(--t2)">Client: '+s.userId+' | IP: '+ip+'</div></div>'+
+      '<span style="font-size:12px;color:var(--t2)">'+exp.toLocaleDateString('fr-FR')+'</span>'+
+      '<span style="background:'+(expired?'#fee2e2':'#dcfce7')+';color:'+(expired?'var(--red)':'#166534')+';font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px">'+(expired?'Expiré':'Actif')+'</span>'+
+    '</div>';
+  }).join('');
+}
+
+async function loadAdminTX(){
+  var d=await api('GET','/api/transactions');
+  var tbody=document.getElementById('a-tx-body');
+  if(!d.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--t3)">Aucune transaction</td></tr>';return;}
+  var ref=100000;
+  tbody.innerHTML=d.slice().reverse().map(function(t){var pos=t.amount>0;return'<tr><td style="font-family:monospace;color:var(--t2)">'+(ref++)+'</td><td style="font-size:11px;color:var(--t2)">'+new Date(t.date).toLocaleString('fr-FR')+'</td><td><span style="background:'+(pos?'#dcfce7':'#fee2e2')+';color:'+(pos?'#166534':'var(--red)')+';font-size:11px;padding:2px 7px;border-radius:4px">'+t.type+'</span></td><td style="font-weight:700;color:'+(pos?'#16a34a':'var(--red)')+'">'+(pos?'+':'')+t.amount+' CRT</td><td style="font-size:12px;color:var(--t2)">'+(t.note||'-')+'</td></tr>';}).join('');
+}
+
+async function loadAdminRouters(){
+  var d=await api('GET','/api/routers');
+  var l=document.getElementById('a-router-list');
+  if(!d.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">Aucun routeur</div>';return;}
+  l.innerHTML=d.map(function(r){
+    var exp=r.expiry?new Date(r.expiry):null,expired=exp&&exp<new Date();
+    var expStr=exp?'( exp. '+exp.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' )':'';
+    return '<div class="device-card">'+
+      '<div class="device-card-header">'+
+        '<div class="device-name">'+r.name+' <span class="device-edit">✏️</span></div>'+
+        '<span class="device-exp'+(expired?' expired':'')+'">'+expStr+'</span>'+
+        '<div class="device-toggle"><div class="toggle-sw '+(expired?'off':'on')+'"></div><span>'+(expired?'Inactif':'Actif')+'</span></div>'+
+        '<div class="device-btns">'+
+          '<button class="btn-online">Online</button>'+
+          '<button class="btn-ping">Ping</button>'+
+          '<button class="btn-installer">Installer</button>'+
+          '<button class="btn-detail">Détail</button>'+
+          '<button class="btn-renew" onclick="delRouter(\''+r.id+'\')">🗑</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+async function saveRouter(){var b={name:document.getElementById('rn2').value,ip:document.getElementById('ri2').value,port:document.getElementById('rp3').value||8728,username:document.getElementById('ru3').value||'admin',password:document.getElementById('rpw2').value,expiry:document.getElementById('rexp2').value};if(!b.name||!b.ip)return;await api('POST','/api/routers',b);cm('mod-router');loadAdminRouters();}
+async function delRouter(id){if(!confirm('Supprimer ?'))return;await api('DELETE','/api/routers/'+id);loadAdminRouters();}
+
+async function loadAdminWG(){
+  var d=await api('GET','/api/wg/networks');
+  var l=document.getElementById('a-wg-list');
+  if(!d.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">Aucun réseau WireGuard</div>';return;}
+  l.innerHTML=d.map(function(n){return'<div class="wg-card"><div class="wg-name">'+n.name+' <span style="font-size:11px;background:#ede9fe;color:var(--blue);padding:2px 7px;border-radius:4px">'+n.subnet+'</span> <span style="font-size:11px;color:var(--t2)">Port '+n.port+'</span></div><span style="font-size:12px;color:var(--t2)">'+(n.devices?n.devices.length:0)+' équip.</span><button class="btn-gerer">Gérer</button></div>';}).join('');
+}
+async function saveWG2(){var b={name:document.getElementById('wgn2').value,subnet:document.getElementById('wgs2').value||'10.8.0.0/24',port:document.getElementById('wgp2').value||51820};if(!b.name)return;await api('POST','/api/wg/networks',b);cm('mod-wg');loadAdminWG();}
+
+async function loadAdminScripts(){
+  var d=await api('GET','/api/scripts');
+  var l=document.getElementById('a-scripts-list');
+  if(!d.length){l.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3)">Aucun script</div>';return;}
+  var cc={hotspot:'#fef3c7',firewall:'#fee2e2',vpn:'#f0fdf4',pppoe:'#ede9fe',general:'#f0f9ff'};
+  l.innerHTML='<div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;overflow:hidden"><table style="width:100%;border-collapse:collapse"><thead style="background:var(--s1)"><tr><th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase">Nom</th><th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase">Catégorie</th><th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase">Description</th><th style="padding:10px 14px;text-align:left;font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase">Coût</th></tr></thead><tbody>'+d.map(function(s){return'<tr style="border-top:1px solid var(--bd)"><td style="padding:10px 14px;font-weight:600">'+s.name+'</td><td style="padding:10px 14px"><span style="background:'+(cc[s.category]||'#ede9fe')+';font-size:11px;font-weight:600;padding:3px 8px;border-radius:5px">'+s.category+'</span></td><td style="padding:10px 14px;font-size:12px;color:var(--t2)">'+s.description+'</td><td style="padding:10px 14px"><span style="background:#ede9fe;color:var(--blue);font-size:12px;font-weight:700;padding:3px 8px;border-radius:5px">'+s.cost+' CRT</span></td></tr>';}).join('')+'</tbody></table></div>';
+}
+async function saveScript2(){var b={name:document.getElementById('scn2').value,description:document.getElementById('scd2').value,category:document.getElementById('scc2').value,cost:parseInt(document.getElementById('sce2').value)||0,code:document.getElementById('scco2').value};if(!b.name)return;await api('POST','/api/scripts',b);cm('mod-script');loadAdminScripts();}
+
+async function saveUser2(){var b={username:document.getElementById('un2').value,email:document.getElementById('ue2').value,password:document.getElementById('upw2').value,role:document.getElementById('ur2').value};if(!b.username||!b.password)return;var r=await api('POST','/api/auth/register-admin',b);if(r.error){alert(r.error);return;}cm('mod-user');loadAdminUsers();}
+function oCR(id){document.getElementById('cr-uid').value=id;document.getElementById('cr-am').value='';document.getElementById('cr-no').value='';om('mod-cr');}
+async function saveCR2(){var id=document.getElementById('cr-uid').value,am=document.getElementById('cr-am').value,no=document.getElementById('cr-no').value;await api('POST','/api/users/'+id+'/credits',{amount:am,note:no});cm('mod-cr');loadAdminUsers();}
+
+// FORGOT PASSWORD
+async function doForgot(){
+  var email=document.getElementById('femail').value.trim();if(!email)return;
+  var d=await api('POST','/api/auth/forgot',{email:email});
+  var el=document.getElementById('ferr');
+  el.textContent=d.message||d.error||'Si cet email existe, un lien a été envoyé';
+  el.style.display='block';
+}
+
+// GOOGLE INIT
 window.addEventListener('load',function(){
   if(typeof google!=='undefined'&&GOOGLE_CLIENT_ID){
     google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleResponse,auto_select:false});
-    initGoogleBtn();
   }
 });
 tryAuto();
