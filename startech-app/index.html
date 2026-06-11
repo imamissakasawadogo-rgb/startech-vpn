@@ -295,6 +295,22 @@ textarea.fi{resize:vertical;min-height:70px}
 </div>
 
 <!-- MODALS -->
+<div class="ov" id="mod-detail">
+  <div class="mod" style="max-width:520px">
+    <div class="mh"><span class="mt">🔌 Détail connexion</span><button class="mc" onclick="cm('mod-detail')">✕</button></div>
+    <div style="background:var(--s2);border-radius:8px;padding:12px;margin-bottom:16px;font-size:11px;color:var(--t2)">
+      Utilisez ces adresses pour vous connecter à distance à votre routeur via le tunnel VPN Startech.
+    </div>
+    <div id="detail-addresses"></div>
+    <div style="margin-top:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--t2);margin-bottom:8px">Activer la redirection (admin VPS) :</div>
+      <textarea id="detail-iptables" readonly style="width:100%;background:#0a0c10;border:1px solid var(--bd);border-radius:7px;padding:10px;color:var(--green);font-family:monospace;font-size:10px;min-height:80px;resize:none"></textarea>
+      <button onclick="copyIptables()" style="background:var(--s2);border:1px solid var(--bd);color:var(--t2);font-size:11px;padding:6px 12px;border-radius:5px;border:none;cursor:pointer;margin-top:6px">📋 Copier commandes iptables</button>
+    </div>
+    <div class="ma"><button class="bol" onclick="cm('mod-detail')">Fermer</button></div>
+  </div>
+</div>
+
 <div class="ov" id="mod-script-view">
   <div class="mod" style="max-width:560px">
     <div class="mh"><span class="mt">📋 Script RouterOS</span><button class="mc" onclick="cm('mod-script-view')">✕</button></div>
@@ -644,6 +660,34 @@ async function viewScript(svcId){
   om('mod-script-view');
 }
 
+function copyIptables(){
+  var txt=document.getElementById('detail-iptables').value;
+  navigator.clipboard.writeText(txt).then(function(){
+    var btn=event.target;btn.textContent='✅ Copié !';
+    setTimeout(function(){btn.textContent='📋 Copier commandes iptables';},2000);
+  });
+}
+
+async function viewDetail(svcId){
+  var d=await api('GET','/api/services/'+svcId+'/ports');
+  if(d.error){alert(d.error);return;}
+  var addrHtml=d.addresses.map(function(a){
+    return '<div style="background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:12px;margin-bottom:8px">'+
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
+        '<div style="font-size:13px;font-weight:700">'+a.icon+' '+a.label+'</div>'+
+        '<span class="badge bgr">Ouvert</span>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+        '<input readonly value="'+a.address+'" style="flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:7px 10px;color:var(--gold);font-family:monospace;font-size:12px;outline:none">'+
+        '<button onclick="navigator.clipboard.writeText(\''+a.copy+'\').then(function(){event.target.textContent=\'✅\';setTimeout(function(){event.target.textContent=\'📋\'},1500)})" style="background:var(--s2);border:1px solid var(--bd);color:var(--t2);padding:7px 10px;border-radius:6px;border:none;cursor:pointer;font-size:14px">📋</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('detail-addresses').innerHTML=addrHtml;
+  document.getElementById('detail-iptables').value=d.iptablesScript;
+  om('mod-detail');
+}
+
 function copyInstallCmd(){
   var txt=document.getElementById('install-cmd').value;
   navigator.clipboard.writeText(txt).then(function(){
@@ -758,7 +802,7 @@ async function loadVPN(){
         '<span style="background:var(--s2);color:var(--t2);font-size:11px;padding:5px 12px;border-radius:6px;font-family:monospace">'+ip+'</span>'+
         '<button style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="pingVPN(\''+ip+'\')">Ping</button>'+
         '<button style="background:#06b6d4;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewScript(\''+s.id+'\')">Installer</button>'+
-        '<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewScript(\''+s.id+'\')">Détail</button>'+
+        '<button style="background:#1e293b;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer" onclick="viewDetail(\''+s.id+'\')">Détail</button>'+
       '</div>'+
     '</div>';
   }).join('');
