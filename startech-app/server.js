@@ -47,6 +47,33 @@ function genInstallToken(){
   return token;
 }
 
+// GÉNÉRER SCRIPT SSTP
+function genSSTScript(clientName,serverIP,username,password){
+  return '/interface sstp-client\n'+
+    'add connect-to='+serverIP+' disabled=no name=startech-sstp \\\n'+
+    '    password="'+password+'" profile=default-encryption \\\n'+
+    '    user="'+username+'" verify-server-certificate=no\n\n'+
+    '/ip route\n'+
+    'add dst-address=0.0.0.0/0 gateway=startech-sstp\n\n'+
+    '# Startech BUSINESS - VPN SSTP\n'+
+    '# Client: '+clientName+'\n'+
+    '# Serveur: '+serverIP+'\n'+
+    '# Utilisateur: '+username;
+}
+
+// GÉNÉRER SCRIPT L2TP
+function genL2TPScript(clientName,serverIP,username,password){
+  return '/interface l2tp-client\n'+
+    'add connect-to='+serverIP+' disabled=no name=startech-l2tp \\\n'+
+    '    password="'+password+'" use-ipsec=yes ipsec-secret="startech2026" \\\n'+
+    '    user="'+username+'"\n\n'+
+    '/ip route\n'+
+    'add dst-address=0.0.0.0/0 gateway=startech-l2tp\n\n'+
+    '# Startech BUSINESS - VPN L2TP\n'+
+    '# Client: '+clientName+'\n'+
+    '# Serveur: '+serverIP;
+}
+
 // GÉNÉRER SCRIPT ROUTEROS WIREGUARD
 function genRouterOSScript(clientName,clientPrivKey,clientIP,serverPubKey,serverIP,serverPort){
   var iface='startech-vpn';
@@ -275,19 +302,29 @@ app.post('/api/services/buy',auth,function(req,res){
       note:'Accedez a votre tableau Mikhmon avec ces identifiants'
     };
   } else if(plan.id==='vpn'){
-    var vkeys=genWGKeys();
-    var vIP=assignClientIP(d);
-    svc.wgIP=vIP;
-    svc.details={
-      type:'WireGuard',
-      privateKey:vkeys.privateKey,
-      publicKey:vkeys.publicKey,
-      clientIP:vIP,
-      serverPubKey:WG_SERVER_PUBKEY,
-      serverIP:WG_SERVER_IP,
-      serverPort:WG_SERVER_PORT,
-      script:genRouterOSScript(u.username,vkeys.privateKey,vIP,WG_SERVER_PUBKEY,WG_SERVER_IP,WG_SERVER_PORT)
-    };
+    var iface=req.body.interface||'WireGuard';
+    svc.details={type:iface,clientIP:'',serverIP:WG_SERVER_IP,serverPort:WG_SERVER_PORT};
+    if(iface==='SSTP'){
+      var sPass='STB'+Math.random().toString(36).substr(2,8).toUpperCase();
+      svc.details.username=u.username;
+      svc.details.password=sPass;
+      svc.details.script=genSSTScript(u.username,WG_SERVER_IP,u.username,sPass);
+    } else if(iface==='L2TP'){
+      var lPass='STB'+Math.random().toString(36).substr(2,8).toUpperCase();
+      svc.details.username=u.username;
+      svc.details.password=lPass;
+      svc.details.script=genL2TPScript(u.username,WG_SERVER_IP,u.username,lPass);
+    } else {
+      // WireGuard par défaut
+      var vkeys=genWGKeys();
+      var vIP=assignClientIP(d);
+      svc.wgIP=vIP;
+      svc.details.privateKey=vkeys.privateKey;
+      svc.details.publicKey=vkeys.publicKey;
+      svc.details.clientIP=vIP;
+      svc.details.serverPubKey=WG_SERVER_PUBKEY;
+      svc.details.script=genRouterOSScript(u.username,vkeys.privateKey,vIP,WG_SERVER_PUBKEY,WG_SERVER_IP,WG_SERVER_PORT);
+    }
   }
   d.services.push(svc);
   d.transactions.push({id:'t'+Date.now(),userId:u.id,type:'achat_service',amount:-cost,note:plan.name+' x'+months+'mois',date:new Date().toISOString()});
