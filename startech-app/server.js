@@ -47,6 +47,20 @@ function genInstallToken(){
   return token;
 }
 
+// GÉNÉRER SCRIPT OVPN
+function genOVPNScript(clientName,serverIP,username,password){
+  return '/interface ovpn-client\n'+
+    'add connect-to='+serverIP+' disabled=no name=startech-ovpn \\\n'+
+    '    password="'+password+'" port=1194 mode=ip \\\n'+
+    '    user="'+username+'" certificate=none auth=sha1 cipher=aes256\n\n'+
+    '/ip route\n'+
+    'add dst-address=0.0.0.0/0 gateway=startech-ovpn\n\n'+
+    '# Startech BUSINESS - VPN OVPN\n'+
+    '# Client: '+clientName+'\n'+
+    '# Serveur: '+serverIP+'\n'+
+    '# Utilisateur: '+username;
+}
+
 // GÉNÉRER SCRIPT SSTP
 function genSSTScript(clientName,serverIP,username,password){
   return '/interface sstp-client\n'+
@@ -314,6 +328,11 @@ app.post('/api/services/buy',auth,function(req,res){
       svc.details.username=u.username;
       svc.details.password=lPass;
       svc.details.script=genL2TPScript(u.username,WG_SERVER_IP,u.username,lPass);
+    } else if(iface==='OVPN'){
+      var oPass='STB'+Math.random().toString(36).substr(2,8).toUpperCase();
+      svc.details.username=u.username;
+      svc.details.password=oPass;
+      svc.details.script=genOVPNScript(u.username,WG_SERVER_IP,u.username,oPass);
     } else {
       // WireGuard par défaut
       var vkeys=genWGKeys();
