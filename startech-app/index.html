@@ -1053,68 +1053,24 @@ async function doForgot(){
   el.style.color=d.error?'var(--red)':'#166534';
 }
 
-function doLogout(){tk='';cu=null;localStorage.removeItem('st_tk');document.getElementById('app').style.display='none';document.getElementById('auth-screen').style.display='block';navigate('/login');}
+function doLogout(){tk='';cu=null;localStorage.removeItem('st_tk');document.getElementById('app').style.display='none';document.getElementById('auth-screen').style.display='block';showLogin();}
 
 
-// ===== ROUTER =====
-var ROUTES = {
-  '/login': function(){showLogin();},
-  '/register': function(){showRegister();},
-  '/reset': function(){showForgot();},
-  '/dashboard': function(){if(cu)gp('dashboard');else showLogin();},
-  '/devices': function(){if(cu)gp('vpn');else showLogin();},
-  '/networks': function(){if(cu)gp('wireguard');else showLogin();},
-  '/domains': function(){if(cu)gp('mikhmon');else showLogin();},
-  '/transactions': function(){if(cu)gp('transactions');else showLogin();},
-  '/scripts': function(){if(cu)gp('scripts');else showLogin();},
-  '/credits': function(){if(cu)gp('credits');else showLogin();},
-  '/profil': function(){if(cu)gp('profil');else showLogin();},
-  '/admin': function(){if(cu&&cu.role==='admin')ap('dashboard');else showLogin();},
-  '/admin/users': function(){if(cu&&cu.role==='admin')ap('users');else showLogin();},
-  '/admin/payments': function(){if(cu&&cu.role==='admin')ap('payments');else showLogin();},
-  '/admin/services': function(){if(cu&&cu.role==='admin')ap('all-services');else showLogin();},
-  '/admin/transactions': function(){if(cu&&cu.role==='admin')ap('transactions');else showLogin();},
-  '/admin/mikhmon': function(){if(cu&&cu.role==='admin')ap('mikhmon');else showLogin();},
-  '/admin/networks': function(){if(cu&&cu.role==='admin')ap('wireguard');else showLogin();},
-  '/admin/scripts': function(){if(cu&&cu.role==='admin')ap('scripts');else showLogin();},
-};
-
+// Router simple
 function navigate(path){
-  window.history.pushState({},'' ,path);
-  routeTo(path);
+  try{window.history.pushState({},'' ,path);}catch(e){}
 }
-
-function routeTo(path){
-  var route=ROUTES[path];
-  if(route){route();}
-  else if(path.startsWith('/ref/')){
-    // Code affiliation
-    var code=path.split('/ref/')[1];
-    document.getElementById('raff').value=code;
-    showRegister();
-  } else {
-    if(cu) navigate('/dashboard');
-    else navigate('/login');
-  }
-}
-
-window.addEventListener('popstate',function(){
-  routeTo(window.location.pathname);
-});
-
-// Intercepter les clics sidebar pour mettre à jour l'URL
+function routeTo(path){}
 
 async function tryAuto(){
-  var s=localStorage.getItem('st_tk');if(!s){routeTo(window.location.pathname||'/login');return;}tk=s;
-  try{var d=await api('GET','/api/dashboard');if(d.error){localStorage.removeItem('st_tk');routeTo('/login');return;}
-  var pl=JSON.parse(atob(tk.split('.')[1]));cu={id:pl.id,username:pl.username,role:pl.role,credits:d.user.credits,gnx:d.user.gnx};
-  startApp();
-  // Après login, router vers la bonne page
-  var path=window.location.pathname;
-  if(path==='/login'||path==='/register'||path==='/'){
-    navigate(cu.role==='admin'?'/admin':'/dashboard');
-  } else {routeTo(path);}
-  }catch(e){localStorage.removeItem('st_tk');routeTo('/login');}
+  var s=localStorage.getItem('st_tk');if(!s)return;tk=s;
+  try{
+    var d=await api('GET','/api/dashboard');
+    if(d.error){localStorage.removeItem('st_tk');return;}
+    var pl=JSON.parse(atob(tk.split('.')[1]));
+    cu={id:pl.id,username:pl.username,role:pl.role,credits:d.user.credits,gnx:d.user.gnx};
+    startApp();
+  }catch(e){localStorage.removeItem('st_tk');}
 }
 
 function startApp(){
@@ -1153,7 +1109,7 @@ var PAGE_URLS = {
 };
 function gp(n){
   var url=PAGE_URLS[n]||'/dashboard';
-  if(window.location.pathname!==url)window.history.pushState({},'' ,url);
+  try{window.history.pushState({},'' ,url);}catch(e){}
   document.querySelectorAll('#app .page').forEach(function(p){p.classList.remove('on');});
   document.querySelectorAll('#sidebar .sb-item').forEach(function(x){x.classList.remove('on');});
   var pg=document.getElementById('pg-'+n);if(pg)pg.classList.add('on');
