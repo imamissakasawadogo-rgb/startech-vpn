@@ -72,7 +72,17 @@ function db(){
     var d={users:[{id:'u1',username:'admin',email:'admin@startech.com',password:bcrypt.hashSync('STARTECH2026',10),role:'admin',credits:100,gnx:50,createdAt:new Date().toISOString()}],routers:[],vpn_networks:[],vpn_accounts:[],scripts:[],transactions:[],services:[],payments:[]};
     fs.writeFileSync(DATA,JSON.stringify(d,null,2));return d;
   }
-  return JSON.parse(fs.readFileSync(DATA,'utf8'));
+  var d=JSON.parse(fs.readFileSync(DATA,'utf8'));
+  // Compléter les champs manquants
+  if(!d.services)d.services=[];
+  if(!d.payments)d.payments=[];
+  if(!d.routers)d.routers=[];
+  if(!d.vpn_networks)d.vpn_networks=[];
+  if(!d.vpn_accounts)d.vpn_accounts=[];
+  if(!d.scripts)d.scripts=[];
+  if(!d.transactions)d.transactions=[];
+  if(!d.users)d.users=[];
+  return d;
 }
 function save(d){fs.writeFileSync(DATA,JSON.stringify(d,null,2));}
 function auth(req,res,next){var h=req.headers['authorization'];if(!h)return res.status(401).json({error:'Token manquant'});try{req.user=jwt.verify(h.split(' ')[1],SECRET);next();}catch(e){res.status(401).json({error:'Token invalide'});}}
