@@ -1428,7 +1428,7 @@ async function buyService(planId){
   var modId={'vpn':'mod-buy-vpn','wg':'mod-buy-wg','mikhmon':'mod-buy-mikhmon'};
   var months=parseInt(document.getElementById(monthsId[planId])?document.getElementById(monthsId[planId]).value:1)||1;
   var err=document.getElementById(errId[planId]);
-  var d=await api('POST','/api/services/buy',{planId:planId,months:months});
+  var d=await api('POST','/api/services/buy',{planId:planId,months:months,interface:planId==='vpn'?document.getElementById('vpn-interface').value:'WireGuard'});
   if(d.error){if(err){err.textContent=d.error;err.style.display='block';}else alert(d.error);return;}
   cm(modId[planId]);cu.credits=d.creditsLeft;updateTopbar();
   if(planId==='vpn')loadVPN();
